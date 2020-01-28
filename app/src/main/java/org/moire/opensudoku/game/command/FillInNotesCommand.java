@@ -42,8 +42,7 @@ public class FillInNotesCommand extends AbstractCellCommand {
         }
     }
 
-    @Override
-    void execute() {
+    protected void saveOldNotes() {
         CellCollection cells = getCells();
 
         mOldNotes.clear();
@@ -52,8 +51,12 @@ public class FillInNotesCommand extends AbstractCellCommand {
                 mOldNotes.add(new NoteEntry(r, c, cells.getCell(r, c).getNote()));
             }
         }
+    }
 
-        cells.fillInNotes();
+    @Override
+    void execute() {
+        saveOldNotes();
+        getCells().fillInNotes();
     }
 
     @Override

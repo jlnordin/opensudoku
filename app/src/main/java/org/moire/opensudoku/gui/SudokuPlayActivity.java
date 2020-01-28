@@ -60,14 +60,15 @@ public class SudokuPlayActivity extends AppCompatActivity {
     public static final int MENU_ITEM_RESTART = Menu.FIRST;
     public static final int MENU_ITEM_CLEAR_ALL_NOTES = Menu.FIRST + 1;
     public static final int MENU_ITEM_FILL_IN_NOTES = Menu.FIRST + 2;
-    public static final int MENU_ITEM_UNDO = Menu.FIRST + 3;
-    public static final int MENU_ITEM_HELP = Menu.FIRST + 4;
-    public static final int MENU_ITEM_SETTINGS = Menu.FIRST + 5;
+    public static final int MENU_ITEM_FILL_IN_SNYDER_NOTES = Menu.FIRST + 3;
+    public static final int MENU_ITEM_UNDO = Menu.FIRST + 4;
+    public static final int MENU_ITEM_HELP = Menu.FIRST + 5;
+    public static final int MENU_ITEM_SETTINGS = Menu.FIRST + 6;
 
-    public static final int MENU_ITEM_SET_CHECKPOINT = Menu.FIRST + 6;
-    public static final int MENU_ITEM_UNDO_TO_CHECKPOINT = Menu.FIRST + 7;
-    public static final int MENU_ITEM_SOLVE = Menu.FIRST + 8;
-    public static final int MENU_ITEM_HINT = Menu.FIRST + 9;
+    public static final int MENU_ITEM_SET_CHECKPOINT = Menu.FIRST + 7;
+    public static final int MENU_ITEM_UNDO_TO_CHECKPOINT = Menu.FIRST + 8;
+    public static final int MENU_ITEM_SOLVE = Menu.FIRST + 9;
+    public static final int MENU_ITEM_HINT = Menu.FIRST + 10;
 
     private static final int DIALOG_RESTART = 1;
     private static final int DIALOG_WELL_DONE = 2;
@@ -300,7 +301,9 @@ public class SudokuPlayActivity extends AppCompatActivity {
                 .setIcon(R.drawable.ic_undo);
 
         if (mFillInNotesEnabled) {
-            menu.add(0, MENU_ITEM_FILL_IN_NOTES, 1, R.string.fill_in_notes)
+            menu.add(1, MENU_ITEM_FILL_IN_NOTES, 1, R.string.fill_in_notes)
+                    .setIcon(R.drawable.ic_edit_grey);
+            menu.add(1, MENU_ITEM_FILL_IN_SNYDER_NOTES, 1, R.string.fill_in_snyder_notes)
                     .setIcon(R.drawable.ic_edit_grey);
         }
 
@@ -348,6 +351,7 @@ public class SudokuPlayActivity extends AppCompatActivity {
             menu.findItem(MENU_ITEM_CLEAR_ALL_NOTES).setEnabled(true);
             if (mFillInNotesEnabled) {
                 menu.findItem(MENU_ITEM_FILL_IN_NOTES).setEnabled(true);
+                menu.findItem(MENU_ITEM_FILL_IN_SNYDER_NOTES).setEnabled(true);
             }
             menu.findItem(MENU_ITEM_UNDO).setEnabled(mSudokuGame.hasSomethingToUndo());
             menu.findItem(MENU_ITEM_UNDO_TO_CHECKPOINT).setEnabled(mSudokuGame.hasUndoCheckpoint());
@@ -355,6 +359,7 @@ public class SudokuPlayActivity extends AppCompatActivity {
             menu.findItem(MENU_ITEM_CLEAR_ALL_NOTES).setEnabled(false);
             if (mFillInNotesEnabled) {
                 menu.findItem(MENU_ITEM_FILL_IN_NOTES).setEnabled(false);
+                menu.findItem(MENU_ITEM_FILL_IN_SNYDER_NOTES).setEnabled(false);
             }
             menu.findItem(MENU_ITEM_UNDO).setEnabled(false);
             menu.findItem(MENU_ITEM_UNDO_TO_CHECKPOINT).setEnabled(false);
@@ -376,6 +381,9 @@ public class SudokuPlayActivity extends AppCompatActivity {
                 return true;
             case MENU_ITEM_FILL_IN_NOTES:
                 mSudokuGame.fillInNotes();
+                return true;
+            case MENU_ITEM_FILL_IN_SNYDER_NOTES:
+                mSudokuGame.fillInSnyderNotes();
                 return true;
             case MENU_ITEM_UNDO:
                 mSudokuGame.undo();

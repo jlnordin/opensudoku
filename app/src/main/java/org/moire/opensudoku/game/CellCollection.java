@@ -280,6 +280,31 @@ public class CellCollection {
     }
 
     /**
+     * Fills in notes where there are only two possibilities within a given box (sector).
+     * This is a destructive operation in that the existing notes are overwritten.
+     */
+    public void fillInSnyderNotes() {
+        fillInNotes();
+
+        for (int sector = 0; sector < mSectors.length; sector++) {
+            int[] countOfNotesPerNumberInSector = new int[SUDOKU_SIZE];
+            for (Cell cell : mSectors[sector].getCells()) {
+                for (int note : cell.getNote().getNotedNumbers()) {
+                    countOfNotesPerNumberInSector[note - 1]++;
+                }
+            }
+
+            for (int note = 0; note < countOfNotesPerNumberInSector.length; note++) {
+                if (countOfNotesPerNumberInSector[note] >= 2) {
+                    for (Cell cell : mSectors[sector].getCells()) {
+                        cell.setNote(cell.getNote().removeNumber(note + 1));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Returns how many times each value is used in <code>CellCollection</code>.
      * Returns map with entry for each value.
      *

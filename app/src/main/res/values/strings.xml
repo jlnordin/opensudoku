@@ -328,4 +328,6 @@
     <string name="puzzle_solvable">This puzzle has a solution.</string>
 
     <string name="copy_from_existing_theme">Copy from existing theme…</string>
+
+    <string name="fill_in_snyder_notes">Fill in Snyder notes</string>
 </resources>
