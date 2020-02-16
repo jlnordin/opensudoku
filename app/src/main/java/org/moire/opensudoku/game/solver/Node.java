@@ -1,4 +1,4 @@
-package org.moire.opensudoku.game;
+package org.moire.opensudoku.game.solver;
 
 public class Node {
     Node left, right, up, down;

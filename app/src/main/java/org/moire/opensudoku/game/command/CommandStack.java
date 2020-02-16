@@ -2,7 +2,7 @@ package org.moire.opensudoku.game.command;
 
 import org.moire.opensudoku.game.Cell;
 import org.moire.opensudoku.game.CellCollection;
-import org.moire.opensudoku.game.SudokuSolver;
+import org.moire.opensudoku.game.solver.SudokuSolver;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -116,9 +116,7 @@ public class CommandStack {
     }
 
     public void undoToSolvableState() {
-        SudokuSolver solver = new SudokuSolver();
-        solver.setPuzzle(mCells);
-        ArrayList<int[]> finalValues = solver.solve();
+        ArrayList<int[]> finalValues = SudokuSolver.solve(mCells);
 
         while (!mCommandStack.empty() && hasMistakes(finalValues)) {
             mCommandStack.pop().undo();

@@ -1,7 +1,7 @@
-package org.moire.opensudoku.game;
-
+package org.moire.opensudoku.game.solver;
 
 import java.util.ArrayList;
+import org.moire.opensudoku.game.*;
 
 public class SudokuSolver {
 
@@ -16,17 +16,25 @@ public class SudokuSolver {
     private Node mHead;
     private ArrayList<Node> mSolution;
 
-    public SudokuSolver() {
+    private SudokuSolver() {
         initializeConstraintMatrix();
         initializeLinkedList();
     }
 
     /* ---------------PUBLIC FUNCTIONS--------------- */
+    public static ArrayList<int[]> solve(CellCollection cells)
+    {
+        SudokuSolver solver = new SudokuSolver();
+        solver.setPuzzle(cells);
+        return solver.solve();
+    }
+
+    /* ---------------PRIVATE HELPER FUNCTIONS--------------- */
 
     /**
      * Modifies linked list based on the original state of the board
      */
-    public void setPuzzle(CellCollection mCells) {
+    private void setPuzzle(CellCollection mCells) {
         Cell[][] board = mCells.getCells();
 
         for (int row = 0; row < 9; row++) {
@@ -48,7 +56,7 @@ public class SudokuSolver {
         }
     }
 
-    public ArrayList<int[]> solve() {
+    private ArrayList<int[]> solve() {
         mSolution = new ArrayList<>();
         mSolution = DLX();
 

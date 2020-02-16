@@ -34,6 +34,7 @@ import org.moire.opensudoku.game.command.EditCellNoteCommand;
 import org.moire.opensudoku.game.command.FillInNotesCommand;
 import org.moire.opensudoku.game.command.SetCellValueAndRemoveNotesCommand;
 import org.moire.opensudoku.game.command.SetCellValueCommand;
+import org.moire.opensudoku.game.solver.SudokuSolver;
 
 public class SudokuGame {
 
@@ -48,7 +49,8 @@ public class SudokuGame {
     private long mLastPlayed;
     private String mNote;
     private CellCollection mCells;
-    private SudokuSolver mSolver;
+    private ArrayList<int[]> mSolutionValues; // list of (row, column, value) triples
+    //private SudokuSolver mSolver;
     private boolean mUsedSolver = false;
     private boolean mRemoveNotesOnEntry = false;
 
@@ -159,6 +161,7 @@ public class SudokuGame {
     public void setCells(CellCollection cells) {
         mCells = cells;
         validate();
+        mSolutionValues = SudokuSolver.solve(cells);
         mCommandStack = new CommandStack(mCells);
     }
 
@@ -301,10 +304,7 @@ public class SudokuGame {
      * Checks if a solution to the puzzle exists
      */
     public boolean isSolvable () {
-        mSolver = new SudokuSolver();
-        mSolver.setPuzzle(mCells);
-        ArrayList<int[]> finalValues = mSolver.solve();
-        return !finalValues.isEmpty();
+        return !mSolutionValues.isEmpty();
     }
 
     /**
@@ -312,10 +312,7 @@ public class SudokuGame {
      */
     public void solve() {
         mUsedSolver = true;
-        mSolver = new SudokuSolver();
-        mSolver.setPuzzle(mCells);
-        ArrayList<int[]> finalValues = mSolver.solve();
-        for (int[] rowColVal : finalValues) {
+        for (int[] rowColVal : mSolutionValues) {
             int row = rowColVal[0];
             int col = rowColVal[1];
             int val = rowColVal[2];
@@ -332,13 +329,9 @@ public class SudokuGame {
      * Solves puzzle and fills in correct value for selected cell
      */
     public void solveCell(Cell cell) {
-        mSolver = new SudokuSolver();
-        mSolver.setPuzzle(mCells);
-        ArrayList<int[]> finalValues = mSolver.solve();
-
         int row = cell.getRowIndex();
         int col = cell.getColumnIndex();
-        for (int[] rowColVal : finalValues) {
+        for (int[] rowColVal : mSolutionValues) {
             if (rowColVal[0] == row && rowColVal[1] == col) {
                 int val = rowColVal[2];
                 this.setCellValue(cell, val);
