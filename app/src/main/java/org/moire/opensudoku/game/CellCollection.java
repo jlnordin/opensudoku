@@ -563,4 +563,9 @@ public class CellCollection {
          */
         void onChange();
     }
+
+    public CellCollection clone() {
+        String data = serialize();
+        return CellCollection.deserialize(data);
+    }
 }
