@@ -75,10 +75,10 @@ public abstract class InputMethod {
         if (mInputMethodView == null) {
             mInputMethodView = createControlPanelView();
             View switchModeView = mInputMethodView.findViewById(R.id.switch_input_mode);
-            Button switchModeButton = (Button) switchModeView;
-            switchModeButton.setText(getAbbrName());
-            //switchModeButton.getBackground().setColorFilter(
-            //        new LightingColorFilter(Color.parseColor("#00695c"), 0));
+            if (switchModeView != null) {
+                Button switchModeButton = (Button) switchModeView;
+                switchModeButton.setText(getAbbrName());
+            }
             onControlPanelCreated(mInputMethodView);
         }
 

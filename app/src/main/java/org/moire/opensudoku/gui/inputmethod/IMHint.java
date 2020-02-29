@@ -44,6 +44,7 @@ public class IMHint extends InputMethod {
     @Override
     protected void onCellTapped(Cell cell) {
         mSelectedCell = cell;
+        mBoard.hideTouchedCellHint();
     }
 
     @Override
@@ -63,17 +64,17 @@ public class IMHint extends InputMethod {
 
     @Override
     public int getNameResID() {
-        return R.string.popup;
+        return R.string.hint;
     }
 
     @Override
     public int getHelpResID() {
-        return R.string.im_popup_hint;
+        return R.string.im_hint_help;
     }
 
     @Override
     public String getAbbrName() {
-        return mContext.getString(R.string.popup_abbr);
+        return mContext.getString(R.string.hint);
     }
 
     @Override

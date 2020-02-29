@@ -374,4 +374,16 @@
     <string name="show_sudoku_lists_on_startup_summary">Show the sudoku lists on startup and skip the title screen.</string>
     <string name="show_sudoku_lists_on_startup_title">Show sudoku lists on startup</string>
     <string name="app_startup_category">App Startup</string>
+
+    <!-- Strings added/changed in 3.4.0 -->
+    <string name="apply_hint">Apply Hint</string>
+    <string name="step_n_of_total">Step %1$d / %2$d</string> <!-- Step [current] / [total] -->
+    <string name="previous_step">Previous Step</string>
+    <string name="next_step">Next Step</string>
+    <string name="im_hint_help">
+        You\'re now in <i>Hint</i> mode.
+        \n\nSelect "Next Step" and "Previous Step" to see a step-by-step explanation of the next logical deduction.
+        \n\nSelect "Apply Hint" to apply the suggested hint steps to the current puzzle.
+        \n\nYou can use the "Close" button to switch back to the previous input mode.\n
+    </string>
 </resources>

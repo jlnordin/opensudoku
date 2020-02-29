@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:text="Step 1 / 5"/>
+            android:text="@string/step_n_of_total"/>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="horizontal"
@@ -35,16 +35,18 @@
             android:layout_weight="0">
 
             <Button
+                android:id="@+id/button_previous_step"
+                android:text="@string/previous_step"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Previous Step"/>
+                android:layout_weight="1"/>
 
             <Button
+                android:id="@+id/button_next_step"
+                android:text="@string/next_step"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Next Step"/>
+                android:layout_weight="1"/>
 
         </LinearLayout>
 
@@ -57,17 +59,19 @@
         android:layout_weight="1">
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Apply Hint"/>
-
-        <Button
-            android:id="@+id/switch_input_mode"
+            android:id="@+id/button_apply_hint"
+            android:text="@string/apply_hint"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             style="@style/Widget.AppCompat.Button.Colored"/>
+
+        <Button
+            android:id="@+id/button_close"
+            android:text="@string/close"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 

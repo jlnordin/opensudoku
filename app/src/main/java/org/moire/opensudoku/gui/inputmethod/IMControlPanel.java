@@ -238,8 +238,17 @@ public class IMControlPanel extends LinearLayout {
         InputMethod im = mInputMethods.get(methodID);
         if (!im.isInputMethodViewCreated()) {
             View controlPanel = im.getInputMethodView();
+
             Button switchModeButton = controlPanel.findViewById(R.id.switch_input_mode);
-            switchModeButton.setOnClickListener(mSwitchModeListener);
+            if (switchModeButton != null) {
+                switchModeButton.setOnClickListener(mSwitchModeListener);
+            }
+
+            Button closeButton = controlPanel.findViewById(R.id.button_close);
+            if (closeButton != null) {
+                closeButton.setOnClickListener(mSwitchModeListener);
+            }
+
             this.addView(controlPanel, LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
         }
     }
