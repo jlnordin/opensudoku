@@ -24,7 +24,6 @@ public class StepByStepSolver {
     }
 
     static public ArrayList<AbstractSolutionStep> getAllSolutionSteps(CellCollection cells) {
-
         CellCollection copyOfCells = cells.clone();
         ArrayList<AbstractSolutionStep> solutionSteps = new ArrayList<AbstractSolutionStep>();
         CommandStack commands = new CommandStack(copyOfCells);
