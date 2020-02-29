@@ -48,6 +48,7 @@ import org.moire.opensudoku.game.SudokuGame;
 import org.moire.opensudoku.game.SudokuGame.OnPuzzleSolvedListener;
 import org.moire.opensudoku.gui.inputmethod.IMControlPanel;
 import org.moire.opensudoku.gui.inputmethod.IMControlPanelStatePersister;
+import org.moire.opensudoku.gui.inputmethod.IMHint;
 import org.moire.opensudoku.gui.inputmethod.IMNumpad;
 import org.moire.opensudoku.gui.inputmethod.IMPopup;
 import org.moire.opensudoku.gui.inputmethod.IMSingleNumber;
@@ -102,6 +103,7 @@ public class SudokuPlayActivity extends ThemedActivity {
     private IMPopup mIMPopup;
     private IMSingleNumber mIMSingleNumber;
     private IMNumpad mIMNumpad;
+    private IMHint mIMHint;
 
     private boolean mShowTime = true;
     private GameTimer mGameTimer;
@@ -179,6 +181,7 @@ public class SudokuPlayActivity extends ThemedActivity {
         mIMPopup = mIMControlPanel.getInputMethod(IMControlPanel.INPUT_METHOD_POPUP);
         mIMSingleNumber = mIMControlPanel.getInputMethod(IMControlPanel.INPUT_METHOD_SINGLE_NUMBER);
         mIMNumpad = mIMControlPanel.getInputMethod(IMControlPanel.INPUT_METHOD_NUMPAD);
+        mIMHint = mIMControlPanel.getInputMethod(IMControlPanel.INPUT_METHOD_HINT);
 
         Cell cell = mSudokuGame.getLastChangedCell();
         if (cell != null && !mSudokuBoard.isReadOnly())
@@ -242,6 +245,7 @@ public class SudokuPlayActivity extends ThemedActivity {
         mIMSingleNumber.setmOnSelectedNumberChangedListener(onSelectedNumberChangedListener);
         mIMNumpad.setHighlightCompletedValues(gameSettings.getBoolean("highlight_completed_values", true));
         mIMNumpad.setShowNumberTotals(gameSettings.getBoolean("show_number_totals", false));
+        mIMHint.setEnabled(true);
 
         mIMControlPanel.activateFirstInputMethod(); // make sure that some input method is activated
         mIMControlPanelStatePersister.restoreState(mIMControlPanel);

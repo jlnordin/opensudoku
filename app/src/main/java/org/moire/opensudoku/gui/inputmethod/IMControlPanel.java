@@ -44,6 +44,7 @@ public class IMControlPanel extends LinearLayout {
     public static final int INPUT_METHOD_POPUP = 0;
     public static final int INPUT_METHOD_SINGLE_NUMBER = 1;
     public static final int INPUT_METHOD_NUMPAD = 2;
+    public static final int INPUT_METHOD_HINT = 3;
 
     private Context mContext;
     private SudokuBoardView mBoard;
@@ -219,6 +220,7 @@ public class IMControlPanel extends LinearLayout {
             addInputMethod(INPUT_METHOD_POPUP, new IMPopup());
             addInputMethod(INPUT_METHOD_SINGLE_NUMBER, new IMSingleNumber());
             addInputMethod(INPUT_METHOD_NUMPAD, new IMNumpad());
+            addInputMethod(INPUT_METHOD_HINT, new IMHint());
         }
     }
 
