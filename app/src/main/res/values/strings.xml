@@ -382,8 +382,8 @@
     <string name="next_step">Next Step</string>
     <string name="im_hint_help">
         You\'re now in <i>Hint</i> mode.
-        \n\nSelect "Next Step" and "Previous Step" to see a step-by-step explanation of the next logical deduction.
-        \n\nSelect "Apply Hint" to apply the suggested hint steps to the current puzzle.
-        \n\nYou can use the "Close" button to switch back to the previous input mode.\n
+        \n\nSelect <b>Next Step</b> and <b>Previous Step</b> to see a step-by-step explanation of the next logical deduction.
+        \n\nSelect <b>Apply Hint</b> to apply the suggested hint steps to the current puzzle.
+        \n\nYou can use the <b>Close</b> button to switch back to the previous input mode.\n
     </string>
 </resources>
