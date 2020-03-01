@@ -10,19 +10,29 @@
         android:layout_weight="4"
         android:layout_margin="5dp">
 
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="@string/hint"
+            style="@style/TextAppearance.AppCompat.Title"/>
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
             <TextView
+                android:id="@+id/explanation"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="This \n\n\n\n\n\n\n\n\n!!!\n\n\n\n\n\n\n\n\n\n\n\n\nview shows step-by-step instructions on how to solve the next part of the Sudoku."/>
+                android:text="This \n\n\n\n\n\n\n\n\n!!!\n\n\n\n\n\n\n\n\n\n\n\n\nview shows step-by-step instructions on how to solve the next part of the Sudoku." />
 
         </ScrollView>
 
         <TextView
+            android:id="@+id/steps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"

@@ -7,17 +7,17 @@ import org.moire.opensudoku.game.command.SetCellValueCommand;
 
 import java.util.ArrayList;
 
-public class BruteForceSolutionStep extends AbstractSolutionStep {
+public class BruteForceTechnique extends AbstractTechnique {
 
-    public static BruteForceSolutionStep create(CellCollection cells, ArrayList<int[]> solution) {
-        return new BruteForceSolutionStep(cells, solution);
+    public static BruteForceTechnique create(CellCollection cells, ArrayList<int[]> solution) {
+        return new BruteForceTechnique(cells, solution);
     }
 
     int mRow = 0;
     int mColumn = 0;
     int mValue = 0;
 
-    BruteForceSolutionStep(CellCollection cells, ArrayList<int[]> solution) {
+    BruteForceTechnique(CellCollection cells, ArrayList<int[]> solution) {
         for (int[] rowColVal : solution) {
             int row = rowColVal[0];
             int col = rowColVal[1];
@@ -31,10 +31,22 @@ public class BruteForceSolutionStep extends AbstractSolutionStep {
                 break;
             }
         }
+
+        mExplanationSteps.add(new Explanation(
+                "This puzzle is really hard!\n\nThe best hint is to simply reveal the correct number for one of the cells.",
+                (board) -> {}));
+        mExplanationSteps.add(new Explanation(
+                String.format("The correct number for row %d, column %d is %d.", mRow + 1, mColumn + 1, mValue),
+                (board) -> {}));
     }
 
     @Override
     public AbstractCellCommand getCommand(CellCollection cells) {
         return new SetCellValueCommand(cells.getCell(mRow, mColumn), mValue);
+    }
+
+    @Override
+    public String getName() {
+        return "Brute Force";
     }
 }

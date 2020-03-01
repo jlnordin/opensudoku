@@ -23,17 +23,25 @@ package org.moire.opensudoku.gui.inputmethod;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import org.moire.opensudoku.R;
 import org.moire.opensudoku.game.Cell;
+import org.moire.opensudoku.game.solver.AbstractTechnique;
+import org.moire.opensudoku.game.solver.StepByStepSolver;
 
 public class IMHint extends InputMethod {
 
-    private Cell mSelectedCell;
+    Cell mSelectedCell;
+    AbstractTechnique mTechnique;
 
     @Override
     protected void onActivated() {
         mBoard.setAutoHideTouchedCellHint(false);
+
+        mTechnique = StepByStepSolver.getNextTechnique(mBoard.getCells());
+        update();
     }
 
     @Override
@@ -77,9 +85,42 @@ public class IMHint extends InputMethod {
         return mContext.getString(R.string.hint);
     }
 
+    Button mPreviousStepButton;
+    Button mNextStepButton;
+    TextView mTitleText;
+    TextView mExplanationText;
+    TextView mStepsText;
+
     @Override
     protected View createControlPanelView() {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        return inflater.inflate(R.layout.im_hint, null);
+        View controlPanel = inflater.inflate(R.layout.im_hint, null);
+        mPreviousStepButton = controlPanel.findViewById(R.id.button_previous_step);
+        mNextStepButton = controlPanel.findViewById(R.id.button_next_step);
+        mTitleText = controlPanel.findViewById(R.id.title);
+        mExplanationText = controlPanel.findViewById(R.id.explanation);
+        mStepsText = controlPanel.findViewById(R.id.steps);
+
+        mPreviousStepButton.setOnClickListener((view) -> {
+            mTechnique.showPreviousExplanation(mBoard);
+            update();
+        });
+
+        mNextStepButton.setOnClickListener((view) -> {
+            mTechnique.showNextExplanation(mBoard);
+            update();
+        });
+
+        return controlPanel;
+    }
+
+    void update() {
+        mTechnique.showCurrentExplanation(mBoard);
+
+        mPreviousStepButton.setEnabled(!mTechnique.isFirstStep());
+        mNextStepButton.setEnabled(!mTechnique.isLastStep());
+        mTitleText.setText(mTechnique.getName());
+        mExplanationText.setText(mTechnique.getCurrentExplanationText());
+        mStepsText.setText(mContext.getString(R.string.step_n_of_total, mTechnique.getCurrentStep() + 1, mTechnique.getTotalSteps()));
     }
 }

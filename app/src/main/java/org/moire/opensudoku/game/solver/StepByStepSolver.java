@@ -11,34 +11,34 @@ public class StepByStepSolver {
         return cells.validate() && cells.isCompleted();
     }
 
-    static public AbstractSolutionStep getNextStep(CellCollection cells) {
-        return BruteForceSolutionStep.create(cells, SudokuSolver.solve(cells));
+    static public AbstractTechnique getNextTechnique(CellCollection cells) {
+        return BruteForceTechnique.create(cells, SudokuSolver.solve(cells));
     }
 
-    static public AbstractSolutionStep getNextStep(CellCollection cells, ArrayList<int[]> solution) {
+    static public AbstractTechnique getNextTechnique(CellCollection cells, ArrayList<int[]> solution) {
         if (isSolved(cells)) {
             return null;
         } else {
-            return BruteForceSolutionStep.create(cells, solution);
+            return BruteForceTechnique.create(cells, solution);
         }
     }
 
-    static public ArrayList<AbstractSolutionStep> getAllSolutionSteps(CellCollection cells) {
+    static public ArrayList<AbstractTechnique> getAllSolutionTechniques(CellCollection cells) {
         CellCollection copyOfCells = cells.clone();
-        ArrayList<AbstractSolutionStep> solutionSteps = new ArrayList<AbstractSolutionStep>();
+        ArrayList<AbstractTechnique> solutionTechniques = new ArrayList<AbstractTechnique>();
         CommandStack commands = new CommandStack(copyOfCells);
 
         ArrayList<int[]> solution = SudokuSolver.solve(cells);
         while (true) {
-            AbstractSolutionStep nextStep = getNextStep(copyOfCells, solution);
-            if (nextStep == null) {
+            AbstractTechnique nextTechnique = getNextTechnique(copyOfCells, solution);
+            if (nextTechnique == null) {
                 break;
             }
 
-            solutionSteps.add(nextStep);
-            commands.execute(nextStep.getCommand(copyOfCells));
+            solutionTechniques.add(nextTechnique);
+            commands.execute(nextTechnique.getCommand(copyOfCells));
         }
 
-        return solutionSteps;
+        return solutionTechniques;
     }
 }
