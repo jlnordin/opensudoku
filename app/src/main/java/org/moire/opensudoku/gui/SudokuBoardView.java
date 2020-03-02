@@ -37,6 +37,7 @@ import org.moire.opensudoku.game.CellNote;
 import org.moire.opensudoku.game.SudokuGame;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Sudoku board widget.
@@ -67,9 +68,34 @@ public class SudokuBoardView extends View {
     public enum HighlightMode {
         NONE,
         NUMBERS,
-        NUMBERS_AND_NOTES
+        NUMBERS_AND_NOTES,
+        OVERRIDE
     };
     private HighlightMode mHighlightSimilarCells = HighlightMode.NONE;
+
+    public class HighlightOptions {
+        boolean mHighlightCell;
+        boolean[] mHighlightNote;
+
+        public HighlightOptions() {
+            mHighlightCell = true;
+            mHighlightNote = new boolean[9];
+        }
+
+        public boolean isCellHighlighted() {
+            return mHighlightCell;
+        }
+
+        public void highlightNote(int note) {
+            mHighlightNote[note] = true;
+        }
+
+        public boolean isNoteHighlighted(int note) {
+            return mHighlightNote[note];
+        }
+    }
+    private Map<Cell, HighlightOptions> mHighlightCellOverrides;
+    private boolean mDimCellsThatAreNotHighlighted = false;
 
     private SudokuGame mGame;
     private CellCollection mCells;
@@ -288,6 +314,26 @@ public class SudokuBoardView extends View {
 
     public void setHighlightSimilarCell(HighlightMode highlightSimilarCell) {
         mHighlightSimilarCells = highlightSimilarCell;
+        if (mHighlightSimilarCells != HighlightMode.OVERRIDE) {
+            mHighlightCellOverrides = null;
+        }
+    }
+
+    public void setHighlightCellOverrides(Map<Cell, HighlightOptions> overrides) {
+        mHighlightSimilarCells = HighlightMode.OVERRIDE;
+        mHighlightCellOverrides = overrides;
+    }
+
+    public HighlightMode getHighlightSimilarCells() {
+        return mHighlightSimilarCells;
+    }
+
+    public void setDimCellsThatAreNotHighlighted(boolean dim) {
+        mDimCellsThatAreNotHighlighted = dim;
+    }
+
+    public boolean getDimCellsThatAreNotHighlighted() {
+        return mDimCellsThatAreNotHighlighted;
     }
 
     public void setHighlightedValue(int value) {
@@ -455,6 +501,12 @@ public class SudokuBoardView extends View {
                         (mHighlightedValue == cell.getValue() ||
                                 (cell.getNote().getNotedNumbers().contains(mHighlightedValue)) &&
                                 cell.getValue() == 0);
+                break;
+            }
+
+            case OVERRIDE: {
+                shouldHighlightCell = mHighlightCellOverrides != null && mHighlightCellOverrides.containsKey(cell);
+                break;
             }
         }
 

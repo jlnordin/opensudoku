@@ -30,15 +30,38 @@ import org.moire.opensudoku.R;
 import org.moire.opensudoku.game.Cell;
 import org.moire.opensudoku.game.solver.AbstractTechnique;
 import org.moire.opensudoku.game.solver.StepByStepSolver;
+import org.moire.opensudoku.gui.SudokuBoardView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class IMHint extends InputMethod {
 
     Cell mSelectedCell;
     AbstractTechnique mTechnique;
 
+    SudokuBoardView.HighlightMode mSavedHighlightMode;
+    boolean mSavedHighlightTouchedCell;
+    boolean mSavedHighlightWrongVals;
+    boolean mSavedReadOnly;
+    HashMap<Cell, SudokuBoardView.HighlightOptions> mHighlightOverrides;
+
+    public IMHint() {
+        mHighlightOverrides = new HashMap<Cell, SudokuBoardView.HighlightOptions>();
+    }
+
     @Override
     protected void onActivated() {
-        mBoard.setAutoHideTouchedCellHint(false);
+        mSavedHighlightMode = mBoard.getHighlightSimilarCells();
+        mSavedHighlightTouchedCell = mBoard.getHighlightTouchedCell();
+        mSavedHighlightWrongVals = mBoard.getHighlightWrongVals();
+        mSavedReadOnly = mBoard.isReadOnly();
+
+        mBoard.setHighlightCellOverrides(mHighlightOverrides);
+        mBoard.setHighlightTouchedCell(false);
+        mBoard.setHighlightWrongVals(false);
+        mBoard.setReadOnly(true);
+        mBoard.setDimCellsThatAreNotHighlighted(true);
 
         mTechnique = StepByStepSolver.getNextTechnique(mBoard.getCells());
         update();
@@ -46,7 +69,11 @@ public class IMHint extends InputMethod {
 
     @Override
     protected void onDeactivated() {
-        mBoard.setAutoHideTouchedCellHint(true);
+        mBoard.setHighlightSimilarCell(mSavedHighlightMode);
+        mBoard.setHighlightTouchedCell(mSavedHighlightTouchedCell);
+        mBoard.setHighlightWrongVals(mSavedHighlightWrongVals);
+        mBoard.setReadOnly(mSavedReadOnly);
+        mBoard.setDimCellsThatAreNotHighlighted(false);
     }
 
     @Override
