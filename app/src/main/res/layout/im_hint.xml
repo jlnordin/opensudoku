@@ -26,8 +26,7 @@
             <TextView
                 android:id="@+id/explanation"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="This \n\n\n\n\n\n\n\n\n!!!\n\n\n\n\n\n\n\n\n\n\n\n\nview shows step-by-step instructions on how to solve the next part of the Sudoku." />
+                android:layout_height="match_parent"/>
 
         </ScrollView>
 
@@ -66,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="0">
 
         <Button
             android:id="@+id/button_apply_hint"

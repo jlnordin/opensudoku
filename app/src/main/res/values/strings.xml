@@ -386,4 +386,7 @@
         \n\nSelect <b>Apply Hint</b> to apply the suggested hint steps to the current puzzle.
         \n\nYou can use the <b>Close</b> button to switch back to the previous input mode.\n
     </string>
+    <string name="technique_brute_force_title">Brute Force</string>
+    <string name="technique_brute_force_step_1">This puzzle is really hard!\n\nThe best hint is to simply reveal the correct number for one of the cells.</string>
+    <string name="technique_brute_force_step_2">The correct number for row %d, column %d is %d.</string>
 </resources>

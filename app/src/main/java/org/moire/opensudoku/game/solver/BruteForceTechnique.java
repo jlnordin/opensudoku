@@ -1,5 +1,8 @@
 package org.moire.opensudoku.game.solver;
 
+import android.content.Context;
+
+import org.moire.opensudoku.R;
 import org.moire.opensudoku.game.Cell;
 import org.moire.opensudoku.game.CellCollection;
 import org.moire.opensudoku.game.command.AbstractCellCommand;
@@ -10,15 +13,17 @@ import java.util.ArrayList;
 
 public class BruteForceTechnique extends AbstractTechnique {
 
-    public static BruteForceTechnique create(CellCollection cells, ArrayList<int[]> solution) {
-        return new BruteForceTechnique(cells, solution);
+    public static BruteForceTechnique create(Context context, CellCollection cells, ArrayList<int[]> solution) {
+        return new BruteForceTechnique(context, cells, solution);
     }
 
     int mRow = 0;
     int mColumn = 0;
     int mValue = 0;
 
-    BruteForceTechnique(CellCollection cells, ArrayList<int[]> solution) {
+    BruteForceTechnique(Context context, CellCollection cells, ArrayList<int[]> solution) {
+        super(context);
+
         for (int[] rowColVal : solution) {
             int row = rowColVal[0];
             int col = rowColVal[1];
@@ -34,13 +39,13 @@ public class BruteForceTechnique extends AbstractTechnique {
         }
 
         mExplanationSteps.add(new Explanation(
-                "This puzzle is really hard!\n\nThe best hint is to simply reveal the correct number for one of the cells.",
+                context.getString(R.string.technique_brute_force_step_1),
                 (board) -> {
                     mHighlightOverrides.clear();
                     board.invalidate();
                 }));
         mExplanationSteps.add(new Explanation(
-                String.format("The correct number for row %d, column %d is %d.", mRow + 1, mColumn + 1, mValue),
+                context.getString(R.string.technique_brute_force_step_2, mRow + 1, mColumn + 1, mValue),
                 (board) -> {
                     mHighlightOverrides.put(board.getCells().getCell(mRow, mColumn), new HighlightOptions());
                     board.invalidate();
@@ -54,6 +59,6 @@ public class BruteForceTechnique extends AbstractTechnique {
 
     @Override
     public String getName() {
-        return "Brute Force";
+        return  mContext.getString(R.string.technique_brute_force_title);
     }
 }

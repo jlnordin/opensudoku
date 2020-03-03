@@ -1,5 +1,7 @@
 package org.moire.opensudoku.game.solver;
 
+import android.content.Context;
+
 import org.moire.opensudoku.game.Cell;
 import org.moire.opensudoku.game.CellCollection;
 import org.moire.opensudoku.game.command.AbstractCellCommand;
@@ -12,9 +14,11 @@ import java.util.HashMap;
 public abstract class AbstractTechnique {
 
     HashMap<Cell, HighlightOptions> mHighlightOverrides;
+    Context mContext;
 
-    AbstractTechnique() {
+    AbstractTechnique(Context context) {
         mExplanationSteps = new ArrayList<Explanation>();
+        mContext = context;
         mCurrentStep = 0;
         mHighlightOverrides = new HashMap<Cell, HighlightOptions>();
     }

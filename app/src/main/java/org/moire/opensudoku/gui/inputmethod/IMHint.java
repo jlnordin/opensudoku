@@ -60,7 +60,7 @@ public class IMHint extends InputMethod {
         mBoard.setReadOnly(true);
         mBoard.setDimCellsThatAreNotHighlighted(true);
 
-        mTechnique = StepByStepSolver.getNextTechnique(mBoard.getCells());
+        mTechnique = StepByStepSolver.getNextTechnique(mContext, mBoard.getCells());
         update();
     }
 
