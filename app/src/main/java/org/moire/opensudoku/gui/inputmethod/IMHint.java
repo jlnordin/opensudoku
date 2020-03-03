@@ -44,10 +44,8 @@ public class IMHint extends InputMethod {
     boolean mSavedHighlightTouchedCell;
     boolean mSavedHighlightWrongVals;
     boolean mSavedReadOnly;
-    HashMap<Cell, SudokuBoardView.HighlightOptions> mHighlightOverrides;
 
     public IMHint() {
-        mHighlightOverrides = new HashMap<Cell, SudokuBoardView.HighlightOptions>();
     }
 
     @Override
@@ -57,7 +55,6 @@ public class IMHint extends InputMethod {
         mSavedHighlightWrongVals = mBoard.getHighlightWrongVals();
         mSavedReadOnly = mBoard.isReadOnly();
 
-        mBoard.setHighlightCellOverrides(mHighlightOverrides);
         mBoard.setHighlightTouchedCell(false);
         mBoard.setHighlightWrongVals(false);
         mBoard.setReadOnly(true);

@@ -35,6 +35,7 @@ import org.moire.opensudoku.game.Cell;
 import org.moire.opensudoku.game.CellCollection;
 import org.moire.opensudoku.game.CellNote;
 import org.moire.opensudoku.game.SudokuGame;
+import org.moire.opensudoku.utils.ThemeUtils;
 
 import java.util.Collection;
 import java.util.Map;
@@ -72,28 +73,6 @@ public class SudokuBoardView extends View {
         OVERRIDE
     };
     private HighlightMode mHighlightSimilarCells = HighlightMode.NONE;
-
-    public class HighlightOptions {
-        boolean mHighlightCell;
-        boolean[] mHighlightNote;
-
-        public HighlightOptions() {
-            mHighlightCell = true;
-            mHighlightNote = new boolean[9];
-        }
-
-        public boolean isCellHighlighted() {
-            return mHighlightCell;
-        }
-
-        public void highlightNote(int note) {
-            mHighlightNote[note] = true;
-        }
-
-        public boolean isNoteHighlighted(int note) {
-            return mHighlightNote[note];
-        }
-    }
     private Map<Cell, HighlightOptions> mHighlightCellOverrides;
     private boolean mDimCellsThatAreNotHighlighted = false;
 
@@ -562,6 +541,22 @@ public class SudokuBoardView extends View {
         }
     }
 
+    void drawDimmedCellForeground(Canvas canvas, Cell cell, float cellLeft, float cellTop, float cellRight, float cellBottom) {
+        if (mHighlightSimilarCells == HighlightMode.OVERRIDE &&
+                mHighlightCellOverrides != null &&
+                !mHighlightCellOverrides.containsKey(cell)) {
+            boolean isLightTheme = ThemeUtils.isLightTheme(ThemeUtils.getCurrentThemeFromPreferences(getContext()));
+            Paint dimmingColor = new Paint();
+            if (isLightTheme) {
+                dimmingColor.setColor(Color.WHITE);
+            } else {
+                dimmingColor.setColor(Color.BLACK);
+            }
+            dimmingColor.setAlpha(0xC0);
+            canvas.drawRect(cellLeft, cellTop, cellRight, cellBottom, dimmingColor);
+        }
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -601,8 +596,11 @@ public class SudokuBoardView extends View {
                     drawHighlightedCellBackground(canvas, cell, cellLeft, cellTop, cellRight, cellBottom);
                     drawSelectedCellBackground(canvas, cell, cellLeft, cellTop, cellRight, cellBottom);
                     drawTouchedCellBackground(canvas, cell, cellLeft, cellTop, cellRight, cellBottom);
+
                     drawCellNumbers(canvas, cell, cellLeft, cellTop);
                     drawCellNotes(canvas, cell, cellLeft, cellTop);
+
+                    drawDimmedCellForeground(canvas, cell, cellLeft, cellTop, cellRight, cellBottom);
                 }
             }
         }

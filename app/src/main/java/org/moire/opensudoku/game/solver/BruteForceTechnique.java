@@ -4,6 +4,7 @@ import org.moire.opensudoku.game.Cell;
 import org.moire.opensudoku.game.CellCollection;
 import org.moire.opensudoku.game.command.AbstractCellCommand;
 import org.moire.opensudoku.game.command.SetCellValueCommand;
+import org.moire.opensudoku.gui.HighlightOptions;
 
 import java.util.ArrayList;
 
@@ -34,10 +35,16 @@ public class BruteForceTechnique extends AbstractTechnique {
 
         mExplanationSteps.add(new Explanation(
                 "This puzzle is really hard!\n\nThe best hint is to simply reveal the correct number for one of the cells.",
-                (board) -> {}));
+                (board) -> {
+                    mHighlightOverrides.clear();
+                    board.invalidate();
+                }));
         mExplanationSteps.add(new Explanation(
                 String.format("The correct number for row %d, column %d is %d.", mRow + 1, mColumn + 1, mValue),
-                (board) -> {}));
+                (board) -> {
+                    mHighlightOverrides.put(board.getCells().getCell(mRow, mColumn), new HighlightOptions());
+                    board.invalidate();
+                }));
     }
 
     @Override

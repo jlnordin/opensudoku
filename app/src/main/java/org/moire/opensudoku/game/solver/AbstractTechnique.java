@@ -1,18 +1,22 @@
 package org.moire.opensudoku.game.solver;
 
+import org.moire.opensudoku.game.Cell;
 import org.moire.opensudoku.game.CellCollection;
 import org.moire.opensudoku.game.command.AbstractCellCommand;
+import org.moire.opensudoku.gui.HighlightOptions;
 import org.moire.opensudoku.gui.SudokuBoardView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public abstract class AbstractTechnique {
+
+    HashMap<Cell, HighlightOptions> mHighlightOverrides;
 
     AbstractTechnique() {
         mExplanationSteps = new ArrayList<Explanation>();
         mCurrentStep = 0;
+        mHighlightOverrides = new HashMap<Cell, HighlightOptions>();
     }
 
     public abstract AbstractCellCommand getCommand(CellCollection cells);
@@ -67,20 +71,21 @@ public abstract class AbstractTechnique {
     }
 
     public void showCurrentExplanation(SudokuBoardView board) {
+        board.setHighlightCellOverrides(mHighlightOverrides);
         getCurrentExplanation().show(board);
     }
 
     public void showNextExplanation(SudokuBoardView board) {
         if (mCurrentStep < getTotalSteps() - 1) {
             mCurrentStep++;
-            getCurrentExplanation().show(board);
+            showCurrentExplanation(board);
         }
     }
 
     public void showPreviousExplanation(SudokuBoardView board) {
         if (mCurrentStep > 0) {
             mCurrentStep--;
-            getCurrentExplanation().show(board);
+            showCurrentExplanation(board);
         }
     }
 }
