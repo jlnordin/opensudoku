@@ -169,6 +169,10 @@ public class SudokuGame {
         return mCells;
     }
 
+    public ArrayList<int[]> getSolutionValues() {
+        return mSolutionValues;
+    }
+
     public void setId(long id) {
         mId = id;
     }

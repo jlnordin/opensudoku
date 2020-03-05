@@ -273,7 +273,6 @@
     <string name="used_solver">¡Has usado el solucionador para resolver el puzzle!</string>
     <string name="puzzle_not_solved">Este puzzle no tiene solución.</string>
 
-    <string name="solver_hint">Pista</string>
     <string name="hint_confirm">Esto introducirá el valor correcto en la celda seleccionada. ¿Quieres continuar?</string>
     <string name="cannot_give_hint">No puedes obtener una pista para esa celda.</string>
 

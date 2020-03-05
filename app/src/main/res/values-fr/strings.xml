@@ -254,8 +254,7 @@
     <string name="solve_puzzle_confirm">Voulez-vous vraiment voir la solution?</string>
     <string name="used_solver">Vous avez utilisé le solveur pour voir la solution!</string>
     <string name="puzzle_not_solved">Aucune solution pour ce puzzle.</string>
-    
-    <string name="solver_hint">Indice</string>
+
     <string name="hint_confirm">La valeur correcte de le cellule sélectionnée va être complétée. Voulez-vous continuer?</string>
     <string name="cannot_give_hint">Vous ne pouvez pas obtenir d\'indice pour cette cellule.</string>
     

@@ -60,7 +60,7 @@ public class IMHint extends InputMethod {
         mBoard.setReadOnly(true);
         mBoard.setDimCellsThatAreNotHighlighted(true);
 
-        mTechnique = StepByStepSolver.getNextTechnique(mContext, mBoard.getCells());
+        mTechnique = StepByStepSolver.getNextTechnique(mContext, mBoard.getCells(), mGame.getSolutionValues());
         update();
     }
 
@@ -111,6 +111,8 @@ public class IMHint extends InputMethod {
 
     Button mPreviousStepButton;
     Button mNextStepButton;
+    Button mApplyHintButton;
+    Button mCloseButton;
     TextView mTitleText;
     TextView mExplanationText;
     TextView mStepsText;
@@ -121,6 +123,8 @@ public class IMHint extends InputMethod {
         View controlPanel = inflater.inflate(R.layout.im_hint, null);
         mPreviousStepButton = controlPanel.findViewById(R.id.button_previous_step);
         mNextStepButton = controlPanel.findViewById(R.id.button_next_step);
+        mApplyHintButton = controlPanel.findViewById(R.id.button_apply_hint);
+        mCloseButton = controlPanel.findViewById(R.id.button_close);
         mTitleText = controlPanel.findViewById(R.id.title);
         mExplanationText = controlPanel.findViewById(R.id.explanation);
         mStepsText = controlPanel.findViewById(R.id.steps);
@@ -133,6 +137,11 @@ public class IMHint extends InputMethod {
         mNextStepButton.setOnClickListener((view) -> {
             mTechnique.showNextExplanation(mBoard);
             update();
+        });
+
+        mApplyHintButton.setOnClickListener((view) -> {
+            mGame.getCommandStack().execute(mTechnique.getCommand(mBoard.getCells()));
+            mCloseButton.performClick();
         });
 
         return controlPanel;

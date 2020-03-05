@@ -30,7 +30,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.Display;
 import android.view.Menu;
@@ -52,7 +51,6 @@ import org.moire.opensudoku.gui.inputmethod.IMHint;
 import org.moire.opensudoku.gui.inputmethod.IMNumpad;
 import org.moire.opensudoku.gui.inputmethod.IMPopup;
 import org.moire.opensudoku.gui.inputmethod.IMSingleNumber;
-import org.moire.opensudoku.utils.AndroidUtils;
 import org.moire.opensudoku.utils.ThemeUtils;
 
 public class SudokuPlayActivity extends ThemedActivity {
@@ -72,7 +70,8 @@ public class SudokuPlayActivity extends ThemedActivity {
     public static final int MENU_ITEM_UNDO_TO_CHECKPOINT = Menu.FIRST + 9;
     public static final int MENU_ITEM_UNDO_TO_BEFORE_MISTAKE = Menu.FIRST + 10;
     public static final int MENU_ITEM_SOLVE = Menu.FIRST + 11;
-    public static final int MENU_ITEM_HINT = Menu.FIRST + 12;
+    public static final int MENU_ITEM_SOLVE_SELECTED_CELL = Menu.FIRST + 12;
+    public static final int MENU_ITEM_HINT = Menu.FIRST + 13;
 
     private static final int DIALOG_RESTART = 1;
     private static final int DIALOG_WELL_DONE = 2;
@@ -82,7 +81,7 @@ public class SudokuPlayActivity extends ThemedActivity {
     private static final int DIALOG_SOLVE_PUZZLE = 6;
     private static final int DIALOG_USED_SOLVER = 7;
     private static final int DIALOG_PUZZLE_NOT_SOLVED = 8;
-    private static final int DIALOG_HINT = 9;
+    private static final int DIALOG_SOLVE_SELECTED_CELL = 9;
     private static final int DIALOG_CANNOT_GIVE_HINT = 10;
 
     private static final int REQUEST_SETTINGS = 1;
@@ -245,7 +244,7 @@ public class SudokuPlayActivity extends ThemedActivity {
         mIMSingleNumber.setmOnSelectedNumberChangedListener(onSelectedNumberChangedListener);
         mIMNumpad.setHighlightCompletedValues(gameSettings.getBoolean("highlight_completed_values", true));
         mIMNumpad.setShowNumberTotals(gameSettings.getBoolean("show_number_totals", false));
-        mIMHint.setEnabled(true);
+        mIMHint.setEnabled(false);
 
         mIMControlPanel.activateFirstInputMethod(); // make sure that some input method is activated
         mIMControlPanelStatePersister.restoreState(mIMControlPanel);
@@ -334,7 +333,8 @@ public class SudokuPlayActivity extends ThemedActivity {
         menu.add(0, MENU_ITEM_UNDO_TO_CHECKPOINT, 4, R.string.undo_to_checkpoint);
         menu.add(0, MENU_ITEM_UNDO_TO_BEFORE_MISTAKE, 4, getString(R.string.undo_to_before_mistake));
 
-        menu.add(0, MENU_ITEM_HINT, 5, R.string.solver_hint);
+        menu.add(0, MENU_ITEM_HINT, 5, R.string.hint);
+        menu.add(0, MENU_ITEM_SOLVE_SELECTED_CELL, 5, getString(R.string.solve_selected_cell));
         menu.add(0, MENU_ITEM_SOLVE, 6, R.string.solve_puzzle);
 
         menu.add(0, MENU_ITEM_RESTART, 7, R.string.restart)
@@ -387,7 +387,7 @@ public class SudokuPlayActivity extends ThemedActivity {
             menu.findItem(MENU_ITEM_UNDO_TO_CHECKPOINT).setEnabled(false);
             menu.findItem(MENU_ITEM_UNDO_TO_BEFORE_MISTAKE).setEnabled(false);
             menu.findItem(MENU_ITEM_SOLVE).setEnabled(false);
-            menu.findItem(MENU_ITEM_HINT).setEnabled(false);
+            menu.findItem(MENU_ITEM_SOLVE_SELECTED_CELL).setEnabled(false);
         }
 
         return true;
@@ -436,8 +436,11 @@ public class SudokuPlayActivity extends ThemedActivity {
             case MENU_ITEM_SOLVE:
                 showDialog(DIALOG_SOLVE_PUZZLE);
                 return true;
+            case MENU_ITEM_SOLVE_SELECTED_CELL:
+                showDialog(DIALOG_SOLVE_SELECTED_CELL);
+                return true;
             case MENU_ITEM_HINT:
-                showDialog(DIALOG_HINT);
+                showHintUI();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -486,7 +489,7 @@ public class SudokuPlayActivity extends ThemedActivity {
                             removeDialog(DIALOG_WELL_DONE);
                             MenuItem menuItemSolve = mOptionsMenu.findItem(MENU_ITEM_SOLVE);
                             menuItemSolve.setEnabled(true);
-                            MenuItem menuItemHint = mOptionsMenu.findItem(MENU_ITEM_HINT);
+                            MenuItem menuItemHint = mOptionsMenu.findItem(MENU_ITEM_SOLVE_SELECTED_CELL);
                             menuItemHint.setEnabled(true);
 
                         })
@@ -550,7 +553,7 @@ public class SudokuPlayActivity extends ThemedActivity {
                         .setMessage(R.string.puzzle_not_solved)
                         .setPositiveButton(android.R.string.ok, null)
                         .create();
-            case DIALOG_HINT:
+            case DIALOG_SOLVE_SELECTED_CELL:
                 return new AlertDialog.Builder(this)
                         .setTitle(R.string.app_name)
                         .setMessage(R.string.hint_confirm)
@@ -587,6 +590,12 @@ public class SudokuPlayActivity extends ThemedActivity {
         if (cell != null)
             mSudokuBoard.moveCellSelectionTo(cell.getRowIndex(), cell.getColumnIndex());
     }
+
+    private void showHintUI() {
+        mIMHint.setEnabled(true);
+        mIMControlPanel.activateInputMethod(IMControlPanel.INPUT_METHOD_HINT);
+    }
+
 
     /**
      * Occurs when puzzle is solved.

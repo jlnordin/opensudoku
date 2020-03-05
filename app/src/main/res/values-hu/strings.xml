@@ -299,7 +299,6 @@
     <string name="used_solver">Feladvány megfejtve</string>
     <string name="puzzle_not_solved">A feladvány nem oldható meg!</string>
 
-    <string name="solver_hint">Segítség</string>
     <string name="hint_confirm">A kiválasztott cellában megjelenik a helyes érték. Biztosan ezt szeretnéd?</string>
     <string name="cannot_give_hint">A kiválasztott cellához nem adható segítség.</string>
 

@@ -53,6 +53,7 @@ public class IMControlPanel extends LinearLayout {
 
     private List<InputMethod> mInputMethods = new ArrayList<InputMethod>();
     private int mActiveMethodIndex = -1;
+    private int mPreviouslyActiveMethodIndex = -1;
 
     public IMControlPanel(Context context) {
         super(context);
@@ -136,6 +137,7 @@ public class IMControlPanel extends LinearLayout {
             }
         }
 
+        mPreviouslyActiveMethodIndex = mActiveMethodIndex;
         mActiveMethodIndex = id;
         if (mActiveMethodIndex != -1) {
             InputMethod activeMethod = mInputMethods.get(mActiveMethodIndex);
@@ -246,7 +248,10 @@ public class IMControlPanel extends LinearLayout {
 
             Button closeButton = controlPanel.findViewById(R.id.button_close);
             if (closeButton != null) {
-                closeButton.setOnClickListener(mSwitchModeListener);
+                closeButton.setOnClickListener((view) -> {
+                    activateInputMethod(mPreviouslyActiveMethodIndex);
+                    im.setEnabled(false);
+                });
             }
 
             this.addView(controlPanel, LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
@@ -266,57 +271,4 @@ public class IMControlPanel extends LinearLayout {
     };
 
     private OnClickListener mSwitchModeListener = v -> activateNextInputMethod();
-/*
-    /**
-     * Used to save / restore state of control panel.
-     *\/
-    private static class SavedState extends BaseSavedState {
-        private final int mActiveMethodIndex;
-        private final Bundle mInputMethodsState;
-
-        private SavedState(Parcelable superState, int activeMethodIndex, List<InputMethod> inputMethods) {
-            super(superState);
-            mActiveMethodIndex = activeMethodIndex;
-
-            mInputMethodsState = new Bundle();
-            for (InputMethod im : inputMethods) {
-                im.onSaveInstanceState(mInputMethodsState);
-            }
-        }
-
-        private SavedState(Parcel in) {
-            super(in);
-            mActiveMethodIndex = in.readInt();
-            mInputMethodsState = in.readBundle();
-        }
-
-        public int getActiveMethodIndex() {
-            return mActiveMethodIndex;
-        }
-
-        public void restoreInputMethodsState(List<InputMethod> inputMethods) {
-            for (InputMethod im : inputMethods) {
-                im.onRestoreInstanceState(mInputMethodsState);
-            }
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-            dest.writeInt(mActiveMethodIndex);
-            dest.writeBundle(mInputMethodsState);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR = new Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
-    }
-*/
-
 }
