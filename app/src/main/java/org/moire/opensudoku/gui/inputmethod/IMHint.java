@@ -60,7 +60,11 @@ public class IMHint extends InputMethod {
         mBoard.setReadOnly(true);
         mBoard.setDimCellsThatAreNotHighlighted(true);
 
-        mTechnique = StepByStepSolver.getNextTechnique(mContext, mBoard.getCells(), mGame.getSolutionValues());
+        if (mGame.getSolutionValues() != null) {
+            mTechnique = StepByStepSolver.getNextTechnique(mContext, mBoard.getCells(), mGame.getSolutionValues());
+        } else {
+            mTechnique = StepByStepSolver.getNextTechnique(mContext, mBoard.getCells());
+        }
         update();
     }
 
@@ -152,6 +156,7 @@ public class IMHint extends InputMethod {
 
         mPreviousStepButton.setEnabled(!mTechnique.isFirstStep());
         mNextStepButton.setEnabled(!mTechnique.isLastStep());
+        mApplyHintButton.setEnabled(mTechnique.isLastStep());
         mTitleText.setText(mTechnique.getName());
         mExplanationText.setText(mTechnique.getCurrentExplanationText());
         mStepsText.setText(mContext.getString(R.string.step_n_of_total, mTechnique.getCurrentStep() + 1, mTechnique.getTotalSteps()));
