@@ -42,7 +42,6 @@ public abstract class InputMethod {
 
     // TODO: I should not have mPrefix for fields used in subclasses, create proper getters
     protected Context mContext;
-    protected IMControlPanel mControlPanel;
     protected SudokuGame mGame;
     protected SudokuBoardView mBoard;
     protected HintsQueue mHintsQueue;
@@ -54,13 +53,11 @@ public abstract class InputMethod {
     private boolean mEnabled = true;
 
     public InputMethod() {
-
     }
 
-    protected void initialize(Context context, IMControlPanel controlPanel, SudokuGame game,
+    protected void initialize(Context context, SudokuGame game,
                               SudokuBoardView board, HintsQueue hintsQueue) {
         mContext = context;
-        mControlPanel = controlPanel;
         mGame = game;
         mBoard = board;
         mHintsQueue = hintsQueue;
@@ -119,10 +116,6 @@ public abstract class InputMethod {
 
     public void setEnabled(boolean enabled) {
         mEnabled = enabled;
-
-        if (!enabled) {
-            mControlPanel.activateNextInputMethod();
-        }
     }
 
     public boolean isEnabled() {

@@ -80,7 +80,7 @@ public class IMControlPanel extends LinearLayout {
      * Activates first enabled input method. If such method does not exists, nothing
      * happens.
      */
-    public void activateFirstInputMethod() {
+    public void ensureAnInputMethodIsActive() {
         ensureInputMethods();
         if (mActiveMethodIndex == -1 || !mInputMethods.get(mActiveMethodIndex).isEnabled()) {
             activateInputMethod(0);
@@ -227,7 +227,7 @@ public class IMControlPanel extends LinearLayout {
     }
 
     private void addInputMethod(int methodIndex, InputMethod im) {
-        im.initialize(mContext, this, mGame, mBoard, mHintsQueue);
+        im.initialize(mContext, mGame, mBoard, mHintsQueue);
         mInputMethods.add(methodIndex, im);
     }
 

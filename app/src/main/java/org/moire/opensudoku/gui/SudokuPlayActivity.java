@@ -246,7 +246,7 @@ public class SudokuPlayActivity extends ThemedActivity {
         mIMNumpad.setShowNumberTotals(gameSettings.getBoolean("show_number_totals", false));
         mIMHint.setEnabled(false);
 
-        mIMControlPanel.activateFirstInputMethod(); // make sure that some input method is activated
+        mIMControlPanel.ensureAnInputMethodIsActive(); // make sure that some input method is activated
         mIMControlPanelStatePersister.restoreState(mIMControlPanel);
 
         if (!mSudokuBoard.isReadOnly()) {

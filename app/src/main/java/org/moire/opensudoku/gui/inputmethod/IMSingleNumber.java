@@ -120,9 +120,8 @@ public class IMSingleNumber extends InputMethod {
     }
 
     @Override
-    protected void initialize(Context context, IMControlPanel controlPanel,
-                              SudokuGame game, SudokuBoardView board, HintsQueue hintsQueue) {
-        super.initialize(context, controlPanel, game, board, hintsQueue);
+    protected void initialize(Context context, SudokuGame game, SudokuBoardView board, HintsQueue hintsQueue) {
+        super.initialize(context, game, board, hintsQueue);
 
         game.getCells().addOnChangeListener(mOnCellsChangeListener);
     }
