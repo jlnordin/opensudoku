@@ -95,6 +95,7 @@ public class SudokuGame {
         mLastPlayed = inState.getLong("lastPlayed");
         mCells = CellCollection.deserialize(inState.getString("cells"));
         mCommandStack = CommandStack.deserialize(inState.getString("command_stack"), mCells);
+        mSolutionValues = SudokuSolver.solve(mCells);
 
         validate();
     }

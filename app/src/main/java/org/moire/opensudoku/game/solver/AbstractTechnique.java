@@ -17,6 +17,10 @@ public abstract class AbstractTechnique {
     HashMap<Cell, HighlightOptions> mHighlightOverrides;
     Context mContext;
 
+    public interface TechniqueFactory {
+        AbstractTechnique create(Context context, SudokuGame game);
+    }
+
     AbstractTechnique(Context context) {
         mExplanationSteps = new ArrayList<Explanation>();
         mContext = context;

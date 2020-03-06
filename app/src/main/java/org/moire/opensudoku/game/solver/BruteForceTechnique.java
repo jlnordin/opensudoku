@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 public class BruteForceTechnique extends AbstractTechnique {
 
-    public static BruteForceTechnique create(Context context, CellCollection cells, ArrayList<int[]> solution) {
-        return new BruteForceTechnique(context, cells, solution);
+    public static BruteForceTechnique create(Context context, SudokuGame game) {
+        return new BruteForceTechnique(context, game.getCells(), game.getSolutionValues());
     }
 
     int mRow = 0;
