@@ -145,6 +145,7 @@ public class IMHint extends InputMethod {
 
         mApplyHintButton.setOnClickListener((view) -> {
             mGame.getCommandStack().execute(mTechnique.getCommand(mBoard.getCells()));
+            mGame.validate();
             mCloseButton.performClick();
         });
 
