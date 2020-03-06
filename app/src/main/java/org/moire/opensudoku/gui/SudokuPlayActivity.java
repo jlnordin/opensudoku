@@ -388,6 +388,7 @@ public class SudokuPlayActivity extends ThemedActivity {
             menu.findItem(MENU_ITEM_UNDO_TO_BEFORE_MISTAKE).setEnabled(false);
             menu.findItem(MENU_ITEM_SOLVE).setEnabled(false);
             menu.findItem(MENU_ITEM_SOLVE_SELECTED_CELL).setEnabled(false);
+            menu.findItem(MENU_ITEM_HINT).setEnabled(false);
         }
 
         return true;
@@ -487,11 +488,9 @@ public class SudokuPlayActivity extends ThemedActivity {
                                 mGameTimer.start();
                             }
                             removeDialog(DIALOG_WELL_DONE);
-                            MenuItem menuItemSolve = mOptionsMenu.findItem(MENU_ITEM_SOLVE);
-                            menuItemSolve.setEnabled(true);
-                            MenuItem menuItemHint = mOptionsMenu.findItem(MENU_ITEM_SOLVE_SELECTED_CELL);
-                            menuItemHint.setEnabled(true);
-
+                            mOptionsMenu.findItem(MENU_ITEM_SOLVE).setEnabled(true);
+                            mOptionsMenu.findItem(MENU_ITEM_SOLVE_SELECTED_CELL).setEnabled(true);
+                            mOptionsMenu.findItem(MENU_ITEM_HINT).setEnabled(true);
                         })
                         .setNegativeButton(android.R.string.no, null)
                         .create();

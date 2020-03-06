@@ -4,6 +4,7 @@ import android.content.Context;
 
 import org.moire.opensudoku.game.Cell;
 import org.moire.opensudoku.game.CellCollection;
+import org.moire.opensudoku.game.SudokuGame;
 import org.moire.opensudoku.game.command.AbstractCellCommand;
 import org.moire.opensudoku.gui.HighlightOptions;
 import org.moire.opensudoku.gui.SudokuBoardView;
@@ -23,7 +24,7 @@ public abstract class AbstractTechnique {
         mHighlightOverrides = new HashMap<Cell, HighlightOptions>();
     }
 
-    public abstract AbstractCellCommand getCommand(CellCollection cells);
+    public abstract void applyTechnique(SudokuGame game);
 
     public abstract String getName();
 
@@ -62,9 +63,7 @@ public abstract class AbstractTechnique {
         return mCurrentStep == 0;
     }
 
-    public boolean isLastStep() {
-        return mCurrentStep == getTotalSteps() - 1;
-    }
+    public boolean isLastStep() { return mCurrentStep == getTotalSteps() - 1; }
 
     Explanation getCurrentExplanation() {
         return mExplanationSteps.get(mCurrentStep);

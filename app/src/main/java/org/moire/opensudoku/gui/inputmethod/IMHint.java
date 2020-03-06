@@ -32,9 +32,6 @@ import org.moire.opensudoku.game.solver.AbstractTechnique;
 import org.moire.opensudoku.game.solver.StepByStepSolver;
 import org.moire.opensudoku.gui.SudokuBoardView;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class IMHint extends InputMethod {
 
     Cell mSelectedCell;
@@ -144,7 +141,7 @@ public class IMHint extends InputMethod {
         });
 
         mApplyHintButton.setOnClickListener((view) -> {
-            mGame.getCommandStack().execute(mTechnique.getCommand(mBoard.getCells()));
+            mTechnique.applyTechnique(mGame);
             mGame.validate();
             mCloseButton.performClick();
         });

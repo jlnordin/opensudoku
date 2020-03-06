@@ -5,6 +5,7 @@ import android.content.Context;
 import org.moire.opensudoku.R;
 import org.moire.opensudoku.game.Cell;
 import org.moire.opensudoku.game.CellCollection;
+import org.moire.opensudoku.game.SudokuGame;
 import org.moire.opensudoku.game.command.AbstractCellCommand;
 import org.moire.opensudoku.game.command.SetCellValueCommand;
 import org.moire.opensudoku.gui.HighlightOptions;
@@ -53,12 +54,12 @@ public class BruteForceTechnique extends AbstractTechnique {
     }
 
     @Override
-    public AbstractCellCommand getCommand(CellCollection cells) {
-        return new SetCellValueCommand(cells.getCell(mRow, mColumn), mValue);
+    public void applyTechnique(SudokuGame game) {
+        game.getCommandStack().execute(new SetCellValueCommand(game.getCells().getCell(mRow, mColumn), mValue));
     }
 
     @Override
     public String getName() {
-        return  mContext.getString(R.string.technique_brute_force_title);
+        return mContext.getString(R.string.technique_brute_force_title);
     }
 }

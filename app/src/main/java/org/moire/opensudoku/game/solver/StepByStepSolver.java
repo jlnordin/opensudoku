@@ -19,28 +19,9 @@ public class StepByStepSolver {
 
     static public AbstractTechnique getNextTechnique(Context context, CellCollection cells, ArrayList<int[]> solution) {
         if (isSolved(cells)) {
-            return null;
+            return new PuzzleIsSolvedTechnique(context);
         } else {
             return BruteForceTechnique.create(context, cells, solution);
         }
-    }
-
-    static public ArrayList<AbstractTechnique> getAllSolutionTechniques(Context context, CellCollection cells) {
-        CellCollection copyOfCells = cells.clone();
-        ArrayList<AbstractTechnique> solutionTechniques = new ArrayList<AbstractTechnique>();
-        CommandStack commands = new CommandStack(copyOfCells);
-
-        ArrayList<int[]> solution = SudokuSolver.solve(cells);
-        while (true) {
-            AbstractTechnique nextTechnique = getNextTechnique(context, copyOfCells, solution);
-            if (nextTechnique == null) {
-                break;
-            }
-
-            solutionTechniques.add(nextTechnique);
-            commands.execute(nextTechnique.getCommand(copyOfCells));
-        }
-
-        return solutionTechniques;
     }
 }
