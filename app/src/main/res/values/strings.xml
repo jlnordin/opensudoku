@@ -375,6 +375,7 @@
     <string name="app_startup_category">App Startup</string>
 
     <!-- Strings added/changed in 3.4.0 -->
+    <string name="solve_selected_cell">Solve selected cell</string>
     <string name="apply_hint">Apply Hint</string>
     <string name="step_n_of_total">Step %1$d / %2$d</string> <!-- Step [current] / [total] -->
     <string name="previous_step">Previous Step</string>
@@ -388,5 +389,9 @@
     <string name="technique_brute_force_title">Brute Force</string>
     <string name="technique_brute_force_step_1">This puzzle is really hard!\n\nThe best hint is to simply reveal the correct number for one of the cells.</string>
     <string name="technique_brute_force_step_2">The correct number for row %d, column %d is %d.</string>
-    <string name="solve_selected_cell">Solve selected cell</string>
+    <string name="technique_check_for_mistakes_title">Check for mistakes</string>
+    <string name="technique_check_for_mistakes_step_1">Some of the numbers are incorrect.</string>
+    <string name="technique_check_for_mistakes_step_2">These are the incorrect numbers.</string>
+    <string name="technique_check_for_mistakes_step_3">Select \'%s\' to undo all actions to before these mistakes or select \'%s\' to return to the puzzle.</string>
+
 </resources>

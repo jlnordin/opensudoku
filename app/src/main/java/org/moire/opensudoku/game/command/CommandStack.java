@@ -100,25 +100,10 @@ public class CommandStack {
         validateCells();
     }
 
-    private boolean hasMistakes(ArrayList<int[]> finalValues) {
-        for (int[] rowColVal : finalValues) {
-            int row = rowColVal[0];
-            int col = rowColVal[1];
-            int val = rowColVal[2];
-            Cell cell = mCells.getCell(row, col);
-
-            if (cell.getValue() != val && cell.getValue() != 0) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public void undoToSolvableState() {
-        ArrayList<int[]> finalValues = SudokuSolver.solve(mCells);
+        ArrayList<int[]> solution = SudokuSolver.solve(mCells);
 
-        while (!mCommandStack.empty() && hasMistakes(finalValues)) {
+        while (!mCommandStack.empty() && mCells.hasMistake(solution)) {
             mCommandStack.pop().undo();
         }
 

@@ -57,11 +57,8 @@ public class IMHint extends InputMethod {
         mBoard.setReadOnly(true);
         mBoard.setDimCellsThatAreNotHighlighted(true);
 
-        if (mGame.getSolutionValues() != null) {
-            mTechnique = StepByStepSolver.getNextTechnique(mContext, mBoard.getCells(), mGame.getSolutionValues());
-        } else {
-            mTechnique = StepByStepSolver.getNextTechnique(mContext, mBoard.getCells());
-        }
+        mTechnique = StepByStepSolver.getNextTechnique(mContext, mGame);
+
         update();
     }
 

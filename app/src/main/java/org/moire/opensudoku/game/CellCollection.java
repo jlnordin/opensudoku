@@ -233,6 +233,21 @@ public class CellCollection {
         return true;
     }
 
+    public boolean hasMistake(ArrayList<int[]> solution) {
+        for (int[] rowColVal : solution) {
+            int row = rowColVal[0];
+            int col = rowColVal[1];
+            int val = rowColVal[2];
+            Cell cell = getCell(row, col);
+
+            if (cell.getValue() != val && cell.getValue() != 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Marks all cells as editable.
      */
