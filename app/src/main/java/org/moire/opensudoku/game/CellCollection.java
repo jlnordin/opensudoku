@@ -472,9 +472,9 @@ public class CellCollection {
     }
 
     private static Pattern DATA_PATTERN_VERSION_PLAIN = Pattern.compile("^\\d{81}$");
-    private static Pattern DATA_PATTERN_VERSION_1 = Pattern.compile("^version: 1\\n((?#value)\\d\\|(?#note)((\\d,)+|-)\\|(?#editable)[01]\\|){0,81}$");
-    private static Pattern DATA_PATTERN_VERSION_2 = Pattern.compile("^version: 2\\n((?#value)\\d\\|(?#note)(\\d){1,3}\\|{1,2}(?#editable)[01]\\|){0,81}$");
-    private static Pattern DATA_PATTERN_VERSION_3 = Pattern.compile("^version: 3\\n((?#value)\\d\\|(?#note)(\\d){1,3}\\|(?#editable)[01]\\|){0,81}$");
+    private static Pattern DATA_PATTERN_VERSION_1 = Pattern.compile("^version: 1\\n(" + /*value*/"\\d\\" + /*note*/"|((\\d,)+|-)\\" + /*editable*/"|[01]\\|){0,81}$");
+    private static Pattern DATA_PATTERN_VERSION_2 = Pattern.compile("^version: 2\\n(" + /*value*/"\\d\\" + /*note*/"|(\\d){1,3}\\" + /*editable*/"|{1,2}[01]\\|){0,81}$");
+    private static Pattern DATA_PATTERN_VERSION_3 = Pattern.compile("^version: 3\\n(" + /*value*/"\\d\\" + /*note*/"|(\\d){1,3}\\" + /*editable*/"|[01]\\|){0,81}$");
 
     /**
      * Returns true, if given <code>data</code> conform to format of given data version.
