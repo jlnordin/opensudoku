@@ -22,16 +22,11 @@ class PuzzleIsSolvedTechniqueTest {
 
     @Test
     void create() {
-        SudokuGame game = new SudokuGame();
-        game.setCells(CellCollection.createDebugGame());
+        assertNotNull(PuzzleIsSolvedTechnique.create(mContext, TechniqueTestHelpers.createSolvedGame()));
+    }
 
-        AbstractTechnique technique;
-        technique = StepByStepSolver.getNextTechnique(mContext, game);
-        assertFalse(technique instanceof PuzzleIsSolvedTechnique);
-
-        game.solve();
-
-        technique = StepByStepSolver.getNextTechnique(mContext, game);
-        assertTrue(technique instanceof PuzzleIsSolvedTechnique);
+    @Test
+    void create_returnNullIfNotSolved() {
+        assertNull(PuzzleIsSolvedTechnique.create(mContext, TechniqueTestHelpers.createGameInProgress()));
     }
 }
