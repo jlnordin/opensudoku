@@ -268,7 +268,7 @@ public class SudokuEditActivity extends ThemedActivity {
 
     private boolean checkSolvability() {
         mGame.getCells().markFilledCellsAsNotEditable();
-        boolean solvable = mGame.isSolvable();
+        boolean solvable = mGame.recheckSolvability();
         mGame.getCells().markAllCellsAsEditable();
         return solvable;
     }

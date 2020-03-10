@@ -313,6 +313,15 @@ public class SudokuGame {
     }
 
     /**
+     * Forces a re-check of the puzzle's solvability. Used in case the underlying cells are
+     * modified.
+     */
+    public boolean recheckSolvability() {
+        mSolutionValues = SudokuSolver.solve(mCells);
+        return isSolvable();
+    }
+
+    /**
      * Solves puzzle from original state
      */
     public void solve() {

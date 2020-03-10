@@ -14,11 +14,12 @@ public class StepByStepSolver {
 
         // Create an ordered list of all of the techniques we will apply to determine what the next
         // logical step is to solve the given sudoku game. The order is important. In particular,
-        // the PuzzleIsSolvedTechnique, which checks if the sudoku is solved, must go first and the
-        // BruteForceTechnique, which will always provide an answer to a non-solved puzzle, should
-        // go last.
+        // the PuzzleIsUnsolvableTechnique, which checks if the sudoku is not solvable, must go
+        // first and the BruteForceTechnique, which will always provide an answer to a non-solved
+        // but solvable puzzle, should go last.
         AbstractTechnique.TechniqueFactory[] techniques = {
                 PuzzleIsSolvedTechnique::create,
+                PuzzleIsUnsolvableTechnique::create,
                 CheckForMistakeTechnique::create,
                 BruteForceTechnique::create
         };
