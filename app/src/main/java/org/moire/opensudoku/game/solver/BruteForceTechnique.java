@@ -15,7 +15,12 @@ import java.util.ArrayList;
 public class BruteForceTechnique extends AbstractTechnique {
 
     public static BruteForceTechnique create(Context context, SudokuGame game) {
-        return new BruteForceTechnique(context, game.getCells(), game.getSolutionValues());
+        game.validate();
+        if (game.isSolvable() && !game.isCompleted()) {
+            return new BruteForceTechnique(context, game.getCells(), game.getSolutionValues());
+        } else {
+            return null;
+        }
     }
 
     int mRow = 0;

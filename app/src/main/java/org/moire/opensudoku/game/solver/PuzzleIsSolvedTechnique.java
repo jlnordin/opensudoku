@@ -3,7 +3,6 @@ package org.moire.opensudoku.game.solver;
 import android.content.Context;
 
 import org.moire.opensudoku.R;
-import org.moire.opensudoku.game.CellCollection;
 import org.moire.opensudoku.game.SudokuGame;
 
 public class PuzzleIsSolvedTechnique extends AbstractTechnique {
