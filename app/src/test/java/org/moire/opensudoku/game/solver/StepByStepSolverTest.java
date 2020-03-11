@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -39,5 +40,27 @@ class StepByStepSolverTest {
     void getNextTechnique_puzzleIsUnsolvable() {
         AbstractTechnique technique = StepByStepSolver.getNextTechnique(mContext, TechniqueTestHelpers.createUnsolvableGame());
         assertSame(PuzzleIsUnsolvableTechnique.class, technique.getClass());
+    }
+
+    @Test
+    void getNextTechnique_untilSolved() {
+        SudokuGame game = TechniqueTestHelpers.createGameInProgress();
+        AbstractTechnique technique;
+
+        for (int i = 0; i < 1000; i++)
+        {
+            technique = StepByStepSolver.getNextTechnique(mContext, game);
+            assertNotNull(technique);
+
+            if (technique instanceof PuzzleIsSolvedTechnique) {
+                game.validate();
+                assertTrue(game.isCompleted());
+                return;
+            }
+
+            technique.applyTechnique(game);
+        }
+
+        fail("StepByStepSolver techniques do not lead to a solution.");
     }
 }
