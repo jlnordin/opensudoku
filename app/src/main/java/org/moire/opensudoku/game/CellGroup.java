@@ -70,7 +70,7 @@ public class CellGroup {
         return valid;
     }
 
-    public boolean DoesntContain(int value) {
+    public boolean doesNotContain(int value) {
         for (Cell mCell : mCells) {
             if (mCell.getValue() == value) {
                 return false;

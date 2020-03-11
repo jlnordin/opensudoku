@@ -21,6 +21,9 @@ public class StepByStepSolver {
                 PuzzleIsSolvedTechnique::create,
                 PuzzleIsUnsolvableTechnique::create,
                 CheckForMistakeTechnique::create,
+
+                FullHouseTechnique::create,
+
                 BruteForceTechnique::create
         };
 

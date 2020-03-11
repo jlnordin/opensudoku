@@ -136,6 +136,9 @@ public class CellCollection {
     public Cell[][] getCells() {
         return mCells;
     }
+    public CellGroup[] getRows() { return mRows; }
+    public CellGroup[] getColumns() { return mColumns; }
+    public CellGroup[] getSectors() { return mSectors; }
 
     /**
      * Wraps given array in this object.
@@ -286,7 +289,7 @@ public class CellCollection {
                 CellGroup column = cell.getColumn();
                 CellGroup sector = cell.getSector();
                 for (int i = 1; i <= SUDOKU_SIZE; i++) {
-                    if (row.DoesntContain(i) && column.DoesntContain(i) && sector.DoesntContain(i)) {
+                    if (row.doesNotContain(i) && column.doesNotContain(i) && sector.doesNotContain(i)) {
                         cell.setNote(cell.getNote().addNumber(i));
                     }
                 }
@@ -355,8 +358,8 @@ public class CellCollection {
 
                 cell.initCollection(this, r, c,
                         mSectors[((c / 3) * 3) + (r / 3)],
-                        mRows[c],
-                        mColumns[r]
+                        mRows[r],
+                        mColumns[c]
                 );
             }
         }
