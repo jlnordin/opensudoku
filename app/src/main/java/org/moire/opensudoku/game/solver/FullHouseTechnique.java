@@ -2,6 +2,7 @@ package org.moire.opensudoku.game.solver;
 
 import android.content.Context;
 
+import org.moire.opensudoku.R;
 import org.moire.opensudoku.game.Cell;
 import org.moire.opensudoku.game.CellCollection;
 import org.moire.opensudoku.game.CellGroup;
@@ -114,13 +115,13 @@ public class FullHouseTechnique extends AbstractTechnique {
         mValue = value;
 
         mExplanationSteps.add(new Explanation(
-                "A full house is when a row, column, or box has only 1 cell left that doesn't have a number.",
+                mContext.getString(R.string.technique_full_house_step_1),
                 (board) -> {
                     mHighlightOverrides.clear();
                     board.invalidate();
                 }));
         mExplanationSteps.add(new Explanation(
-                String.format("Look at %s %d.", getGroupString(), getGroupIndex() + 1),
+                mContext.getString(R.string.technique_full_house_step_2, getGroupString(), getGroupIndex() + 1),
                 (board) -> {
                     mHighlightOverrides.clear();
                     for (Cell cell : getGroup(board).getCells()) {
@@ -129,7 +130,7 @@ public class FullHouseTechnique extends AbstractTechnique {
                     board.invalidate();
                 }));
         mExplanationSteps.add(new Explanation(
-                String.format("There is only one cell left in %s %d and its value must be %d.", getGroupString(), getGroupIndex() + 1, mValue),
+                mContext.getString(R.string.technique_full_house_step_3, getGroupString(), getGroupIndex() + 1, mValue),
                 (board) -> {
                     mHighlightOverrides.clear();
                     for (Cell cell : getGroup(board).getCells()) {
@@ -143,11 +144,11 @@ public class FullHouseTechnique extends AbstractTechnique {
         switch (mType) {
             default:
             case Box:
-                return "box";
+                return mContext.getString(R.string.box);
             case Row:
-                return "row";
+                return mContext.getString(R.string.row);
             case Column:
-                return "column";
+                return mContext.getString(R.string.column);
         }
     }
 
@@ -184,6 +185,6 @@ public class FullHouseTechnique extends AbstractTechnique {
 
     @Override
     public String getName() {
-        return "Full House";
+        return mContext.getString(R.string.technique_full_house_title);
     }
 }

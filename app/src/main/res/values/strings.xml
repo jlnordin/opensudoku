@@ -393,5 +393,11 @@
     <string name="technique_check_for_mistakes_step_1">Some of the numbers are incorrect.</string>
     <string name="technique_check_for_mistakes_step_2">These are the incorrect numbers.</string>
     <string name="technique_check_for_mistakes_step_3">Select \'%s\' to undo all actions to before these mistakes or select \'%s\' to return to the puzzle.</string>
-
+    <string name="technique_full_house_title">Full House</string>
+    <string name="technique_full_house_step_1">A full house is when a row, column, or box has only 1 cell left that doesn\'t have a number.</string>
+    <string name="technique_full_house_step_2">Look at %s %d.</string> <!-- e.g. "Look at row 3." -->
+    <string name="technique_full_house_step_3">There is only one cell left in %s %d and its value must be %d.</string> <!-- e.g. "There is only one cell left in row 2 and its value must be 7." -->
+    <string name="box">box</string>
+    <string name="row">row</string>
+    <string name="column">column</string>
 </resources>
