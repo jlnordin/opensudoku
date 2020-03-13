@@ -58,4 +58,23 @@ public class TechniqueTestHelpers {
         game.getCommandStack().execute(new SetCellValueCommand(cells.getCell(0, 0), 4));
         return game;
     }
+
+    public static SudokuGame createGameWithFullHouses() {
+        SudokuGame game = new SudokuGame();
+        CellCollection cells = CellCollection.fromString(
+                "352"+"006"+"180"+
+                "168"+"900"+"734"+
+                "049"+"803"+"625"+
+
+                "400"+"000"+"800"+
+                "083"+"201"+"590"+
+                "001"+"000"+"402"+
+
+                "097"+"305"+"240"+
+                "200"+"009"+"056"+
+                "000"+"100"+"970"
+        );
+        game.setCells(cells);
+        return game;
+    }
 }
