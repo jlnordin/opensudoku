@@ -10,14 +10,9 @@ import org.moire.opensudoku.game.SudokuGame;
 import org.moire.opensudoku.game.command.SetCellValueCommand;
 import org.moire.opensudoku.gui.HighlightOptions;
 import org.moire.opensudoku.gui.SudokuBoardView;
+import org.moire.opensudoku.game.solver.TechniqueHelpers.GroupType;
 
 public class FullHouseTechnique extends AbstractTechnique {
-
-    enum FullHouseType {
-        Box,
-        Row,
-        Column
-    }
 
     static Cell checkGroupForFullHouse(CellGroup group) {
         Cell fullHouseCandidate = null;
@@ -35,7 +30,7 @@ public class FullHouseTechnique extends AbstractTechnique {
         return fullHouseCandidate;
     }
 
-    static int getFullHouseValue(Cell cell, FullHouseType type) {
+    static int getFullHouseValue(Cell cell, GroupType type) {
         CellGroup group;
         switch (type) {
             default:
@@ -63,13 +58,13 @@ public class FullHouseTechnique extends AbstractTechnique {
 
     public static FullHouseTechnique create(Context context, SudokuGame game) {
 
-        FullHouseType type = FullHouseType.Box;
+        GroupType type = GroupType.Box;
         Cell candidate = null;
 
         for (CellGroup box : game.getCells().getSectors()) {
             candidate = checkGroupForFullHouse(box);
             if (candidate != null) {
-                type = FullHouseType.Box;
+                type = GroupType.Box;
                 break;
             }
         }
@@ -78,7 +73,7 @@ public class FullHouseTechnique extends AbstractTechnique {
             for (CellGroup row : game.getCells().getRows()) {
                 candidate = checkGroupForFullHouse(row);
                 if (candidate != null) {
-                    type = FullHouseType.Row;
+                    type = GroupType.Row;
                     break;
                 }
             }
@@ -88,7 +83,7 @@ public class FullHouseTechnique extends AbstractTechnique {
             for (CellGroup column : game.getCells().getColumns()) {
                 candidate = checkGroupForFullHouse(column);
                 if (candidate != null) {
-                    type = FullHouseType.Column;
+                    type = GroupType.Column;
                     break;
                 }
             }
@@ -101,12 +96,12 @@ public class FullHouseTechnique extends AbstractTechnique {
         }
     }
 
-    FullHouseType mType;
+    GroupType mType;
     int mRow = 0;
     int mColumn = 0;
     int mValue = 0;
 
-    FullHouseTechnique(Context context, FullHouseType type, int row, int column, int value) {
+    FullHouseTechnique(Context context, GroupType type, int row, int column, int value) {
         super(context);
 
         mType = type;
@@ -123,59 +118,24 @@ public class FullHouseTechnique extends AbstractTechnique {
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_full_house_step_2, getGroupString(), getGroupIndex() + 1),
                 (board) -> {
-                    mHighlightOverrides.clear();
-                    for (Cell cell : getGroup(board).getCells()) {
-                        mHighlightOverrides.put(cell, new HighlightOptions());
-                    }
+                    TechniqueHelpers.highlightGroup(TechniqueHelpers.getGroup(board.getCells().getCell(mRow, mColumn), mType), mHighlightOverrides);
                     board.invalidate();
                 }));
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_full_house_step_3, getGroupString(), getGroupIndex() + 1, mValue),
                 (board) -> {
-                    mHighlightOverrides.clear();
-                    for (Cell cell : getGroup(board).getCells()) {
-                        mHighlightOverrides.put(cell, new HighlightOptions());
-                    }
+                    TechniqueHelpers.highlightGroup(TechniqueHelpers.getGroup(board.getCells().getCell(mRow, mColumn), mType), mHighlightOverrides);
                     board.invalidate();
                 }));
     }
 
     String getGroupString() {
-        switch (mType) {
-            default:
-            case Box:
-                return mContext.getString(R.string.box);
-            case Row:
-                return mContext.getString(R.string.row);
-            case Column:
-                return mContext.getString(R.string.column);
-        }
-    }
-
-    CellGroup getGroup(SudokuBoardView board) {
-        Cell cell = board.getCells().getCell(mRow, mColumn);
-        switch (mType) {
-            default:
-            case Box:
-                return cell.getSector();
-            case Row:
-                return cell.getRow();
-            case Column:
-                return cell.getColumn();
-        }
+        return TechniqueHelpers.getGroupString(mContext, mType);
     }
 
     int getGroupIndex()
     {
-        switch (mType) {
-            default:
-            case Box:
-                return ((mRow / 3) * 3) + (mColumn / 3);
-            case Row:
-                return mRow;
-            case Column:
-                return mColumn;
-        }
+        return TechniqueHelpers.getGroupIndex(mType, mRow, mColumn);
     }
 
     @Override

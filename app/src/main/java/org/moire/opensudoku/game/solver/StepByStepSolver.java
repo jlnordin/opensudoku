@@ -23,6 +23,7 @@ public class StepByStepSolver {
                 CheckForMistakeTechnique::create,
 
                 FullHouseTechnique::create,
+                HiddenSingleTechnique::create,
 
                 BruteForceTechnique::create
         };

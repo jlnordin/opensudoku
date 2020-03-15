@@ -33,15 +33,15 @@ class FullHouseTechniqueTest {
     @Test
     void applyTechnique_4FullHousesInSuccession() {
         SudokuGame game = TechniqueTestHelpers.createGameWithFullHouses();
-        final FullHouseTechnique.FullHouseType[] expectedFullHouseTypes = {
-                FullHouseTechnique.FullHouseType.Box,
-                FullHouseTechnique.FullHouseType.Box,
-                FullHouseTechnique.FullHouseType.Row,
-                FullHouseTechnique.FullHouseType.Column,
+        final TechniqueHelpers.GroupType[] expectedFullHouseTypes = {
+                TechniqueHelpers.GroupType.Box,
+                TechniqueHelpers.GroupType.Box,
+                TechniqueHelpers.GroupType.Row,
+                TechniqueHelpers.GroupType.Column,
         };
 
         FullHouseTechnique technique;
-        for (FullHouseTechnique.FullHouseType type : expectedFullHouseTypes)
+        for (TechniqueHelpers.GroupType type : expectedFullHouseTypes)
         {
             technique = FullHouseTechnique.create(mContext, game);
             assertNotNull(technique);

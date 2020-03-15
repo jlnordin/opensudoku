@@ -400,4 +400,8 @@
     <string name="box">box</string>
     <string name="row">row</string>
     <string name="column">column</string>
+    <string name="technique_hidden_single_title">Hidden Single</string>
+    <string name="technique_hidden_single_step_1">A hidden single is when a number can only be placed in one spot within a specific row, column, or box.</string>
+    <string name="technique_hidden_single_step_2">Look at %s %d.</string> <!-- e.g. "Look at row 3." -->
+    <string name="technique_hidden_single_step_3">There is only one cell in %s %d that can be %d, so it must be.</string> <!-- e.g. "There is only one cell in row 2 that can be 7, so it must be." -->
 </resources>
