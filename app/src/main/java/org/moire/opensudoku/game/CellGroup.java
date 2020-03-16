@@ -79,6 +79,15 @@ public class CellGroup {
         return true;
     }
 
+    public boolean containsValue(int value) {
+        for (Cell mCell : mCells) {
+            if (mCell.getValue() == value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Cell[] getCells() {
         return mCells;
     }

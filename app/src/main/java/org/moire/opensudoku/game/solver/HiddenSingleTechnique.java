@@ -11,6 +11,7 @@ import org.moire.opensudoku.game.command.SetCellValueCommand;
 import org.moire.opensudoku.gui.HighlightOptions;
 import org.moire.opensudoku.gui.SudokuBoardView;
 import org.moire.opensudoku.game.solver.TechniqueHelpers.GroupType;
+import org.moire.opensudoku.gui.HighlightOptions.HighlightMode;
 
 import java.util.ArrayList;
 
@@ -95,9 +96,50 @@ public class HiddenSingleTechnique extends AbstractTechnique {
                     board.invalidate();
                 }));
         mExplanationSteps.add(new Explanation(
-                mContext.getString(R.string.technique_hidden_single_step_3, TechniqueHelpers.getGroupString(mContext, mGroup), TechniqueHelpers.getGroupIndex(mGroup, mRow, mColumn) + 1, mValue),
+                mContext.getString(R.string.technique_hidden_single_step_3, mValue, TechniqueHelpers.getGroupString(mContext, mGroup), TechniqueHelpers.getGroupIndex(mGroup, mRow, mColumn) + 1),
                 (board) -> {
-                    TechniqueHelpers.highlightGroup(TechniqueHelpers.getGroup(board.getCells().getCell(mRow, mColumn), mGroup), mHighlightOverrides);
+                    CellGroup highlightedGroup = TechniqueHelpers.getGroup(board.getCells().getCell(mRow, mColumn), mGroup);
+                    // highlight each group (row, column, box) and number within that group that
+                    // contributes to eliminating "mValue" as a possibility.
+                    for (Cell cell : highlightedGroup.getCells()) {
+                        if (cell.getRow().containsValue(mValue)) {
+                            for (Cell cellInRow : cell.getRow().getCells()) {
+                                if (cellInRow.getValue() == mValue) {
+                                    mHighlightOverrides.put(cellInRow, new HighlightOptions(HighlightMode.SECONDARY_HIGHLIGHT));
+                                } else {
+                                    mHighlightOverrides.put(cellInRow, new HighlightOptions(HighlightMode.NORMAL));
+                                }
+                            }
+                        }
+
+                        if (cell.getColumn().containsValue(mValue)) {
+                            for (Cell cellInColumn : cell.getColumn().getCells()) {
+                                if (cellInColumn.getValue() == mValue) {
+                                    mHighlightOverrides.put(cellInColumn, new HighlightOptions(HighlightMode.SECONDARY_HIGHLIGHT));
+                                } else {
+                                    mHighlightOverrides.put(cellInColumn, new HighlightOptions(HighlightMode.NORMAL));
+                                }
+                            }
+                        }
+
+                        if (cell.getSector().containsValue(mValue)) {
+                            for (Cell cellInBox : cell.getSector().getCells()) {
+                                if (cellInBox.getValue() == mValue) {
+                                    mHighlightOverrides.put(cellInBox, new HighlightOptions(HighlightMode.SECONDARY_HIGHLIGHT));
+                                } else {
+                                    mHighlightOverrides.put(cellInBox, new HighlightOptions(HighlightMode.NORMAL));
+                                }
+                            }
+                        }
+                    }
+                    TechniqueHelpers.highlightGroup(highlightedGroup, mHighlightOverrides);
+                    board.invalidate();
+                }));
+        mExplanationSteps.add(new Explanation(
+                mContext.getString(R.string.technique_hidden_single_step_4, mValue),
+                (board) -> {
+                    mHighlightOverrides.clear();
+                    mHighlightOverrides.put(board.getCells().getCell(mRow, mColumn), new HighlightOptions());
                     board.invalidate();
                 }));
     }

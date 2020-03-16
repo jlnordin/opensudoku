@@ -1,23 +1,46 @@
 package org.moire.opensudoku.gui;
 
 public class HighlightOptions {
-    boolean mHighlightCell;
-    boolean[] mHighlightNote;
+    public enum HighlightMode {
+        DIM,
+        NORMAL,
+        HIGHLIGHT,
+        SECONDARY_HIGHLIGHT
+    }
+    HighlightMode mCellHighlightMode;
+    HighlightMode[] mNoteHighlightMode;
 
     public HighlightOptions() {
-        mHighlightCell = true;
-        mHighlightNote = new boolean[9];
+        mCellHighlightMode = HighlightMode.HIGHLIGHT;
+        mNoteHighlightMode = new HighlightMode[9];
+        for (HighlightMode mode : mNoteHighlightMode)
+        {
+             mode = HighlightMode.DIM;
+        }
     }
 
-    public boolean isCellHighlighted() {
-        return mHighlightCell;
+    public HighlightOptions(HighlightMode mode) {
+        mCellHighlightMode = mode;
+        mNoteHighlightMode = new HighlightMode[9];
+        for (HighlightMode noteMode : mNoteHighlightMode)
+        {
+            noteMode = HighlightMode.DIM;
+        }
     }
 
-    public void highlightNote(int note) {
-        mHighlightNote[note] = true;
+    public void setCellHighlightMode(HighlightMode mode) {
+        mCellHighlightMode = mode;
     }
 
-    public boolean isNoteHighlighted(int note) {
-        return mHighlightNote[note];
+    public HighlightMode getCellHighlightMode() {
+        return mCellHighlightMode;
+    }
+
+    public void setNoteHighlightMode(int note, HighlightMode mode) {
+        mNoteHighlightMode[note] = mode;
+    }
+
+    public HighlightMode getCellHighlightMode(int note) {
+        return mNoteHighlightMode[note];
     }
 }

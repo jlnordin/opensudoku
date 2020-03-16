@@ -403,5 +403,6 @@
     <string name="technique_hidden_single_title">Hidden Single</string>
     <string name="technique_hidden_single_step_1">A hidden single is when a number can only be placed in one spot within a specific row, column, or box.</string>
     <string name="technique_hidden_single_step_2">Look at %s %d.</string> <!-- e.g. "Look at row 3." -->
-    <string name="technique_hidden_single_step_3">There is only one cell in %s %d that can be %d, so it must be.</string> <!-- e.g. "There is only one cell in row 2 that can be 7, so it must be." -->
+    <string name="technique_hidden_single_step_3">These numbers eliminate %d as a possibility in all cells in %s %d except for one.</string> <!-- e.g. "These numbers eliminate 7 as a possibility in all cells in row 3 except for one." -->
+    <string name="technique_hidden_single_step_4">Therefore this cell must be %d.</string> <!-- e.g. "Therefore this cell must be 7." -->
 </resources>
