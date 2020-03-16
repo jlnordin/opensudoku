@@ -81,9 +81,8 @@ public class TechniqueHelpers {
     }
 
     public static void highlightGroup(CellGroup group, HashMap<Cell, HighlightOptions> highlightOverrides) {
-        highlightOverrides.clear();
         for (Cell cell : group.getCells()) {
-            highlightOverrides.put(cell, new HighlightOptions());
+            highlightOverrides.put(cell, new HighlightOptions(HighlightOptions.HighlightMode.EMPHASIZE));
         }
     }
 }

@@ -3,7 +3,7 @@ package org.moire.opensudoku.gui;
 public class HighlightOptions {
     public enum HighlightMode {
         DIM,
-        NORMAL,
+        EMPHASIZE,
         HIGHLIGHT,
         SECONDARY_HIGHLIGHT
     }

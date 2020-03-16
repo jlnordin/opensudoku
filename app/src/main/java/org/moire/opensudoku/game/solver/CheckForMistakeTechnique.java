@@ -41,28 +41,20 @@ public class CheckForMistakeTechnique extends AbstractTechnique {
 
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_check_for_mistakes_step_1),
-                (board) ->
-                {
-                    mHighlightOverrides.clear();
-                    board.invalidate();
-                }));
+                (board) -> {}));
 
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_check_for_mistakes_step_2),
                 (board) ->
                 {
-                    mHighlightOverrides.clear();
                     mHighlightOverrides.putAll(mHighlightedMistakes);
-                    board.invalidate();
                 }));
 
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_check_for_mistakes_step_3, mContext.getString(R.string.apply_hint), mContext.getString(R.string.close)),
                 (board) ->
                 {
-                    mHighlightOverrides.clear();
                     mHighlightOverrides.putAll(mHighlightedMistakes);
-                    board.invalidate();
                 }));
     }
 

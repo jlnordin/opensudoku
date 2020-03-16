@@ -111,21 +111,19 @@ public class FullHouseTechnique extends AbstractTechnique {
 
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_full_house_step_1),
-                (board) -> {
-                    mHighlightOverrides.clear();
-                    board.invalidate();
-                }));
+                (board) -> {}));
+
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_full_house_step_2, getGroupString(), getGroupIndex() + 1),
                 (board) -> {
                     TechniqueHelpers.highlightGroup(TechniqueHelpers.getGroup(board.getCells().getCell(mRow, mColumn), mType), mHighlightOverrides);
-                    board.invalidate();
                 }));
+
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_full_house_step_3, getGroupString(), getGroupIndex() + 1, mValue),
                 (board) -> {
                     TechniqueHelpers.highlightGroup(TechniqueHelpers.getGroup(board.getCells().getCell(mRow, mColumn), mType), mHighlightOverrides);
-                    board.invalidate();
+                    mHighlightOverrides.put(board.getCells().getCell(mRow, mColumn), new HighlightOptions());
                 }));
     }
 

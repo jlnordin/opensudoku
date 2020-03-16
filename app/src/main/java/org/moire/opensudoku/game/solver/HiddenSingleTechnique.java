@@ -9,7 +9,6 @@ import org.moire.opensudoku.game.CellGroup;
 import org.moire.opensudoku.game.SudokuGame;
 import org.moire.opensudoku.game.command.SetCellValueCommand;
 import org.moire.opensudoku.gui.HighlightOptions;
-import org.moire.opensudoku.gui.SudokuBoardView;
 import org.moire.opensudoku.game.solver.TechniqueHelpers.GroupType;
 import org.moire.opensudoku.gui.HighlightOptions.HighlightMode;
 
@@ -42,7 +41,7 @@ public class HiddenSingleTechnique extends AbstractTechnique {
                     if (candidates.size() == 1) {
                         cell = candidates.get(0);
                         value = i;
-                        type = GroupType.Box;
+                        type = GroupType.Row;
                         break;
                     }
                 }
@@ -56,7 +55,7 @@ public class HiddenSingleTechnique extends AbstractTechnique {
                     if (candidates.size() == 1) {
                         cell = candidates.get(0);
                         value = i;
-                        type = GroupType.Box;
+                        type = GroupType.Column;
                         break;
                     }
                 }
@@ -85,16 +84,14 @@ public class HiddenSingleTechnique extends AbstractTechnique {
 
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_hidden_single_step_1),
-                (board) -> {
-                    mHighlightOverrides.clear();
-                    board.invalidate();
-                }));
+                (board) -> {}));
+
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_hidden_single_step_2, TechniqueHelpers.getGroupString(mContext, mGroup), TechniqueHelpers.getGroupIndex(mGroup, mRow, mColumn) + 1),
                 (board) -> {
                     TechniqueHelpers.highlightGroup(TechniqueHelpers.getGroup(board.getCells().getCell(mRow, mColumn), mGroup), mHighlightOverrides);
-                    board.invalidate();
                 }));
+
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_hidden_single_step_3, mValue, TechniqueHelpers.getGroupString(mContext, mGroup), TechniqueHelpers.getGroupIndex(mGroup, mRow, mColumn) + 1),
                 (board) -> {
@@ -102,12 +99,16 @@ public class HiddenSingleTechnique extends AbstractTechnique {
                     // highlight each group (row, column, box) and number within that group that
                     // contributes to eliminating "mValue" as a possibility.
                     for (Cell cell : highlightedGroup.getCells()) {
+                        if (cell.getValue() != 0) {
+                            continue;
+                        }
+
                         if (cell.getRow().containsValue(mValue)) {
                             for (Cell cellInRow : cell.getRow().getCells()) {
                                 if (cellInRow.getValue() == mValue) {
-                                    mHighlightOverrides.put(cellInRow, new HighlightOptions(HighlightMode.SECONDARY_HIGHLIGHT));
+                                    mHighlightOverrides.put(cellInRow, new HighlightOptions(HighlightMode.HIGHLIGHT));
                                 } else {
-                                    mHighlightOverrides.put(cellInRow, new HighlightOptions(HighlightMode.NORMAL));
+                                    mHighlightOverrides.put(cellInRow, new HighlightOptions(HighlightMode.EMPHASIZE));
                                 }
                             }
                         }
@@ -115,9 +116,9 @@ public class HiddenSingleTechnique extends AbstractTechnique {
                         if (cell.getColumn().containsValue(mValue)) {
                             for (Cell cellInColumn : cell.getColumn().getCells()) {
                                 if (cellInColumn.getValue() == mValue) {
-                                    mHighlightOverrides.put(cellInColumn, new HighlightOptions(HighlightMode.SECONDARY_HIGHLIGHT));
+                                    mHighlightOverrides.put(cellInColumn, new HighlightOptions(HighlightMode.HIGHLIGHT));
                                 } else {
-                                    mHighlightOverrides.put(cellInColumn, new HighlightOptions(HighlightMode.NORMAL));
+                                    mHighlightOverrides.put(cellInColumn, new HighlightOptions(HighlightMode.EMPHASIZE));
                                 }
                             }
                         }
@@ -125,22 +126,30 @@ public class HiddenSingleTechnique extends AbstractTechnique {
                         if (cell.getSector().containsValue(mValue)) {
                             for (Cell cellInBox : cell.getSector().getCells()) {
                                 if (cellInBox.getValue() == mValue) {
-                                    mHighlightOverrides.put(cellInBox, new HighlightOptions(HighlightMode.SECONDARY_HIGHLIGHT));
+                                    mHighlightOverrides.put(cellInBox, new HighlightOptions(HighlightMode.HIGHLIGHT));
                                 } else {
-                                    mHighlightOverrides.put(cellInBox, new HighlightOptions(HighlightMode.NORMAL));
+                                    mHighlightOverrides.put(cellInBox, new HighlightOptions(HighlightMode.EMPHASIZE));
                                 }
                             }
                         }
                     }
-                    TechniqueHelpers.highlightGroup(highlightedGroup, mHighlightOverrides);
-                    board.invalidate();
+
+                    // in a second pass, make sure all the non-0 cells in the group are highlighted
+                    // since they contribute to eliminating possible locations
+                    for (Cell cell : highlightedGroup.getCells()) {
+                        if (cell.getValue() != 0) {
+                            mHighlightOverrides.put(cell, new HighlightOptions(HighlightMode.HIGHLIGHT));
+                        }
+                    }
+
+                    // finally remove any highlighting from the cell that contains the hidden single
+                    mHighlightOverrides.remove(board.getCells().getCell(mRow, mColumn));
                 }));
+
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_hidden_single_step_4, mValue),
                 (board) -> {
-                    mHighlightOverrides.clear();
                     mHighlightOverrides.put(board.getCells().getCell(mRow, mColumn), new HighlightOptions());
-                    board.invalidate();
                 }));
     }
 

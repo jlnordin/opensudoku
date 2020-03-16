@@ -457,6 +457,7 @@ public class SudokuBoardView extends View {
         boolean cellIsNotSelected = (mSelectedCell == null || mSelectedCell != cell);
         boolean highlightedValueIsValid = mHighlightedValue != 0;
         boolean shouldHighlightCell = false;
+        Paint highlightColor = mBackgroundColorHighlighted;
 
         switch (mHighlightSimilarCells) {
             default:
@@ -484,14 +485,22 @@ public class SudokuBoardView extends View {
             }
 
             case OVERRIDE: {
-                shouldHighlightCell = mHighlightCellOverrides != null && mHighlightCellOverrides.containsKey(cell);
+                if (mHighlightCellOverrides != null && mHighlightCellOverrides.containsKey(cell)) {
+                    HighlightOptions.HighlightMode mode = mHighlightCellOverrides.get(cell).getCellHighlightMode();
+                    if (mode == HighlightOptions.HighlightMode.HIGHLIGHT) {
+                        shouldHighlightCell = true;
+                    } else if (mode == HighlightOptions.HighlightMode.SECONDARY_HIGHLIGHT) {
+                        shouldHighlightCell = true;
+                        highlightColor = mBackgroundColorTouched;
+                    }
+                }
                 break;
             }
         }
 
         if (shouldHighlightCell) {
-            if (mBackgroundColorHighlighted.getColor() != NO_COLOR) {
-                canvas.drawRect(cellLeft, cellTop, cellRight, cellBottom, mBackgroundColorHighlighted);
+            if (highlightColor.getColor() != NO_COLOR) {
+                canvas.drawRect(cellLeft, cellTop, cellRight, cellBottom, highlightColor);
             }
         }
     }
@@ -544,7 +553,8 @@ public class SudokuBoardView extends View {
     void drawDimmedCellForeground(Canvas canvas, Cell cell, float cellLeft, float cellTop, float cellRight, float cellBottom) {
         if (mHighlightSimilarCells == HighlightMode.OVERRIDE &&
                 mHighlightCellOverrides != null &&
-                !mHighlightCellOverrides.containsKey(cell)) {
+                (!mHighlightCellOverrides.containsKey(cell) ||
+                    mHighlightCellOverrides.get(cell).getCellHighlightMode() == HighlightOptions.HighlightMode.DIM)) {
             boolean isLightTheme = ThemeUtils.isLightTheme(ThemeUtils.getCurrentThemeFromPreferences(getContext()));
             Paint dimmingColor = new Paint();
             if (isLightTheme) {
@@ -554,6 +564,22 @@ public class SudokuBoardView extends View {
             }
             dimmingColor.setAlpha(0xC0);
             canvas.drawRect(cellLeft, cellTop, cellRight, cellBottom, dimmingColor);
+        }
+    }
+
+    void drawEmphasizedCellBackground(Canvas canvas, Cell cell, float cellLeft, float cellTop, float cellRight, float cellBottom) {
+        if (mHighlightSimilarCells == HighlightMode.OVERRIDE &&
+                mHighlightCellOverrides != null &&
+                mHighlightCellOverrides.containsKey(cell) &&
+                mHighlightCellOverrides.get(cell).getCellHighlightMode() == HighlightOptions.HighlightMode.EMPHASIZE) {
+            boolean isLightTheme = ThemeUtils.isLightTheme(ThemeUtils.getCurrentThemeFromPreferences(getContext()));
+            Paint emphasisColor = new Paint();
+            if (isLightTheme) {
+                emphasisColor.setColor(0xFFC0C0C0);
+            } else {
+                emphasisColor.setColor(0xFF404040);
+            }
+            canvas.drawRect(cellLeft, cellTop, cellRight, cellBottom, emphasisColor);
         }
     }
 
@@ -596,6 +622,7 @@ public class SudokuBoardView extends View {
                     drawHighlightedCellBackground(canvas, cell, cellLeft, cellTop, cellRight, cellBottom);
                     drawSelectedCellBackground(canvas, cell, cellLeft, cellTop, cellRight, cellBottom);
                     drawTouchedCellBackground(canvas, cell, cellLeft, cellTop, cellRight, cellBottom);
+                    drawEmphasizedCellBackground(canvas, cell, cellLeft, cellTop, cellRight, cellBottom);
 
                     drawCellNumbers(canvas, cell, cellLeft, cellTop);
                     drawCellNotes(canvas, cell, cellLeft, cellTop);

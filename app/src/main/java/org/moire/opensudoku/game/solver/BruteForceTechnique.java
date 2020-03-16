@@ -46,15 +46,11 @@ public class BruteForceTechnique extends AbstractTechnique {
 
         mExplanationSteps.add(new Explanation(
                 context.getString(R.string.technique_brute_force_step_1),
-                (board) -> {
-                    mHighlightOverrides.clear();
-                    board.invalidate();
-                }));
+                (board) -> {}));
         mExplanationSteps.add(new Explanation(
                 context.getString(R.string.technique_brute_force_step_2, mRow + 1, mColumn + 1, mValue),
                 (board) -> {
                     mHighlightOverrides.put(board.getCells().getCell(mRow, mColumn), new HighlightOptions());
-                    board.invalidate();
                 }));
     }
 

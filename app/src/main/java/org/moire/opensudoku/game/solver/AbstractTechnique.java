@@ -48,7 +48,9 @@ public abstract class AbstractTechnique {
         }
 
         public void show(SudokuBoardView board) {
+            mHighlightOverrides.clear();
             mShowExplanationCallback.ShowExplanation(board);
+            board.invalidate();
         }
     }
 
