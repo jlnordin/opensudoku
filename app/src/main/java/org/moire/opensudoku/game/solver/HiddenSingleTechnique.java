@@ -24,7 +24,7 @@ public class HiddenSingleTechnique extends AbstractTechnique {
 
         for (CellGroup box : game.getCells().getSectors()) {
             for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
-                ArrayList<Cell> candidates = TechniqueHelpers.getCellCandidates(box, i);
+                ArrayList<Cell> candidates = TechniqueHelpers.getCellsWithCandidateValue(box, i);
                 if (candidates.size() == 1) {
                     cell = candidates.get(0);
                     value = i;
@@ -37,7 +37,7 @@ public class HiddenSingleTechnique extends AbstractTechnique {
         if (cell == null) {
             for (CellGroup row : game.getCells().getRows()) {
                 for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
-                    ArrayList<Cell> candidates = TechniqueHelpers.getCellCandidates(row, i);
+                    ArrayList<Cell> candidates = TechniqueHelpers.getCellsWithCandidateValue(row, i);
                     if (candidates.size() == 1) {
                         cell = candidates.get(0);
                         value = i;
@@ -51,7 +51,7 @@ public class HiddenSingleTechnique extends AbstractTechnique {
         if (cell == null) {
             for (CellGroup column : game.getCells().getColumns()) {
                 for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
-                    ArrayList<Cell> candidates = TechniqueHelpers.getCellCandidates(column, i);
+                    ArrayList<Cell> candidates = TechniqueHelpers.getCellsWithCandidateValue(column, i);
                     if (candidates.size() == 1) {
                         cell = candidates.get(0);
                         value = i;

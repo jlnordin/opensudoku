@@ -6,6 +6,7 @@ import org.moire.opensudoku.R;
 import org.moire.opensudoku.game.Cell;
 import org.moire.opensudoku.game.CellCollection;
 import org.moire.opensudoku.game.CellGroup;
+import org.moire.opensudoku.game.CellNote;
 import org.moire.opensudoku.gui.HighlightOptions;
 import org.moire.opensudoku.gui.SudokuBoardView;
 
@@ -62,7 +63,7 @@ public class TechniqueHelpers {
      * Returns a list of all of the cells in the given group that have the given value as a
      * candidate.
      */
-    public static ArrayList<Cell> getCellCandidates(CellGroup group, int value) {
+    public static ArrayList<Cell> getCellsWithCandidateValue(CellGroup group, int value) {
         ArrayList<Cell> candidates = new ArrayList<Cell>();
         for (Cell cell : group.getCells()) {
             if (cell.getValue() == 0) {
@@ -73,6 +74,26 @@ public class TechniqueHelpers {
 
                 if (row.doesNotContain(value) && column.doesNotContain(value) && box.doesNotContain(value)) {
                     candidates.add(cell);
+                }
+            }
+        }
+
+        return candidates;
+    }
+
+    /**
+     * Returns an array of all of the valid candidates for a given cell.
+     */
+    public static ArrayList<Integer> getCandidatesForCell(Cell cell) {
+        ArrayList<Integer> candidates = new ArrayList<Integer>();
+        if (cell.getValue() == 0) {
+            CellGroup row = cell.getRow();
+            CellGroup column = cell.getColumn();
+            CellGroup box = cell.getSector();
+
+            for (int value = 1; value <= CellCollection.SUDOKU_SIZE; value++) {
+                if (row.doesNotContain(value) && column.doesNotContain(value) && box.doesNotContain(value)) {
+                    candidates.add(value);
                 }
             }
         }

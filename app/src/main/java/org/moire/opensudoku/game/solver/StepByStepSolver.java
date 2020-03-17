@@ -24,6 +24,7 @@ public class StepByStepSolver {
 
                 FullHouseTechnique::create,
                 HiddenSingleTechnique::create,
+                NakedSingleTechnique::create,
 
                 BruteForceTechnique::create
         };
