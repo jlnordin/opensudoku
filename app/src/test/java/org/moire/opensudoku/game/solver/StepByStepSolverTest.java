@@ -72,6 +72,7 @@ class StepByStepSolverTest {
 
         int sudokusThatNeedBruteForce = 0;
         int sudokuId = 0;
+        String difficulty = "Easy";
 
         for (String sudokuString : TechniqueTestHelpers.OpenSudokuGames) {
             SudokuGame game = new SudokuGame();
@@ -79,7 +80,15 @@ class StepByStepSolverTest {
 
             AbstractTechnique technique;
 
-            System.out.println(String.format("Techniques for puzzle %d:", sudokuId));
+            if (sudokuId < 30) {
+                difficulty = "Easy";
+            } else if (sudokuId < 60) {
+                difficulty = "Medium";
+            } else {
+                difficulty = "Hard";
+            }
+            System.out.println(String.format("Techniques for %s puzzle %d:", difficulty, (sudokuId % 30) + 1));
+
             for (int i = 0; i < 1000; i++) {
                 technique = StepByStepSolver.getNextTechnique(mContext, game);
                 assertNotNull(technique);
