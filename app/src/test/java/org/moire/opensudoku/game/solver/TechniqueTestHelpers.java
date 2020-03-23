@@ -78,6 +78,63 @@ public class TechniqueTestHelpers {
         return game;
     }
 
+    public static SudokuGame createGameWithNakedSingle() {
+        SudokuGame game = new SudokuGame();
+        CellCollection cells = CellCollection.fromString(
+                "302"+"076"+"189"+
+                "000"+"002"+"030"+
+                "009"+"813"+"020"+
+
+                "025"+"000"+"010"+
+                "083"+"000"+"590"+
+                "070"+"000"+"460"+
+
+                "090"+"365"+"201"+
+                "210"+"700"+"050"+
+                "536"+"120"+"000"
+        );
+        game.setCells(cells);
+        return game;
+    }
+
+    public static SudokuGame createGameWithHiddenSingleInColumn() {
+        SudokuGame game = new SudokuGame();
+        CellCollection cells = CellCollection.fromString(
+                "302"+"076"+"189"+
+                "000"+"002"+"030"+
+                "009"+"813"+"020"+
+
+                "025"+"000"+"010"+
+                "083"+"000"+"590"+
+                "070"+"000"+"460"+
+
+                "000"+"365"+"201"+
+                "210"+"700"+"050"+
+                "536"+"120"+"000"
+        );
+        game.setCells(cells);
+        return game;
+    }
+
+    public static SudokuGame createGameWithHiddenSingleInBox() {
+        SudokuGame game = new SudokuGame();
+        CellCollection cells = CellCollection.fromString(
+                "302"+"076"+"189"+
+                "000"+"002"+"030"+
+                "009"+"813"+"000"+
+
+                "025"+"000"+"010"+
+                "083"+"000"+"590"+
+                "070"+"000"+"460"+
+
+                "000"+"365"+"201"+
+                "010"+"700"+"000"+
+                "536"+"120"+"000"
+        );
+        game.setCells(cells);
+        return game;
+    }
+
     public static String[] OpenSudokuGames = new String[]{
 
             //Easy Sudokus
