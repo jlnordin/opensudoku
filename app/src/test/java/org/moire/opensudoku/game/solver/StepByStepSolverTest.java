@@ -92,7 +92,7 @@ class StepByStepSolverTest {
             for (int i = 0; i < 1000; i++) {
                 technique = StepByStepSolver.getNextTechnique(mContext, game);
                 assertNotNull(technique);
-                System.out.println(String.format("\t%s", technique.getClass().getName()));
+                System.out.println(String.format("\t%d. %s", i + 1, technique.getClass().getName()));
 
                 if (technique instanceof PuzzleIsSolvedTechnique) {
                     break;
