@@ -536,6 +536,53 @@ public class SudokuBoardView extends View {
         }
     }
 
+    void drawCellNotesHighlight(Canvas canvas, Cell cell, float cellLeft, float cellTop) {
+        if (mHighlightSimilarCells != HighlightMode.OVERRIDE ||
+            cell.getValue() != 0 ||
+            cell.getNote().isEmpty()) {
+            return;
+        }
+
+        HighlightOptions highlightOptions = mHighlightCellOverrides.get(cell);
+        if (highlightOptions == null) {
+            return;
+        }
+
+        float noteWidth = mCellWidth / 3f;
+        float noteHeight = mCellHeight / 3f;
+        for (int n = 0; n < CellCollection.SUDOKU_SIZE; n++) {
+
+            Paint highlightPaint = null;
+            switch (highlightOptions.getNoteHighlightMode(n))
+            {
+                case NONE: {
+                    continue;
+                }
+
+                default:
+                case EMPHASIZE:
+                case HIGHLIGHT: {
+                    highlightPaint = mBackgroundColorHighlighted;
+                    break;
+                }
+
+                case SECONDARY_HIGHLIGHT: {
+                    highlightPaint = mBackgroundColorTouched;
+                    break;
+                }
+            }
+
+            int c = n % 3;
+            int r = n / 3;
+            float noteHighlightWidth = mCellNotePaint.measureText(String.valueOf(n));
+            canvas.drawCircle(
+                    cellLeft + c * noteWidth + noteHighlightWidth / 2 + 2,
+                    cellTop + r * noteHeight + noteHeight / 2,
+                    noteHeight / 2,
+                    highlightPaint);
+        }
+    }
+
     void drawCellNotes(Canvas canvas, Cell cell, float cellLeft, float cellTop) {
         int value = cell.getValue();
         if (value == 0 && !cell.getNote().isEmpty()) {
@@ -625,6 +672,7 @@ public class SudokuBoardView extends View {
                     drawEmphasizedCellBackground(canvas, cell, cellLeft, cellTop, cellRight, cellBottom);
 
                     drawCellNumbers(canvas, cell, cellLeft, cellTop);
+                    drawCellNotesHighlight(canvas, cell, cellLeft, cellTop);
                     drawCellNotes(canvas, cell, cellLeft, cellTop);
 
                     drawDimmedCellForeground(canvas, cell, cellLeft, cellTop, cellRight, cellBottom);

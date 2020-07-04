@@ -252,6 +252,44 @@ public class CellCollection {
     }
 
     /**
+     * Checks for simple notation mistakes. These are note values that are immediately contradicted
+     * by a solved number in either the row, column, or box. This is referred to as "simple"
+     * notation mistakes because notes are possibilities, so in that sense a note can't be
+     * "correct" or "a mistake", but treating these types of notes as mistakes is useful for setting
+     * up more advanced solving techniques.
+     *
+     * Note also that since most advanced techniques revolve around eliminating notes or
+     * possibilities, there isn't an equivalent helper for "hasAllCorrectNotes" since this is a
+     * meaningless statement. Furthermore, not all note taking styles require comprehensive lists of
+     * notes at all times.
+     *
+     * Returns a list of [row, column, value] arrays of the mistakes.
+     */
+    public List<int[]> getSimpleNotationMistakes() {
+        ArrayList<int[]> mistakes = new ArrayList<>();
+
+        for (int r = 0; r < SUDOKU_SIZE; r++) {
+            for (int c = 0; c < SUDOKU_SIZE; c++) {
+                Cell cell = getCell(r, c);
+
+                CellGroup row = cell.getRow();
+                CellGroup column = cell.getColumn();
+                CellGroup sector = cell.getSector();
+                CellNote note = cell.getNote();
+
+                for (int i = 1; i <= SUDOKU_SIZE; i++) {
+                    if (note.hasNumber(i) &&
+                        (row.containsValue(i) || column.containsValue(i) || sector.containsValue(i))) {
+                        mistakes.add(new int[]{r, c, i});
+                    }
+                }
+            }
+        }
+
+        return mistakes;
+    }
+
+    /**
      * Marks all cells as editable.
      */
     public void markAllCellsAsEditable() {

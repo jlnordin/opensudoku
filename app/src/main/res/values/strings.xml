@@ -410,4 +410,8 @@
     <string name="technique_naked_single_step_2">Look at this cell\'s row, column, and box.</string>
     <string name="technique_naked_single_step_3">These numbers eliminate all possibilities for this cell except for one.</string>
     <string name="technique_naked_single_step_4">Therefore this cell must be %d.</string> <!-- e.g. "Therefore this cell must be 7." -->
+    <string name="technique_check_for_notation_mistakes_title">Check for incorrect notes</string>
+    <string name="technique_check_for_notation_mistakes_step_1">Some of the notes are incorrect.</string>
+    <string name="technique_check_for_notation_mistakes_step_2">These are the incorrect notes.</string>
+    <string name="technique_check_for_notation_mistakes_step_3">Select \'%s\' to remove all of the incorrect notes.</string>
 </resources>

@@ -2,8 +2,10 @@ package org.moire.opensudoku.game.solver;
 
 import org.moire.opensudoku.game.Cell;
 import org.moire.opensudoku.game.CellCollection;
+import org.moire.opensudoku.game.CellNote;
 import org.moire.opensudoku.game.SudokuGame;
 import org.moire.opensudoku.game.command.SetCellValueCommand;
+import org.moire.opensudoku.game.command.EditCellNoteCommand;
 
 public class TechniqueTestHelpers {
 
@@ -56,6 +58,14 @@ public class TechniqueTestHelpers {
         CellCollection cells = CellCollection.createDebugGame();
         game.setCells(cells);
         game.getCommandStack().execute(new SetCellValueCommand(cells.getCell(0, 0), 4));
+        return game;
+    }
+
+    public static SudokuGame createGameWithNotationMistake() {
+        SudokuGame game = new SudokuGame();
+        CellCollection cells = CellCollection.createDebugGame();
+        game.setCells(cells);
+        game.getCommandStack().execute(new EditCellNoteCommand(cells.getCell(0, 0), CellNote.EMPTY.addNumber(4)));
         return game;
     }
 
