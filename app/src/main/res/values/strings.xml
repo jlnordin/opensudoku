@@ -414,4 +414,7 @@
     <string name="technique_check_for_notation_mistakes_step_1">Some of the notes are incorrect.</string>
     <string name="technique_check_for_notation_mistakes_step_2">These are the incorrect notes.</string>
     <string name="technique_check_for_notation_mistakes_step_3">Select \'%s\' to remove all of the incorrect notes.</string>
+    <string name="technique_fill_in_notes_title">Fill in notes</string>
+    <string name="technique_fill_in_notes_step_1">The next step is to fill in all notes. Subsequent hints will provide techniques for eliminating these candidates.</string>
+    <string name="technique_fill_in_notes_step_2">Select \'%s\' to fill in all of the notes.</string>
 </resources>

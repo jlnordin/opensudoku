@@ -18,15 +18,21 @@ public class StepByStepSolver {
         // first and the BruteForceTechnique, which will always provide an answer to a non-solved
         // but solvable puzzle, should go last.
         AbstractTechnique.TechniqueFactory[] techniques = {
+                // Techniques to check for mistakes and edge cases.
                 PuzzleIsSolvedTechnique::create,
                 PuzzleIsUnsolvableTechnique::create,
                 CheckForMistakeTechnique::create,
                 CheckForNotationMistakeTechnique::create,
 
+                // Techniques that solve a concrete value.
                 FullHouseTechnique::create,
                 HiddenSingleTechnique::create,
                 NakedSingleTechnique::create,
 
+                // Techniques that eliminate notes (candidate values).
+                FillInNotesTechnique::create,
+
+                // Last resort technique.
                 BruteForceTechnique::create
         };
 

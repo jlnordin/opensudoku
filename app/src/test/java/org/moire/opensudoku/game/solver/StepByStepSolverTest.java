@@ -10,6 +10,7 @@ import org.moire.opensudoku.db.DatabaseHelper;
 import org.moire.opensudoku.db.SudokuDatabase;
 import org.moire.opensudoku.game.Cell;
 import org.moire.opensudoku.game.CellCollection;
+import org.moire.opensudoku.game.CellGroup;
 import org.moire.opensudoku.game.SudokuGame;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -98,6 +99,15 @@ class StepByStepSolverTest {
                     break;
                 } else if (technique instanceof BruteForceTechnique) {
                     sudokusThatNeedBruteForce++;
+
+                    for (CellGroup row : game.getCells().getRows()) {
+                        StringBuilder builder = new StringBuilder();
+                        for (Cell cell : row.getCells()) {
+                            builder.append(cell.getValue());
+                        }
+                        System.out.println(builder.toString());
+                    }
+
                     break;
                 }
 
