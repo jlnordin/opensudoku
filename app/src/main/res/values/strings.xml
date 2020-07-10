@@ -417,4 +417,9 @@
     <string name="technique_fill_in_notes_title">Fill in notes</string>
     <string name="technique_fill_in_notes_step_1">The next step is to fill in all notes. Subsequent hints will provide techniques for eliminating these candidates.</string>
     <string name="technique_fill_in_notes_step_2">Select \'%s\' to fill in all of the notes.</string>
+    <string name="technique_hidden_single_from_notes_title">Hidden Single</string>
+    <string name="technique_hidden_single_from_notes_step_1">A hidden single is when a number can only be placed in one spot within a specific row, column, or box.</string>
+    <string name="technique_hidden_single_from_notes_step_2">Look at all the notes for %d.</string> <!-- e.g. "Look at all the notes for 7." -->
+    <string name="technique_hidden_single_from_notes_step_3">Now look at %1$s %2$d.</string> <!-- e.g. "Now look at row 3." -->
+    <string name="technique_hidden_single_from_notes_step_4">This is the only possible location for %1$d in %2$s %3$d. Therefore, this cell must be %4$d.</string> <!-- e.g. "This is the only possible location for 7 in row 3. Therefore, this cell must be 7." -->
 </resources>

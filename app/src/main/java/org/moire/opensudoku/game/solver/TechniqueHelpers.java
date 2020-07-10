@@ -82,6 +82,24 @@ public class TechniqueHelpers {
     }
 
     /**
+     * Returns a list of all of the cells in the given group that have the given value as a
+     * note. This is similar to getCellsWithCandidateValue except that the candidate values are
+     * taken only from the notes and not calculated.
+     */
+    public static ArrayList<Cell> getCellsWithCandidateValueFromNotes(CellGroup group, int value) {
+        ArrayList<Cell> cells = new ArrayList<Cell>();
+        for (Cell cell : group.getCells()) {
+            if (cell.getValue() == 0) {
+                if (cell.getNote().hasNumber(value)) {
+                    cells.add(cell);
+                }
+            }
+        }
+
+        return cells;
+    }
+
+    /**
      * Returns an array of all of the valid candidates for a given cell.
      */
     public static ArrayList<Integer> getCandidatesForCell(Cell cell) {
@@ -104,6 +122,26 @@ public class TechniqueHelpers {
     public static void highlightGroup(CellGroup group, HashMap<Cell, HighlightOptions> highlightOverrides) {
         for (Cell cell : group.getCells()) {
             highlightOverrides.put(cell, new HighlightOptions(HighlightOptions.HighlightMode.EMPHASIZE));
+        }
+    }
+
+    public static void highlightNotesInGroup(CellGroup group, int note, HashMap<Cell, HighlightOptions> highlightOverrides) {
+        for (Cell cell : group.getCells()) {
+            if (cell.getValue() == 0 && cell.getNote().hasNumber(note)) {
+                HighlightOptions options = new HighlightOptions(HighlightOptions.HighlightMode.NONE);
+                if (highlightOverrides.containsKey(cell)) {
+                    options = highlightOverrides.get(cell);
+                }
+
+                options.setNoteHighlightMode(note - 1, HighlightOptions.HighlightMode.HIGHLIGHT);
+                highlightOverrides.put(cell, options);
+            }
+        }
+    }
+
+    public static void highlightNotes(CellCollection cells, int note, HashMap<Cell, HighlightOptions> highlightOverrides) {
+        for (CellGroup row : cells.getRows()) {
+            highlightNotesInGroup(row, note, highlightOverrides);
         }
     }
 }

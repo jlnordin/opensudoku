@@ -24,13 +24,19 @@ public class StepByStepSolver {
                 CheckForMistakeTechnique::create,
                 CheckForNotationMistakeTechnique::create,
 
-                // Techniques that solve a concrete value.
+                // Techniques that don't rely on notes and solve to a concrete value.
                 FullHouseTechnique::create,
                 HiddenSingleTechnique::create,
                 NakedSingleTechnique::create,
 
-                // Techniques that eliminate notes (candidate values).
+                // This technique ensures that the notes are valid for the next set of techniques.
                 FillInNotesTechnique::create,
+
+                // Techniques that rely on notes and solve to a concrete value.
+                HiddenSingleFromNotesTechnique::create,
+
+                // Techniques that eliminate notes (candidate values).
+                //...
 
                 // Last resort technique.
                 BruteForceTechnique::create

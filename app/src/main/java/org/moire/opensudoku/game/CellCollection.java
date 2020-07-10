@@ -271,6 +271,9 @@ public class CellCollection {
         for (int r = 0; r < SUDOKU_SIZE; r++) {
             for (int c = 0; c < SUDOKU_SIZE; c++) {
                 Cell cell = getCell(r, c);
+                if (cell.getValue() != 0) {
+                    continue;
+                }
 
                 CellGroup row = cell.getRow();
                 CellGroup column = cell.getColumn();

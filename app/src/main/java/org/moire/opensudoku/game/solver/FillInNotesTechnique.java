@@ -17,19 +17,21 @@ public class FillInNotesTechnique extends AbstractTechnique {
     static public FillInNotesTechnique create(Context context, SudokuGame game) {
 
         // We will only recommend filling in notes if we determine that the game board currently has
-        // incomplete notes for candidate values. In order to do deductions on candidates we need to
-        // have the complete set of notes as a starting point, but since the purpose of advanced
-        // solving techniques os precisely to remove notes, we must be careful in how we determine
-        // what "incomplete notes" means. If we are too aggressive here, then we will potentially
-        // recommend filling in notes after just eliminating some notes with a different technique.
-        //
-        // The solution is to define "incomplete notes" as any board where there is at least one
-        // cell that has no notes nor a value.
-        for (CellGroup row : game.getCells().getRows()) {
-            for (Cell cell : row.getCells()) {
-                if (cell.getValue() == 0 && cell.getNote().isEmpty()) {
-                    return new FillInNotesTechnique(context, game);
-                }
+        // an invalid set of notes. In order to do deductions on candidates we need to
+        // have a valid set of notes as a starting point, and most advanced techniques assume the
+        // provided notes are valid. For this purpose we define "valid notes" as any game board
+        // where the following conditions are met:
+        //   1. Every cell that does not have a value has at least 1 note.
+        //   2. Every cell that has a note has the solved value as one of the candidates.
+
+        for (int[] rowColVal : game.getSolutionValues()) {
+            int row = rowColVal[0];
+            int col = rowColVal[1];
+            int val = rowColVal[2];
+            Cell cell = game.getCells().getCell(row, col);
+
+            if (cell.getValue() == 0 && !cell.getNote().hasNumber(val)) {
+                return new FillInNotesTechnique(context, game);
             }
         }
 
