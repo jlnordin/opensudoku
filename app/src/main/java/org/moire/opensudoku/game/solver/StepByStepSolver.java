@@ -34,6 +34,7 @@ public class StepByStepSolver {
 
                 // Techniques that rely on notes and solve to a concrete value.
                 HiddenSingleFromNotesTechnique::create,
+                NakedSingleFromNotesTechnique::create,
 
                 // Techniques that eliminate notes (candidate values).
                 //...

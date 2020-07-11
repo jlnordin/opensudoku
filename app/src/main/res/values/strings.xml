@@ -422,4 +422,7 @@
     <string name="technique_hidden_single_from_notes_step_2">Look at all the notes for %d.</string> <!-- e.g. "Look at all the notes for 7." -->
     <string name="technique_hidden_single_from_notes_step_3">Now look at %1$s %2$d.</string> <!-- e.g. "Now look at row 3." -->
     <string name="technique_hidden_single_from_notes_step_4">This is the only possible location for %1$d in %2$s %3$d. Therefore, this cell must be %4$d.</string> <!-- e.g. "This is the only possible location for 7 in row 3. Therefore, this cell must be 7." -->
+    <string name="technique_naked_single_from_notes_title">Naked Single</string>
+    <string name="technique_naked_single_from_notes_step_1">A naked single is when a cell only has one possible candidate value.</string>
+    <string name="technique_naked_single_from_notes_step_2">This cell only has one candidate. Therefore, this cell must be %d.</string>
 </resources>
