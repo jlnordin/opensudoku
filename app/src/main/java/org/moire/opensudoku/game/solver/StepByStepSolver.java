@@ -37,7 +37,7 @@ public class StepByStepSolver {
                 NakedSingleFromNotesTechnique::create,
 
                 // Techniques that eliminate notes (candidate values).
-                //...
+                LockedCandidateTechnique::create,
 
                 // Last resort technique.
                 BruteForceTechnique::create

@@ -143,17 +143,17 @@ public class LockedCandidateTechnique extends AbstractTechnique {
         }
 
         mExplanationSteps.add(new Explanation(
-                mContext.getString(R.string.technique_hidden_single_step_1),
+                mContext.getString(R.string.technique_locked_candidate_step_1, mValue),
                 (board) -> {}));
 /*
         mExplanationSteps.add(new Explanation(
-                mContext.getString(R.string.technique_hidden_single_step_2, TechniqueHelpers.getGroupString(mContext, mGroup), TechniqueHelpers.getGroupIndex(mGroup, mRow, mColumn) + 1),
+                mContext.getString(R.string.technique_locked_candidate_step_2, TechniqueHelpers.getGroupString(mContext, mGroup), TechniqueHelpers.getGroupIndex(mGroup, mRow, mColumn) + 1),
                 (board) -> {
                     TechniqueHelpers.highlightGroup(TechniqueHelpers.getGroup(board.getCells().getCell(mRow, mColumn), mGroup), mHighlightOverrides);
                 }));
 
         mExplanationSteps.add(new Explanation(
-                mContext.getString(R.string.technique_hidden_single_step_3, mValue, TechniqueHelpers.getGroupString(mContext, mGroup), TechniqueHelpers.getGroupIndex(mGroup, mRow, mColumn) + 1),
+                mContext.getString(R.string.technique_locked_candidate_step_3, mValue, TechniqueHelpers.getGroupString(mContext, mGroup), TechniqueHelpers.getGroupIndex(mGroup, mRow, mColumn) + 1),
                 (board) -> {
                     CellGroup highlightedGroup = TechniqueHelpers.getGroup(board.getCells().getCell(mRow, mColumn), mGroup);
                     // highlight each group (row, column, box) and number within that group that
@@ -207,7 +207,7 @@ public class LockedCandidateTechnique extends AbstractTechnique {
                 }));
 
         mExplanationSteps.add(new Explanation(
-                mContext.getString(R.string.technique_hidden_single_step_4, mValue),
+                mContext.getString(R.string.technique_locked_candidate_step_4, mValue),
                 (board) -> {
                     mHighlightOverrides.put(board.getCells().getCell(mRow, mColumn), new HighlightOptions());
                 }));
@@ -226,6 +226,6 @@ public class LockedCandidateTechnique extends AbstractTechnique {
 
     @Override
     public String getName() {
-        return mContext.getString(R.string.technique_hidden_single_title);
+        return mContext.getString(R.string.technique_locked_candidate_title);
     }
 }

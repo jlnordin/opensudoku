@@ -425,4 +425,9 @@
     <string name="technique_naked_single_from_notes_title">Naked Single</string>
     <string name="technique_naked_single_from_notes_step_1">A naked single is when a cell only has one possible candidate value.</string>
     <string name="technique_naked_single_from_notes_step_2">This cell only has one candidate. Therefore, this cell must be %d.</string>
+    <string name="technique_locked_candidate_title">Locked Candidate</string>
+    <string name="technique_locked_candidate_step_1">Look at all the notes for %d.</string> <!-- e.g. "Look at all the notes for 7." -->
+    <string name="technique_locked_candidate_step_2">Now look at $1$s $2$d and %3$s %4$d.</string> <!-- e.g. "Now look at box 3 and row 4." -->
+    <string name="technique_locked_candidate_step_3">All of the notes for %1$d in %2$s %3$d are also in %4$s %5$d.</string> <!-- e.g. "All of the notes for box 3 are also in row 4." -->
+    <string name="technique_locked_candidate_step_4">Since %1$d <b>must</b> appear in one of the spots in %2$s %3$d, all other candidates in %4$s %5$d can be eliminated.</string> <!-- e.g. "Since 7 must appear in one of the spots in box 3, all other candidates in row 4 can be eliminated." -->
 </resources>
