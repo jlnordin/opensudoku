@@ -145,6 +145,26 @@ public class TechniqueTestHelpers {
         return game;
     }
 
+    public static SudokuGame createGameWithLockedCandidates() {
+        SudokuGame game = new SudokuGame();
+        CellCollection cells = CellCollection.fromString(
+                "830"+"502"+"706"+
+                "005"+"870"+"302"+
+                "270"+"300"+"581"+
+
+                "052"+"034"+"978"+
+                "793"+"258"+"614"+
+                "008"+"790"+"235"+
+
+                "920"+"003"+"857"+
+                "506"+"987"+"023"+
+                "387"+"025"+"069"
+        );
+        cells.fillInNotes();
+        game.setCells(cells);
+        return game;
+    }
+
     public static String[] OpenSudokuGames = new String[]{
 
             //Easy Sudokus

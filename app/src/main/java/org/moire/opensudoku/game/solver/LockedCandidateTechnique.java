@@ -16,6 +16,7 @@ import org.moire.opensudoku.gui.HighlightOptions;
 import org.moire.opensudoku.gui.HighlightOptions.HighlightMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,7 +27,9 @@ public class LockedCandidateTechnique extends AbstractTechnique {
 
         int value = 0;
         GroupType primaryType = GroupType.Box;
+        int primaryIndex = 0;
         GroupType secondaryType = GroupType.Column;
+        int secondaryIndex = 0;
         ArrayList<Cell> cellsToRemoveNoteFrom = new ArrayList<Cell>();
 
         // Locked Candidate Type 1 (Pointing)
@@ -44,7 +47,9 @@ public class LockedCandidateTechnique extends AbstractTechnique {
                         if (!cellsToRemoveNoteFrom.isEmpty()) {
                             value = i;
                             primaryType = GroupType.Box;
+                            primaryIndex = TechniqueHelpers.getGroupIndex(primaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
                             secondaryType = GroupType.Column;
+                            secondaryIndex = TechniqueHelpers.getGroupIndex(secondaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
                             break OuterLoop;
                         }
                     }
@@ -57,7 +62,9 @@ public class LockedCandidateTechnique extends AbstractTechnique {
                         if (!cellsToRemoveNoteFrom.isEmpty()) {
                             value = i;
                             primaryType = GroupType.Box;
+                            primaryIndex = TechniqueHelpers.getGroupIndex(primaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
                             secondaryType = GroupType.Row;
+                            secondaryIndex = TechniqueHelpers.getGroupIndex(secondaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
                             break OuterLoop;
                         }
                     }
@@ -81,7 +88,9 @@ public class LockedCandidateTechnique extends AbstractTechnique {
                             if (!cellsToRemoveNoteFrom.isEmpty()) {
                                 value = i;
                                 primaryType = GroupType.Row;
+                                primaryIndex = TechniqueHelpers.getGroupIndex(primaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
                                 secondaryType = GroupType.Box;
+                                secondaryIndex = TechniqueHelpers.getGroupIndex(secondaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
                                 break OuterLoop;
                             }
                         }
@@ -106,7 +115,9 @@ public class LockedCandidateTechnique extends AbstractTechnique {
                             if (!cellsToRemoveNoteFrom.isEmpty()) {
                                 value = i;
                                 primaryType = GroupType.Column;
+                                primaryIndex = TechniqueHelpers.getGroupIndex(primaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
                                 secondaryType = GroupType.Box;
+                                secondaryIndex= TechniqueHelpers.getGroupIndex(secondaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
                                 break OuterLoop;
                             }
                         }
@@ -116,23 +127,27 @@ public class LockedCandidateTechnique extends AbstractTechnique {
         }
 
         if (!cellsToRemoveNoteFrom.isEmpty()) {
-            return new LockedCandidateTechnique(context, primaryType, secondaryType, cellsToRemoveNoteFrom, value);
+            return new LockedCandidateTechnique(context, primaryType, primaryIndex, secondaryType, secondaryIndex, cellsToRemoveNoteFrom, value);
         } else {
             return null;
         }
     }
 
     GroupType mPrimaryGroup;
+    int mPrimaryIndex = 0;
     GroupType mSecondaryGroup;
+    int mSecondaryIndex = 0;
     int[] mRows;
     int[] mColumns;
     int mValue = 0;
 
-    LockedCandidateTechnique(Context context, GroupType primaryType, GroupType secondaryType, ArrayList<Cell> cellsToRemoveNoteFrom, int value) {
+    LockedCandidateTechnique(Context context, GroupType primaryType, int primaryIndex, GroupType secondaryType, int secondaryIndex, ArrayList<Cell> cellsToRemoveNoteFrom, int value) {
         super(context);
 
         mPrimaryGroup = primaryType;
+        mPrimaryIndex = primaryIndex;
         mSecondaryGroup = secondaryType;
+        mSecondaryIndex = secondaryIndex;
         mRows = new int[cellsToRemoveNoteFrom.size()];
         mColumns = new int[cellsToRemoveNoteFrom.size()];
         mValue = value;
@@ -144,75 +159,65 @@ public class LockedCandidateTechnique extends AbstractTechnique {
 
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_locked_candidate_step_1, mValue),
-                (board) -> {}));
-/*
-        mExplanationSteps.add(new Explanation(
-                mContext.getString(R.string.technique_locked_candidate_step_2, TechniqueHelpers.getGroupString(mContext, mGroup), TechniqueHelpers.getGroupIndex(mGroup, mRow, mColumn) + 1),
                 (board) -> {
-                    TechniqueHelpers.highlightGroup(TechniqueHelpers.getGroup(board.getCells().getCell(mRow, mColumn), mGroup), mHighlightOverrides);
+                    TechniqueHelpers.highlightNotes(board.getCells(), mValue, mHighlightOverrides);
                 }));
 
         mExplanationSteps.add(new Explanation(
-                mContext.getString(R.string.technique_locked_candidate_step_3, mValue, TechniqueHelpers.getGroupString(mContext, mGroup), TechniqueHelpers.getGroupIndex(mGroup, mRow, mColumn) + 1),
+                mContext.getString(R.string.technique_locked_candidate_step_2,
+                        TechniqueHelpers.getGroupString(mContext, mPrimaryGroup),
+                        mPrimaryIndex + 1,
+                        TechniqueHelpers.getGroupString(mContext, mSecondaryGroup),
+                        mSecondaryIndex + 1),
                 (board) -> {
-                    CellGroup highlightedGroup = TechniqueHelpers.getGroup(board.getCells().getCell(mRow, mColumn), mGroup);
-                    // highlight each group (row, column, box) and number within that group that
-                    // contributes to eliminating "mValue" as a possibility.
-                    for (Cell cell : highlightedGroup.getCells()) {
-                        if (cell.getValue() != 0) {
-                            continue;
-                        }
-
-                        if (cell.getRow().containsValue(mValue)) {
-                            for (Cell cellInRow : cell.getRow().getCells()) {
-                                if (cellInRow.getValue() == mValue) {
-                                    mHighlightOverrides.put(cellInRow, new HighlightOptions(HighlightMode.HIGHLIGHT));
-                                } else {
-                                    mHighlightOverrides.put(cellInRow, new HighlightOptions(HighlightMode.EMPHASIZE));
-                                }
-                            }
-                        }
-
-                        if (cell.getColumn().containsValue(mValue)) {
-                            for (Cell cellInColumn : cell.getColumn().getCells()) {
-                                if (cellInColumn.getValue() == mValue) {
-                                    mHighlightOverrides.put(cellInColumn, new HighlightOptions(HighlightMode.HIGHLIGHT));
-                                } else {
-                                    mHighlightOverrides.put(cellInColumn, new HighlightOptions(HighlightMode.EMPHASIZE));
-                                }
-                            }
-                        }
-
-                        if (cell.getSector().containsValue(mValue)) {
-                            for (Cell cellInBox : cell.getSector().getCells()) {
-                                if (cellInBox.getValue() == mValue) {
-                                    mHighlightOverrides.put(cellInBox, new HighlightOptions(HighlightMode.HIGHLIGHT));
-                                } else {
-                                    mHighlightOverrides.put(cellInBox, new HighlightOptions(HighlightMode.EMPHASIZE));
-                                }
-                            }
+                    CellGroup primaryGroup = TechniqueHelpers.getGroupFromIndex(board.getCells(), mPrimaryGroup, mPrimaryIndex);
+                    CellGroup secondaryGroup = TechniqueHelpers.getGroupFromIndex(board.getCells(), mSecondaryGroup, mSecondaryIndex);
+                    TechniqueHelpers.highlightGroup(primaryGroup, mHighlightOverrides);
+                    TechniqueHelpers.highlightGroup(secondaryGroup, mHighlightOverrides);
+                    for (Cell cell : secondaryGroup.getCells()) {
+                        if (cell.getValue() == 0 && cell.getNote().hasNumber(mValue)) {
+                            mHighlightOverrides.get(cell).setNoteHighlightMode(mValue - 1, HighlightMode.HIGHLIGHT);
                         }
                     }
-
-                    // in a second pass, make sure all the non-0 cells in the group are highlighted
-                    // since they contribute to eliminating possible locations
-                    for (Cell cell : highlightedGroup.getCells()) {
-                        if (cell.getValue() != 0) {
-                            mHighlightOverrides.put(cell, new HighlightOptions(HighlightMode.HIGHLIGHT));
-                        }
-                    }
-
-                    // finally remove any highlighting from the cell that contains the hidden single
-                    mHighlightOverrides.remove(board.getCells().getCell(mRow, mColumn));
                 }));
 
         mExplanationSteps.add(new Explanation(
-                mContext.getString(R.string.technique_locked_candidate_step_4, mValue),
+                mContext.getString(R.string.technique_locked_candidate_step_3,
+                        mValue,
+                        TechniqueHelpers.getGroupString(mContext, mPrimaryGroup),
+                        mPrimaryIndex + 1,
+                        TechniqueHelpers.getGroupString(mContext, mSecondaryGroup),
+                        mSecondaryIndex + 1),
                 (board) -> {
-                    mHighlightOverrides.put(board.getCells().getCell(mRow, mColumn), new HighlightOptions());
+                    CellGroup primaryGroup = TechniqueHelpers.getGroupFromIndex(board.getCells(), mPrimaryGroup, mPrimaryIndex);
+                    CellGroup secondaryGroup = TechniqueHelpers.getGroupFromIndex(board.getCells(), mSecondaryGroup, mSecondaryIndex);
+                    TechniqueHelpers.highlightGroup(primaryGroup, mHighlightOverrides);
+                    TechniqueHelpers.highlightGroup(secondaryGroup, mHighlightOverrides);
+                    for (Cell cell : CellGroup.intersection(primaryGroup, secondaryGroup)) {
+                        if (cell.getValue() == 0 && cell.getNote().hasNumber(mValue)) {
+                            mHighlightOverrides.get(cell).setNoteHighlightMode(mValue - 1, HighlightMode.HIGHLIGHT);
+                        }
+                    }
                 }));
 
- */
+        mExplanationSteps.add(new Explanation(
+                mContext.getString(R.string.technique_locked_candidate_step_4,
+                        mValue,
+                        TechniqueHelpers.getGroupString(mContext, mPrimaryGroup),
+                        mPrimaryIndex + 1,
+                        TechniqueHelpers.getGroupString(mContext, mSecondaryGroup),
+                        mSecondaryIndex + 1),
+                (board) -> {
+                    CellGroup primaryGroup = TechniqueHelpers.getGroupFromIndex(board.getCells(), mPrimaryGroup, mPrimaryIndex);
+                    CellGroup secondaryGroup = TechniqueHelpers.getGroupFromIndex(board.getCells(), mSecondaryGroup, mSecondaryIndex);
+                    TechniqueHelpers.highlightGroup(primaryGroup, mHighlightOverrides);
+                    TechniqueHelpers.highlightGroup(secondaryGroup, mHighlightOverrides);
+                    for (Cell cell : CellGroup.difference(secondaryGroup, primaryGroup)) {
+                        if (cell.getValue() == 0 && cell.getNote().hasNumber(mValue)) {
+                            mHighlightOverrides.get(cell).setNoteHighlightMode(mValue - 1, HighlightMode.HIGHLIGHT);
+                        }
+                    }
+                }));
     }
 
     @Override

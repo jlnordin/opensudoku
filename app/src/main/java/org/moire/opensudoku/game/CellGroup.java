@@ -20,7 +20,9 @@
 
 package org.moire.opensudoku.game;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 
@@ -90,5 +92,27 @@ public class CellGroup {
 
     public Cell[] getCells() {
         return mCells;
+    }
+
+    public boolean contains(Cell cell) {
+        return Arrays.asList(mCells).contains(cell);
+    }
+
+    public static Cell[] union(CellGroup a, CellGroup b) {
+        HashSet<Cell> set = new HashSet<Cell>(Arrays.asList(a.mCells));
+        set.addAll(Arrays.asList(b.mCells));
+        return set.toArray(new Cell[0]);
+    }
+
+    public static Cell[] intersection(CellGroup a, CellGroup b) {
+        HashSet<Cell> set = new HashSet<Cell>(Arrays.asList(a.mCells));
+        set.retainAll(Arrays.asList(b.mCells));
+        return set.toArray(new Cell[0]);
+    }
+
+    public static Cell[] difference(CellGroup a, CellGroup b) {
+        HashSet<Cell> set = new HashSet<Cell>(Arrays.asList(a.mCells));
+        set.removeAll(Arrays.asList(b.mCells));
+        return set.toArray(new Cell[0]);
     }
 }

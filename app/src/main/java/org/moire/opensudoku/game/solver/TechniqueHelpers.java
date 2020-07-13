@@ -46,6 +46,34 @@ public class TechniqueHelpers {
         }
     }
 
+    public static CellGroup getGroupFromIndex(CellCollection cells, GroupType group, int index)
+    {
+        switch (group) {
+            default:
+            case Box:
+                // boxes (sectors) are stored in this order internally:
+                //
+                //   0 3 6
+                //   1 4 7
+                //   2 5 8
+                //
+                // But the conventional enumeration is this:
+                //
+                //   0 1 2
+                //   3 4 5
+                //   6 7 8
+                //
+                // So we flip the x and y coordinates before returning the CellGroup.
+                int xPosition = index % 3;
+                int yPosition = index / 3;
+                return cells.getSectors()[xPosition * 3 + yPosition];
+            case Row:
+                return cells.getRows()[index];
+            case Column:
+                return cells.getColumns()[index];
+        }
+    }
+
     public static int getGroupIndex(GroupType group, int row, int column)
     {
         switch (group) {
