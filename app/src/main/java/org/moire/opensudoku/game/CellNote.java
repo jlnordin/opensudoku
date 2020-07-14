@@ -133,6 +133,14 @@ public class CellNote {
         return result;
     }
 
+    public int getNotedNumbersCount() {
+        return Integer.bitCount(mNotedNumbers);
+    }
+
+    public short getNotedNumbersAsBitSet() {
+        return mNotedNumbers;
+    }
+
     /**
      * Toggles noted number: if number is already noted, it will be removed otherwise it will be added.
      *

@@ -430,4 +430,13 @@
     <string name="technique_locked_candidate_step_2">Now look at %1$s %2$d and %3$s %4$d.</string> <!-- e.g. "Now look at box 3 and row 4." -->
     <string name="technique_locked_candidate_step_3">All of the notes for %1$d in %2$s %3$d are also in %4$s %5$d.</string> <!-- e.g. "All of the notes for box 3 are also in row 4." -->
     <string name="technique_locked_candidate_step_4">Since %1$d <b>must</b> appear in one of the spots in %2$s %3$d, all other candidates in %4$s %5$d can be eliminated.</string> <!-- e.g. "Since 7 must appear in one of the spots in box 3, all other candidates in row 4 can be eliminated." -->
+    <string name="technique_naked_pair_title">Naked Pair</string>
+    <string name="technique_naked_triple_title">Naked Triple</string>
+    <string name="technique_naked_quadruple_title">Naked Quadruple</string>
+    <string name="technique_naked_subset_step_1">A naked subset is when two or more cells in a group share the same set of note values.</string>
+    <string name="technique_naked_subset_step_2"></string>
+    <string name="technique_naked_subset_step_3"></string>
+    <string name="technique_naked_subset_step_4"></string>
+    <string name="technique_naked_subset_step_5"></string>
+    <string name="technique_naked_subset_step_6"></string>
 </resources>
