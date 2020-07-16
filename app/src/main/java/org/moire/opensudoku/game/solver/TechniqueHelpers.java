@@ -12,7 +12,10 @@ import org.moire.opensudoku.gui.SudokuBoardView;
 
 import java.security.acl.Group;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.RandomAccess;
 
 public class TechniqueHelpers {
 
@@ -170,6 +173,50 @@ public class TechniqueHelpers {
     public static void highlightNotes(CellCollection cells, int note, HashMap<Cell, HighlightOptions> highlightOverrides) {
         for (CellGroup row : cells.getRows()) {
             highlightNotesInGroup(row, note, highlightOverrides);
+        }
+    }
+
+    /**
+     * Get the next subset mask for a given starting point. A sub set mask is a number where each
+     * bit of the binary representation corresponds to the element of a set. For example, if we had
+     * a set of 4 cells, a value of 0101 would mean "select cells[0] and cells[2]", where a value of
+     * 1100 would mean "select cells[2] and cells[3]".
+     *
+     * This function also takes a cardinality so that the returned mask value will have exactly that
+     * many elements. For example, passing in a cardinality of "2" would iterate though all pairs of
+     * a given set.
+     */
+    public static int getNextSubsetMask(int currentSubsetMask, int cardinality) {
+        int nextSubsetMask = currentSubsetMask;
+        while (Integer.bitCount(nextSubsetMask) != cardinality) {
+            nextSubsetMask++;
+        }
+        return nextSubsetMask;
+    }
+
+    public static int getFirstSubsetMask(int cardinality) {
+        return getNextSubsetMask(0, cardinality);
+    }
+
+    public static int getMaximumSubsetMask(int setSize) {
+        return (1 << setSize);
+    }
+
+    public static void fillSubset(Collection<Cell> superSet, int subsetMask, Cell[] subset) {
+        int outputIndex = 0;
+        int inputIndex = 0;
+        Iterator<Cell> iterator = superSet.iterator();
+
+        while (iterator.hasNext()) {
+            Cell cell = iterator.next();
+            if ((subsetMask & (1 << inputIndex)) != 0) {
+                if (outputIndex >= subset.length) {
+                    return;
+                }
+                subset[outputIndex] = cell;
+                outputIndex++;
+            }
+            inputIndex++;
         }
     }
 }
