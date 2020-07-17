@@ -187,7 +187,7 @@ public class TechniqueHelpers {
      * a given set.
      */
     public static int getNextSubsetMask(int currentSubsetMask, int cardinality) {
-        int nextSubsetMask = currentSubsetMask;
+        int nextSubsetMask = currentSubsetMask + 1;
         while (Integer.bitCount(nextSubsetMask) != cardinality) {
             nextSubsetMask++;
         }
