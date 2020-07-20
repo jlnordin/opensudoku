@@ -12,6 +12,7 @@ import org.moire.opensudoku.gui.SudokuBoardView;
 
 import java.security.acl.Group;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -174,6 +175,24 @@ public class TechniqueHelpers {
         for (CellGroup row : cells.getRows()) {
             highlightNotesInGroup(row, note, highlightOverrides);
         }
+    }
+
+    public static HighlightOptions createHighlightOptionsForNotes(Cell cell, int[] notes) {
+        HighlightOptions noteHighlight = new HighlightOptions(HighlightOptions.HighlightMode.EMPHASIZE);
+        for (int note : notes) {
+            if (cell.getValue() == 0 && cell.getNote().hasNumber(note + 1)) {
+                noteHighlight.setNoteHighlightMode(note, HighlightOptions.HighlightMode.HIGHLIGHT);
+            }
+        }
+        return noteHighlight;
+    }
+
+    public static String noteArrayToString(int[] notes) {
+        int[] notesPlusOne = new int[notes.length];
+        for (int n = 0; n < notesPlusOne.length; n++) {
+            notesPlusOne[n] = notes[n] + 1;
+        }
+        return Arrays.toString(notesPlusOne);
     }
 
     /**

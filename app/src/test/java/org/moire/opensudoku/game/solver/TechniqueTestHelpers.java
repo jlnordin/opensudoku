@@ -165,6 +165,26 @@ public class TechniqueTestHelpers {
         return game;
     }
 
+    public static SudokuGame createGameWithNakedPair() {
+        SudokuGame game = new SudokuGame();
+        CellCollection cells = CellCollection.fromString(
+                "205"+"637"+"081"+
+                "138"+"459"+"627"+
+                "600"+"182"+"530"+
+
+                "020"+"070"+"016"+
+                "001"+"968"+"200"+
+                "060"+"210"+"090"+
+
+                "013"+"720"+"008"+
+                "486"+"091"+"002"+
+                "702"+"840"+"100"
+        );
+        cells.fillInNotes();
+        game.setCells(cells);
+        return game;
+    }
+
     public static String[] OpenSudokuGames = new String[]{
 
             //Easy Sudokus

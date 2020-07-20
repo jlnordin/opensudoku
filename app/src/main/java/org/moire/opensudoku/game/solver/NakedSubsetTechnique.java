@@ -46,6 +46,13 @@ public class NakedSubsetTechnique extends AbstractTechnique {
         return notes;
     }
 
+    static boolean groupHasDeductionsFromSubset(CellGroup group, Cell[] subset) {
+        Cell[] cellsNotInSubset = getCellsFromGroupNotInSet(group, subset);
+        int candidateUnionInSubset = getUnionOfAllCandidates(subset);
+        int candidateUnionNotInSubset = getUnionOfAllCandidates(cellsNotInSubset);
+        return (candidateUnionInSubset & candidateUnionNotInSubset) != 0;
+    }
+
     static Cell[] getNakedSubsetFromGroup(CellGroup group, int cardinality) {
         List<Cell> allCellsInGroup = Arrays.asList(group.getCells());
         ArrayList<Cell> cellsToCheck = new ArrayList<Cell>();
@@ -74,7 +81,7 @@ public class NakedSubsetTechnique extends AbstractTechnique {
             // bits as the desired cardinality, that means this subset represents a naked subset
             // in the larger group being tested.
             int candidateMask = getUnionOfAllCandidates(subset);
-            if (Integer.bitCount(candidateMask) == cardinality) {
+            if (Integer.bitCount(candidateMask) == cardinality && groupHasDeductionsFromSubset(group, subset)) {
                 return subset;
             }
         }
@@ -102,9 +109,10 @@ public class NakedSubsetTechnique extends AbstractTechnique {
         for (CellGroup box : game.getCells().getSectors()) {
             cellsWithNakedSubset = getNakedSubsetFromGroup(box, cardinality);
             if (cellsWithNakedSubset != null) {
+                Cell[] cellsToRemoveNotesFrom = getCellsFromGroupNotInSet(box, cellsWithNakedSubset);
                 return new NakedSubsetTechnique(
                         context,
-                        getCellsFromGroupNotInSet(box, cellsWithNakedSubset),
+                        cellsToRemoveNotesFrom,
                         getNotedNumbersFromBitMask(getUnionOfAllCandidates(cellsWithNakedSubset)),
                         GroupType.Box,
                         TechniqueHelpers.getGroupIndex(GroupType.Box, cellsWithNakedSubset[0].getRowIndex(), cellsWithNakedSubset[0].getColumnIndex()));
@@ -189,15 +197,51 @@ public class NakedSubsetTechnique extends AbstractTechnique {
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_naked_subset_step_1),
                 (board) -> {}));
-/*
+
         mExplanationSteps.add(new Explanation(
-                mContext.getString(R.string.technique_naked_subset_step_2, mValue),
+                mContext.getString(R.string.technique_naked_subset_step_2,
+                        TechniqueHelpers.getGroupString(context, mGroupType),
+                        mGroupIndex + 1),
                 (board) -> {
-                    HighlightOptions options = new HighlightOptions(HighlightMode.EMPHASIZE);
-                    options.setNoteHighlightMode(mValue - 1, HighlightMode.HIGHLIGHT);
-                    mHighlightOverrides.put(board.getCells().getCell(mRow, mColumn), options);
+                    TechniqueHelpers.highlightGroup(TechniqueHelpers.getGroupFromIndex(board.getCells(), mGroupType, mGroupIndex), mHighlightOverrides);
                 }));
-*/
+
+        mExplanationSteps.add(new Explanation(
+                mContext.getString(R.string.technique_naked_subset_step_3,
+                        TechniqueHelpers.noteArrayToString(mNotesToRemove)),
+                (board) -> {
+                    CellGroup group = TechniqueHelpers.getGroupFromIndex(board.getCells(), mGroupType, mGroupIndex);
+                    for (Cell cell : group.getCells()) {
+                        mHighlightOverrides.put(cell, new HighlightOptions(HighlightMode.NONE));
+                    }
+
+                    Cell[] cellsWithNotesToRemove = new Cell[mRows.length];
+                    for (int c = 0; c < mRows.length; c++) {
+                        cellsWithNotesToRemove[c] = board.getCells().getCell(mRows[c], mColumns[c]);
+                    }
+
+                    Cell[] cellsWithSubset = getCellsFromGroupNotInSet(group, cellsWithNotesToRemove);
+                    for (Cell cell : cellsWithSubset) {
+                        mHighlightOverrides.put(cell, TechniqueHelpers.createHighlightOptionsForNotes(cell, mNotesToRemove));
+                    }
+                }));
+
+        mExplanationSteps.add(new Explanation(
+                mContext.getString(R.string.technique_naked_subset_step_4,
+                        TechniqueHelpers.noteArrayToString(mNotesToRemove),
+                        TechniqueHelpers.getGroupString(context, mGroupType),
+                        mGroupIndex + 1),
+                (board) -> {
+                    CellGroup group = TechniqueHelpers.getGroupFromIndex(board.getCells(), mGroupType, mGroupIndex);
+                    for (Cell cell : group.getCells()) {
+                        mHighlightOverrides.put(cell, new HighlightOptions(HighlightMode.NONE));
+                    }
+
+                    for (int c = 0; c < mRows.length; c++) {
+                        Cell cell = board.getCells().getCell(mRows[c], mColumns[c]);
+                        mHighlightOverrides.put(cell, TechniqueHelpers.createHighlightOptionsForNotes(cell, mNotesToRemove));
+                    }
+                }));
     }
 
     @Override
