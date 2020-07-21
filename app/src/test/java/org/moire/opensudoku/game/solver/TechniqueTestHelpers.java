@@ -185,6 +185,34 @@ public class TechniqueTestHelpers {
         return game;
     }
 
+    public static SudokuGame createGameWithNakedTriple() {
+        SudokuGame game = new SudokuGame();
+        CellCollection cells = CellCollection.fromString(
+                "125"+"439"+"876"+
+                "080"+"200"+"301"+
+                "003"+"001"+"520"+
+
+                "850"+"192"+"703"+
+                "000"+"003"+"000"+
+                "309"+"740"+"080"+
+
+                "071"+"368"+"900"+
+                "690"+"517"+"038"+
+                "538"+"924"+"617"
+        );
+        cells.fillInNotes();
+        game.setCells(cells);
+        return game;
+    }
+
+    public static SudokuGame createGameWithNakedQuadruple() {
+        SudokuGame game = new SudokuGame();
+        CellCollection cells = CellCollection.fromString("532786000978241060001953287025400670003617052700500000000100000000805106000300098");
+        cells.fillInNotes();
+        game.setCells(cells);
+        return game;
+    }
+
     public static String[] OpenSudokuGames = new String[]{
 
             //Easy Sudokus

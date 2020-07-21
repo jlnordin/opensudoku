@@ -39,8 +39,8 @@ public class StepByStepSolver {
                 // Techniques that eliminate notes (candidate values).
                 LockedCandidateTechnique::create,
                 NakedSubsetTechnique::createPair,
-                //NakedSubsetTechnique::createTriple,
-                //NakedSubsetTechnique::createQuadruple,
+                NakedSubsetTechnique::createTriple,
+                NakedSubsetTechnique::createQuadruple,
 
                 // Last resort technique.
                 BruteForceTechnique::create
