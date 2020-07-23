@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 class HodokuRegressionTestInfo {
-    public String TechniqueId = null;
+    public int TechniqueId = 0;
+    public int TechniqueVariant = 0;
     public int[] Candidates = null;
     public String GivenCells = null;
     public ArrayList<int[]> DeletedCandidates = null;
@@ -42,9 +43,9 @@ class HodokuRegressionTestLibraryHelpers {
         ArrayList<int[]> rowColumnValueTriples = new ArrayList<int[]>(splitValues.length);
         for (int i = 0; i < splitValues.length; i++) {
             int[] rowColumnValue = new int[3];
-            rowColumnValue[0] =  Character.valueOf(splitValues[i].charAt(1)) - 1;
-            rowColumnValue[1] =  Character.valueOf(splitValues[i].charAt(2)) - 1;
-            rowColumnValue[2] =  Character.valueOf(splitValues[i].charAt(0));
+            rowColumnValue[0] =  Character.getNumericValue(splitValues[i].charAt(1)) - 1;
+            rowColumnValue[1] =  Character.getNumericValue(splitValues[i].charAt(2)) - 1;
+            rowColumnValue[2] =  Character.getNumericValue(splitValues[i].charAt(0));
             rowColumnValueTriples.add(rowColumnValue);
         }
         return rowColumnValueTriples;
@@ -67,39 +68,45 @@ class HodokuRegressionTestLibraryHelpers {
         }
 
         String[] testComponents = regressionTestString.split(delimiter);
-        if (testComponents.length < 6 ||
-            testComponents.length > 7) {
+        if (testComponents.length < 7 ||
+            testComponents.length > 8) {
             return null;
         }
 
         HodokuRegressionTestInfo testInfo = new HodokuRegressionTestInfo();
 
-        // TechniqueName
-        testInfo.TechniqueId = testComponents[0];
+        // TechniqueId and TechniqueVariant
+        String[] idAndVariant = testComponents[1].split("-");
+        testInfo.TechniqueId = Integer.parseInt(idAndVariant[0]);
+        if (idAndVariant.length > 1) {
+            testInfo.TechniqueVariant = Integer.parseInt(idAndVariant[1]);
+        } else {
+            testInfo.TechniqueVariant = 0;
+        }
 
         // Candidates
-        testInfo.Candidates = new int[testComponents[1].length()];
-        for (int c = 0; c < testComponents[1].length(); c++) {
-            testInfo.Candidates[c] = Character.valueOf(testComponents[1].charAt(c)) - 1;
+        testInfo.Candidates = new int[testComponents[2].length()];
+        for (int c = 0; c < testComponents[2].length(); c++) {
+            testInfo.Candidates[c] = Character.getNumericValue(testComponents[2].charAt(c)) - 1;
         }
 
         // GivenCells
-        testInfo.GivenCells = testComponents[2]
+        testInfo.GivenCells = testComponents[3]
                 .replaceAll("\\+", "")
                 .replaceAll("\\.", "0");
 
         // DeletedCandidates
-        testInfo.DeletedCandidates = getRowColumnValueTriplesFromValueRowColumnString(testComponents[3]);
+        testInfo.DeletedCandidates = getRowColumnValueTriplesFromValueRowColumnString(testComponents[4]);
 
         // Eliminations
-        testInfo.Eliminations = getRowColumnValueTriplesFromValueRowColumnString(testComponents[4]);
+        testInfo.Eliminations = getRowColumnValueTriplesFromValueRowColumnString(testComponents[5]);
 
         // Placements
-        testInfo.Placements = getRowColumnValueTriplesFromValueRowColumnString(testComponents[5]);
+        testInfo.Placements = getRowColumnValueTriplesFromValueRowColumnString(testComponents[6]);
 
         // ExtraData
-        if (testComponents.length == 7) {
-            testInfo.ExtraData = testComponents[6];
+        if (testComponents.length == 8) {
+            testInfo.ExtraData = testComponents[7];
         } else {
             testInfo.ExtraData = "";
         }

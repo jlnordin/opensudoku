@@ -9,12 +9,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.moire.opensudoku.game.SudokuGame;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class HodokuRegressionTestLibrary {
@@ -28,8 +26,52 @@ class HodokuRegressionTestLibrary {
 
     HodokuRegressionTestInfo[] mHodokuTests = null;
 
+    static void assertPlacement(HodokuRegressionTestInfo testInfo, int row, int column, int value) {
+        // Placements are [row, column, value] triples.
+        assertEquals(testInfo.Placements.get(0)[0], row);
+        assertEquals(testInfo.Placements.get(0)[1], column);
+        assertEquals(testInfo.Placements.get(0)[2], value);
+    }
+
     @Test
-    void initializeTestsFromFile() {
-        assertNotEquals(0, mHodokuTests.length);
+    void fullHouseTechnique() {
+        final int fullHouseTechniqueId = 0;
+
+        for (HodokuRegressionTestInfo testInfo : mHodokuTests) {
+            if (testInfo.TechniqueId == fullHouseTechniqueId) {
+                SudokuGame game = TechniqueTestHelpers.createGameFromString(testInfo.GivenCells);
+                FullHouseTechnique technique = FullHouseTechnique.create(mContext, game);
+                assertNotNull(technique);
+                assertPlacement(testInfo, technique.mRow, technique.mColumn, technique.mValue);
+            }
+        }
+    }
+
+    @Test
+    void hiddenSingleTechnique() {
+        final int hiddenSingleTechniqueId = 2;
+
+        for (HodokuRegressionTestInfo testInfo : mHodokuTests) {
+            if (testInfo.TechniqueId == hiddenSingleTechniqueId) {
+                SudokuGame game = TechniqueTestHelpers.createGameFromString(testInfo.GivenCells);
+                HiddenSingleTechnique technique = HiddenSingleTechnique.create(mContext, game);
+                assertNotNull(technique);
+                assertPlacement(testInfo, technique.mRow, technique.mColumn, technique.mValue);
+            }
+        }
+    }
+
+    @Test
+    void nakedSingleTechnique() {
+        final int nakedSingleTechniqueId = 3;
+
+        for (HodokuRegressionTestInfo testInfo : mHodokuTests) {
+            if (testInfo.TechniqueId == nakedSingleTechniqueId) {
+                SudokuGame game = TechniqueTestHelpers.createGameFromString(testInfo.GivenCells);
+                NakedSingleTechnique technique = NakedSingleTechnique.create(mContext, game);
+                assertNotNull(technique);
+                assertPlacement(testInfo, technique.mRow, technique.mColumn, technique.mValue);
+            }
+        }
     }
 }
