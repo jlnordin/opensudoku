@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.moire.opensudoku.game.CellCollection;
 import org.moire.opensudoku.game.SudokuGame;
 
 import java.io.BufferedInputStream;
@@ -131,5 +132,12 @@ class HodokuRegressionTestLibraryHelpers {
         }
 
         return tests.toArray(new HodokuRegressionTestInfo[0]);
+    }
+
+    public static SudokuGame createGameFromTestInfo(HodokuRegressionTestInfo testInfo) {
+        SudokuGame game = new SudokuGame();
+        game.setCells(CellCollection.fromString(testInfo.GivenCells));
+        // TODO: process candidate deletions...
+        return game;
     }
 }

@@ -213,12 +213,6 @@ public class TechniqueTestHelpers {
         return game;
     }
 
-    public static SudokuGame createGameFromString(String sudokuString) {
-        SudokuGame game = new SudokuGame();
-        game.setCells(CellCollection.fromString(sudokuString));
-        return game;
-    }
-
     public static String[] OpenSudokuGames = new String[]{
 
             //Easy Sudokus
