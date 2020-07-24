@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 class HodokuRegressionTestInfo {
+    public String OriginalLine = null;
     public int TechniqueId = 0;
     public int TechniqueVariant = 0;
     public int[] Candidates = null;
@@ -75,6 +76,9 @@ class HodokuRegressionTestLibraryHelpers {
         }
 
         HodokuRegressionTestInfo testInfo = new HodokuRegressionTestInfo();
+
+        // OriginalLine
+        testInfo.OriginalLine = regressionTestString;
 
         // TechniqueId and TechniqueVariant
         String[] idAndVariant = testComponents[1].split("-");
