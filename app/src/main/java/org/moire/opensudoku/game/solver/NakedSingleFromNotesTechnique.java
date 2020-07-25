@@ -10,6 +10,7 @@ import org.moire.opensudoku.game.command.SetCellValueCommand;
 import org.moire.opensudoku.gui.HighlightOptions;
 import org.moire.opensudoku.gui.HighlightOptions.HighlightMode;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,21 @@ public class NakedSingleFromNotesTechnique extends AbstractTechnique {
         }
 
         return null;
+    }
+
+    public static NakedSingleFromNotesTechnique[] createAll(Context context, SudokuGame game) {
+        ArrayList<NakedSingleFromNotesTechnique> techniques = new ArrayList<NakedSingleFromNotesTechnique>();
+        for (CellGroup box : game.getCells().getSectors()) {
+            for (Cell cellToCheck : box.getCells()) {
+                if (cellToCheck.getValue() == 0) {
+                    List<Integer> notes = cellToCheck.getNote().getNotedNumbers();
+                    if (notes.size() == 1) {
+                        techniques.add(new NakedSingleFromNotesTechnique(context, cellToCheck.getRowIndex(), cellToCheck.getColumnIndex(), notes.get(0)));
+                    }
+                }
+            }
+        }
+        return techniques.toArray(new NakedSingleFromNotesTechnique[0]);
     }
 
     int mRow = 0;

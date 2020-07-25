@@ -98,6 +98,7 @@ class HodokuRegressionTestLibrary {
         HiddenSingleTechnique[] techniques = HiddenSingleTechnique.createAll(mContext, game);
         assertNotNull(techniques);
         assertNotEquals(0, techniques.length);
+        assertNotNull(techniques[0]);
 
         // Assert that the Hodoku library's expected placement is one of the possible
         // techniques for the given board. Some games will have multiple valid instances of
@@ -107,6 +108,36 @@ class HodokuRegressionTestLibrary {
         // least one valid technique deduction.
         Boolean onePlacementIsCorrect = false;
         for (HiddenSingleTechnique technique : techniques) {
+            onePlacementIsCorrect = isPlacementCorrect(testInfo, technique.mRow, technique.mColumn, technique.mValue);
+            if (onePlacementIsCorrect) {
+                break;
+            }
+        }
+        assertTrue(onePlacementIsCorrect);
+    }
+
+    @TestFactory
+    public Collection<DynamicTest> hiddenSingleFromNotesTechniqueTestFactory() {
+        Collection<DynamicTest> tests = new ArrayList<DynamicTest>();
+        for (HodokuRegressionTestInfo testInfo : mHodokuTests) {
+            if (testInfo.TechniqueId == HiddenSingleTechniqueId) {
+                tests.add(DynamicTest.dynamicTest(
+                        getTestInfoName("HiddenSingleFromNotesTechnique", testInfo),
+                        () -> testHiddenSingleFromNotesTechnique(testInfo)));
+            }
+        }
+        return tests;
+    }
+
+    void testHiddenSingleFromNotesTechnique(HodokuRegressionTestInfo testInfo) {
+        SudokuGame game = HodokuRegressionTestLibraryHelpers.createGameFromTestInfo(testInfo);
+        HiddenSingleFromNotesTechnique[] techniques = HiddenSingleFromNotesTechnique.createAll(mContext, game);
+        assertNotNull(techniques);
+        assertNotEquals(0, techniques.length);
+        assertNotNull(techniques[0]);
+
+        Boolean onePlacementIsCorrect = false;
+        for (HiddenSingleFromNotesTechnique technique : techniques) {
             onePlacementIsCorrect = isPlacementCorrect(testInfo, technique.mRow, technique.mColumn, technique.mValue);
             if (onePlacementIsCorrect) {
                 break;
@@ -139,9 +170,40 @@ class HodokuRegressionTestLibrary {
         NakedSingleTechnique[] techniques = NakedSingleTechnique.createAll(mContext, game);
         assertNotNull(techniques);
         assertNotEquals(0, techniques.length);
+        assertNotNull(techniques[0]);
 
         Boolean onePlacementIsCorrect = false;
         for (NakedSingleTechnique technique : techniques) {
+            onePlacementIsCorrect = isPlacementCorrect(testInfo, technique.mRow, technique.mColumn, technique.mValue);
+            if (onePlacementIsCorrect) {
+                break;
+            }
+        }
+        assertTrue(onePlacementIsCorrect);
+    }
+
+    @TestFactory
+    public Collection<DynamicTest> nakedSingleFromNotesTechniqueTestFactory() {
+        Collection<DynamicTest> tests = new ArrayList<DynamicTest>();
+        for (HodokuRegressionTestInfo testInfo : mHodokuTests) {
+            if (testInfo.TechniqueId == NakedSingleTechniqueId) {
+                tests.add(DynamicTest.dynamicTest(
+                        getTestInfoName("NakedSingleFromNotesTechnique", testInfo),
+                        () -> testNakedSingleFromNotesTechnique(testInfo)));
+            }
+        }
+        return tests;
+    }
+
+    void testNakedSingleFromNotesTechnique(HodokuRegressionTestInfo testInfo) {
+        SudokuGame game = HodokuRegressionTestLibraryHelpers.createGameFromTestInfo(testInfo);
+        NakedSingleFromNotesTechnique[] techniques = NakedSingleFromNotesTechnique.createAll(mContext, game);
+        assertNotNull(techniques);
+        assertNotEquals(0, techniques.length);
+        assertNotNull(techniques[0]);
+
+        Boolean onePlacementIsCorrect = false;
+        for (NakedSingleFromNotesTechnique technique : techniques) {
             onePlacementIsCorrect = isPlacementCorrect(testInfo, technique.mRow, technique.mColumn, technique.mValue);
             if (onePlacementIsCorrect) {
                 break;

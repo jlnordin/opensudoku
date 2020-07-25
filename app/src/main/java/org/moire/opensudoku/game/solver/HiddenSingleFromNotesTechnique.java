@@ -16,57 +16,88 @@ import java.util.ArrayList;
 
 public class HiddenSingleFromNotesTechnique extends AbstractTechnique {
 
+    static HiddenSingleFromNotesTechnique createTechniqueFromGroup(Context context, SudokuGame game, GroupType groupType, CellGroup group) {
+        for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
+            ArrayList<Cell> candidates = TechniqueHelpers.getCellsWithCandidateValueFromNotes(group, i);
+            if (candidates.size() == 1) {
+                return new HiddenSingleFromNotesTechnique(
+                        context,
+                        groupType,
+                        candidates.get(0).getRowIndex(),
+                        candidates.get(0).getColumnIndex(),
+                        i);
+            }
+        }
+        return null;
+    }
+
     public static HiddenSingleFromNotesTechnique create(Context context, SudokuGame game) {
 
-        GroupType type = GroupType.Box;
-        int value = 0;
-        Cell cell = null;
+        HiddenSingleFromNotesTechnique technique = null;
 
         for (CellGroup box : game.getCells().getSectors()) {
             for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
-                ArrayList<Cell> candidates = TechniqueHelpers.getCellsWithCandidateValueFromNotes(box, i);
-                if (candidates.size() == 1) {
-                    cell = candidates.get(0);
-                    value = i;
-                    type = GroupType.Box;
-                    break;
+                technique = createTechniqueFromGroup(context, game, GroupType.Box, box);
+                if (technique != null) {
+                    return technique;
                 }
             }
         }
 
-        if (cell == null) {
-            for (CellGroup row : game.getCells().getRows()) {
-                for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
-                    ArrayList<Cell> candidates = TechniqueHelpers.getCellsWithCandidateValueFromNotes(row, i);
-                    if (candidates.size() == 1) {
-                        cell = candidates.get(0);
-                        value = i;
-                        type = GroupType.Row;
-                        break;
-                    }
+        for (CellGroup row : game.getCells().getRows()) {
+            for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
+                technique = createTechniqueFromGroup(context, game, GroupType.Row, row);
+                if (technique != null) {
+                    return technique;
                 }
             }
         }
 
-        if (cell == null) {
-            for (CellGroup column : game.getCells().getColumns()) {
-                for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
-                    ArrayList<Cell> candidates = TechniqueHelpers.getCellsWithCandidateValueFromNotes(column, i);
-                    if (candidates.size() == 1) {
-                        cell = candidates.get(0);
-                        value = i;
-                        type = GroupType.Column;
-                        break;
-                    }
+        for (CellGroup column : game.getCells().getColumns()) {
+            for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
+                technique = createTechniqueFromGroup(context, game, GroupType.Column, column);
+                if (technique != null) {
+                    return technique;
                 }
             }
         }
 
-        if (cell != null) {
-            return new HiddenSingleFromNotesTechnique(context, type, cell.getRowIndex(), cell.getColumnIndex(), value);
-        } else {
-            return null;
+        return null;
+    }
+
+    public static HiddenSingleFromNotesTechnique[] createAll(Context context, SudokuGame game) {
+
+        HiddenSingleFromNotesTechnique technique = null;
+        ArrayList<HiddenSingleFromNotesTechnique> techniques = new ArrayList<HiddenSingleFromNotesTechnique>();
+
+        for (CellGroup box : game.getCells().getSectors()) {
+            for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
+                technique = createTechniqueFromGroup(context, game, GroupType.Box, box);
+                if (technique != null) {
+                    techniques.add(technique);
+                }
+            }
         }
+
+        for (CellGroup row : game.getCells().getRows()) {
+            for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
+                technique = createTechniqueFromGroup(context, game, GroupType.Row, row);
+                if (technique != null) {
+                    techniques.add(technique);
+                }
+            }
+        }
+
+        for (CellGroup column : game.getCells().getColumns()) {
+            for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
+                technique = createTechniqueFromGroup(context, game, GroupType.Column, column);
+                if (technique != null) {
+                    techniques.add(technique);
+                }
+            }
+        }
+
+        return techniques.toArray(new HiddenSingleFromNotesTechnique[0]);
     }
 
     GroupType mGroup;
