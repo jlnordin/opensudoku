@@ -55,50 +55,15 @@ class HodokuRegressionTestLibrary {
     }
 
     @TestFactory
-    public Collection<DynamicTest> hodokuRegressionTestLibraryTestFactory() {
+    public Collection<DynamicTest> fullHouseTechniqueTestFactory() {
         Collection<DynamicTest> tests = new ArrayList<DynamicTest>();
-
         for (HodokuRegressionTestInfo testInfo : mHodokuTests) {
-
-            switch (testInfo.TechniqueId) {
-                default:
-                    break;
-
-                case FullHouseTechniqueId: {
-                    tests.add(DynamicTest.dynamicTest(
-                            getTestInfoName("FullHouseTechnique", testInfo),
-                            () -> testFullHouseTechnique(testInfo)));
-                    break;
-                }
-
-                case HiddenSingleTechniqueId: {
-                    // The HiddenSingleTechnique only operates on given cells, not candidates. As
-                    // such, we filter the Hodoku tests here to "hidden single" tests that don't
-                    // require deleting candidates. The HiddenSingleFromNotesTechnique can handle
-                    // those regression tests.
-                    if (testInfo.DeletedCandidates.size() == 0) {
-                        tests.add(DynamicTest.dynamicTest(
-                                getTestInfoName("HiddenSingleTechnique", testInfo),
-                                () -> testHiddenSingleTechnique(testInfo)));
-                    }
-                    break;
-                }
-
-                case NakedSingleTechniqueId: {
-                    // The NakedSingleTechnique only operates on given cells, not candidates. As
-                    // such, we filter the Hodoku tests here to "naked single" tests that don't
-                    // require deleting candidates. The NakedSingleFromNotesTechnique can handle
-                    // those regression tests.
-                    if (testInfo.DeletedCandidates.size() == 0) {
-                        tests.add(DynamicTest.dynamicTest(
-                                getTestInfoName("NakedSingleTechnique", testInfo),
-                                () -> testNakedSingleTechnique(testInfo)));
-                    }
-                    break;
-                }
+            if (testInfo.TechniqueId == FullHouseTechniqueId) {
+                tests.add(DynamicTest.dynamicTest(
+                        getTestInfoName("FullHouseTechnique", testInfo),
+                        () -> testFullHouseTechnique(testInfo)));
             }
         }
-
         return tests;
     }
 
@@ -107,6 +72,25 @@ class HodokuRegressionTestLibrary {
         FullHouseTechnique technique = FullHouseTechnique.create(mContext, game);
         assertNotNull(technique);
         assertPlacement(testInfo, technique.mRow, technique.mColumn, technique.mValue);
+    }
+
+    @TestFactory
+    public Collection<DynamicTest> hiddenSingleTechniqueTestFactory() {
+        Collection<DynamicTest> tests = new ArrayList<DynamicTest>();
+        for (HodokuRegressionTestInfo testInfo : mHodokuTests) {
+            if (testInfo.TechniqueId == HiddenSingleTechniqueId) {
+                // The HiddenSingleTechnique only operates on given cells, not candidates. As
+                // such, we filter the Hodoku tests here to "hidden single" tests that don't
+                // require deleting candidates. The HiddenSingleFromNotesTechnique can handle
+                // those regression tests.
+                if (testInfo.DeletedCandidates.size() == 0) {
+                    tests.add(DynamicTest.dynamicTest(
+                            getTestInfoName("HiddenSingleTechnique", testInfo),
+                            () -> testHiddenSingleTechnique(testInfo)));
+                }
+            }
+        }
+        return tests;
     }
 
     void testHiddenSingleTechnique(HodokuRegressionTestInfo testInfo) {
@@ -131,10 +115,38 @@ class HodokuRegressionTestLibrary {
         assertTrue(onePlacementIsCorrect);
     }
 
+    @TestFactory
+    public Collection<DynamicTest> nakedSingleTechniqueTestFactory() {
+        Collection<DynamicTest> tests = new ArrayList<DynamicTest>();
+        for (HodokuRegressionTestInfo testInfo : mHodokuTests) {
+            if (testInfo.TechniqueId == NakedSingleTechniqueId) {
+                // The NakedSingleTechnique only operates on given cells, not candidates. As
+                // such, we filter the Hodoku tests here to "naked single" tests that don't
+                // require deleting candidates. The NakedSingleFromNotesTechnique can handle
+                // those regression tests.
+                if (testInfo.DeletedCandidates.size() == 0) {
+                    tests.add(DynamicTest.dynamicTest(
+                            getTestInfoName("NakedSingleTechnique", testInfo),
+                            () -> testNakedSingleTechnique(testInfo)));
+                }
+            }
+        }
+        return tests;
+    }
+
     void testNakedSingleTechnique(HodokuRegressionTestInfo testInfo) {
         SudokuGame game = HodokuRegressionTestLibraryHelpers.createGameFromTestInfo(testInfo);
-        NakedSingleTechnique technique = NakedSingleTechnique.create(mContext, game);
-        assertNotNull(technique);
-        assertPlacement(testInfo, technique.mRow, technique.mColumn, technique.mValue);
+        NakedSingleTechnique[] techniques = NakedSingleTechnique.createAll(mContext, game);
+        assertNotNull(techniques);
+        assertNotEquals(0, techniques.length);
+
+        Boolean onePlacementIsCorrect = false;
+        for (NakedSingleTechnique technique : techniques) {
+            onePlacementIsCorrect = isPlacementCorrect(testInfo, technique.mRow, technique.mColumn, technique.mValue);
+            if (onePlacementIsCorrect) {
+                break;
+            }
+        }
+        assertTrue(onePlacementIsCorrect);
     }
 }

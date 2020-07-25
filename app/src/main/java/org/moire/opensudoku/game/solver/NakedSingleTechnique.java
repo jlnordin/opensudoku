@@ -12,6 +12,7 @@ import org.moire.opensudoku.game.solver.TechniqueHelpers.GroupType;
 import org.moire.opensudoku.gui.HighlightOptions;
 import org.moire.opensudoku.gui.HighlightOptions.HighlightMode;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class NakedSingleTechnique extends AbstractTechnique {
@@ -38,6 +39,21 @@ public class NakedSingleTechnique extends AbstractTechnique {
         } else {
             return null;
         }
+    }
+
+    public static NakedSingleTechnique[] createAll(Context context, SudokuGame game) {
+
+        ArrayList<NakedSingleTechnique> techniques = new ArrayList<NakedSingleTechnique>();
+        for (CellGroup box : game.getCells().getSectors()) {
+            for (Cell cellToCheck : box.getCells()) {
+                ArrayList<Integer> candidates = TechniqueHelpers.getCandidatesForCell(cellToCheck);
+                if (candidates.size() == 1) {
+                    techniques.add(new NakedSingleTechnique(context, cellToCheck.getRowIndex(), cellToCheck.getColumnIndex(), candidates.get(0)));
+                }
+            }
+        }
+
+        return techniques.toArray(new NakedSingleTechnique[0]);
     }
 
     int mRow = 0;
