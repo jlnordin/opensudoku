@@ -49,6 +49,8 @@ class HodokuRegressionTestLibrary {
     final static int FullHouseTechniqueId = 0;
     final static int HiddenSingleTechniqueId = 2;
     final static int NakedSingleTechniqueId = 3;
+    final static int LockedCandidateType1TechniqueId = 100;
+    final static int LockedCandidateType2TechniqueId = 101;
 
     String getTestInfoName(String techniqueName, HodokuRegressionTestInfo testInfo) {
         return String.format("%s - \"%s\"", techniqueName, testInfo.OriginalLine);
@@ -210,5 +212,40 @@ class HodokuRegressionTestLibrary {
             }
         }
         assertTrue(onePlacementIsCorrect);
+    }
+
+    @TestFactory
+    public Collection<DynamicTest> lockedCandidateTechniqueTestFactory() {
+        Collection<DynamicTest> tests = new ArrayList<DynamicTest>();
+        for (HodokuRegressionTestInfo testInfo : mHodokuTests) {
+            if (testInfo.TechniqueId == LockedCandidateType1TechniqueId ||
+                testInfo.TechniqueId == LockedCandidateType2TechniqueId) {
+                tests.add(DynamicTest.dynamicTest(
+                        getTestInfoName("LockedCandidateTechnique", testInfo),
+                        () -> testLockedCandidateTechnique(testInfo)));
+            }
+        }
+        return tests;
+    }
+
+    void testLockedCandidateTechnique(HodokuRegressionTestInfo testInfo) {
+        SudokuGame game = HodokuRegressionTestLibraryHelpers.createGameFromTestInfo(testInfo);
+        LockedCandidateTechnique technique = LockedCandidateTechnique.create(mContext, game);
+        assertNotNull(technique);
+
+        assertEquals(1, testInfo.Candidates.length);
+        assertEquals(testInfo.Candidates[0], technique.mValue);
+
+        int matchingEliminations = 0;
+        for (int[] rowColumnValue : testInfo.Eliminations) {
+            for (int i = 0; i < technique.mRows.length; i++) {
+                if (technique.mRows[i] == rowColumnValue[0] &&
+                    technique.mColumns[i] == rowColumnValue[1] &&
+                    technique.mValue == rowColumnValue[2]) {
+                    matchingEliminations++;
+                }
+            }
+        }
+        assertEquals(testInfo.Eliminations.size(), matchingEliminations);
     }
 }
