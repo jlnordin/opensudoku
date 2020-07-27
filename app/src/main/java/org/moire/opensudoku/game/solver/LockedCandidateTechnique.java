@@ -20,10 +20,20 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 
 public class LockedCandidateTechnique extends AbstractTechnique {
 
     public static LockedCandidateTechnique create(Context context, SudokuGame game) {
+        LockedCandidateTechnique[] techniques = createAll(context, game);
+        if (techniques.length > 0) {
+            return techniques[0];
+        } else {
+            return null;
+        }
+    }
+
+    public static LockedCandidateTechnique[] createAll(Context context, SudokuGame game) {
 
         int value = 0;
         GroupType primaryType = GroupType.Box;
@@ -32,8 +42,9 @@ public class LockedCandidateTechnique extends AbstractTechnique {
         int secondaryIndex = 0;
         ArrayList<Cell> cellsToRemoveNoteFrom = new ArrayList<Cell>();
 
+        ArrayList<LockedCandidateTechnique> techniques = new ArrayList<LockedCandidateTechnique>();
+
         // Locked Candidate Type 1 (Pointing)
-        OuterLoop:
         for (CellGroup box : game.getCells().getSectors()) {
             for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
                 ArrayList<Cell> baseCandidates = TechniqueHelpers.getCellsWithCandidateValueFromNotes(box, i);
@@ -50,7 +61,14 @@ public class LockedCandidateTechnique extends AbstractTechnique {
                             primaryIndex = TechniqueHelpers.getGroupIndex(primaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
                             secondaryType = GroupType.Column;
                             secondaryIndex = TechniqueHelpers.getGroupIndex(secondaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
-                            break OuterLoop;
+                            techniques.add(new LockedCandidateTechnique(
+                                    context,
+                                    primaryType,
+                                    primaryIndex,
+                                    secondaryType,
+                                    secondaryIndex,
+                                    cellsToRemoveNoteFrom,
+                                    value));
                         }
                     }
 
@@ -65,7 +83,14 @@ public class LockedCandidateTechnique extends AbstractTechnique {
                             primaryIndex = TechniqueHelpers.getGroupIndex(primaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
                             secondaryType = GroupType.Row;
                             secondaryIndex = TechniqueHelpers.getGroupIndex(secondaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
-                            break OuterLoop;
+                            techniques.add(new LockedCandidateTechnique(
+                                    context,
+                                    primaryType,
+                                    primaryIndex,
+                                    secondaryType,
+                                    secondaryIndex,
+                                    cellsToRemoveNoteFrom,
+                                    value));
                         }
                     }
                 }
@@ -74,7 +99,6 @@ public class LockedCandidateTechnique extends AbstractTechnique {
 
         // Locked Candidate Type 2 (Claiming, row)
         if (cellsToRemoveNoteFrom.isEmpty()) {
-            OuterLoop:
             for (CellGroup row : game.getCells().getRows()) {
                 for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
                     ArrayList<Cell> baseCandidates = TechniqueHelpers.getCellsWithCandidateValueFromNotes(row, i);
@@ -91,7 +115,14 @@ public class LockedCandidateTechnique extends AbstractTechnique {
                                 primaryIndex = TechniqueHelpers.getGroupIndex(primaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
                                 secondaryType = GroupType.Box;
                                 secondaryIndex = TechniqueHelpers.getGroupIndex(secondaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
-                                break OuterLoop;
+                                techniques.add(new LockedCandidateTechnique(
+                                        context,
+                                        primaryType,
+                                        primaryIndex,
+                                        secondaryType,
+                                        secondaryIndex,
+                                        cellsToRemoveNoteFrom,
+                                        value));
                             }
                         }
                     }
@@ -101,7 +132,6 @@ public class LockedCandidateTechnique extends AbstractTechnique {
 
         // Locked Candidate Type 2 (Claiming, column)
         if (cellsToRemoveNoteFrom.isEmpty()) {
-            OuterLoop:
             for (CellGroup column : game.getCells().getColumns()) {
                 for (int i = 1; i <= CellCollection.SUDOKU_SIZE; i++) {
                     ArrayList<Cell> baseCandidates = TechniqueHelpers.getCellsWithCandidateValueFromNotes(column, i);
@@ -118,7 +148,14 @@ public class LockedCandidateTechnique extends AbstractTechnique {
                                 primaryIndex = TechniqueHelpers.getGroupIndex(primaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
                                 secondaryType = GroupType.Box;
                                 secondaryIndex= TechniqueHelpers.getGroupIndex(secondaryType, candidateCell.getRowIndex(), candidateCell.getColumnIndex());
-                                break OuterLoop;
+                                techniques.add(new LockedCandidateTechnique(
+                                        context,
+                                        primaryType,
+                                        primaryIndex,
+                                        secondaryType,
+                                        secondaryIndex,
+                                        cellsToRemoveNoteFrom,
+                                        value));
                             }
                         }
                     }
@@ -126,11 +163,7 @@ public class LockedCandidateTechnique extends AbstractTechnique {
             }
         }
 
-        if (!cellsToRemoveNoteFrom.isEmpty()) {
-            return new LockedCandidateTechnique(context, primaryType, primaryIndex, secondaryType, secondaryIndex, cellsToRemoveNoteFrom, value);
-        } else {
-            return null;
-        }
+        return techniques.toArray(new LockedCandidateTechnique[0]);
     }
 
     GroupType mPrimaryGroup;

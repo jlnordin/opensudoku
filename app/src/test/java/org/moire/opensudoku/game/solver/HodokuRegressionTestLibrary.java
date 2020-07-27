@@ -230,22 +230,35 @@ class HodokuRegressionTestLibrary {
 
     void testLockedCandidateTechnique(HodokuRegressionTestInfo testInfo) {
         SudokuGame game = HodokuRegressionTestLibraryHelpers.createGameFromTestInfo(testInfo);
-        LockedCandidateTechnique technique = LockedCandidateTechnique.create(mContext, game);
-        assertNotNull(technique);
+        LockedCandidateTechnique[] techniques = LockedCandidateTechnique.createAll(mContext, game);
+        assertNotNull(techniques);
+        assertNotEquals(0, techniques.length);
 
         assertEquals(1, testInfo.Candidates.length);
-        assertEquals(testInfo.Candidates[0], technique.mValue);
 
-        int matchingEliminations = 0;
-        for (int[] rowColumnValue : testInfo.Eliminations) {
-            for (int i = 0; i < technique.mRows.length; i++) {
-                if (technique.mRows[i] == rowColumnValue[0] &&
-                    technique.mColumns[i] == rowColumnValue[1] &&
-                    technique.mValue == rowColumnValue[2]) {
-                    matchingEliminations++;
+        Boolean oneTechniqueMatches = false;
+        for (LockedCandidateTechnique technique : techniques) {
+
+            if (testInfo.Candidates[0] != technique.mValue) {
+                continue;
+            }
+
+            int matchingEliminations = 0;
+            for (int[] rowColumnValue : testInfo.Eliminations) {
+                for (int i = 0; i < technique.mRows.length; i++) {
+                    if (technique.mRows[i] == rowColumnValue[0] &&
+                            technique.mColumns[i] == rowColumnValue[1] &&
+                            technique.mValue == rowColumnValue[2]) {
+                        matchingEliminations++;
+                    }
                 }
             }
+
+            if (testInfo.Eliminations.size() == matchingEliminations) {
+                oneTechniqueMatches = true;
+                break;
+            }
         }
-        assertEquals(testInfo.Eliminations.size(), matchingEliminations);
+        assertTrue(oneTechniqueMatches);
     }
 }

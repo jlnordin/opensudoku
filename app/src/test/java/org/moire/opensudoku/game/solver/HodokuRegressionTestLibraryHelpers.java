@@ -24,6 +24,7 @@ class HodokuRegressionTestInfo {
     public String OriginalLine = null;
     public int TechniqueId = 0;
     public int TechniqueVariant = 0;
+    public Boolean FailureCase = false;
     public int[] Candidates = null;
     public String GivenCells = null;
     public ArrayList<int[]> DeletedCandidates = null;
@@ -71,7 +72,7 @@ class HodokuRegressionTestLibraryHelpers {
         }
 
         String[] testComponents = regressionTestString.split(delimiter);
-        if (testComponents.length < 7 ||
+        if (testComponents.length < 6 ||
             testComponents.length > 8) {
             return null;
         }
@@ -81,11 +82,17 @@ class HodokuRegressionTestLibraryHelpers {
         // OriginalLine
         testInfo.OriginalLine = regressionTestString;
 
-        // TechniqueId and TechniqueVariant
+        // TechniqueId, TechniqueVariant, and FailureCase
         String[] idAndVariant = testComponents[1].split("-");
         testInfo.TechniqueId = Integer.parseInt(idAndVariant[0]);
         if (idAndVariant.length > 1) {
-            testInfo.TechniqueVariant = Integer.parseInt(idAndVariant[1]);
+            if (idAndVariant[1].startsWith("x")) {
+                testInfo.FailureCase = true;
+                testInfo.TechniqueVariant = 0;
+            } else {
+                testInfo.FailureCase = false;
+                testInfo.TechniqueVariant = Integer.parseInt(idAndVariant[1]);
+            }
         } else {
             testInfo.TechniqueVariant = 0;
         }
@@ -93,7 +100,7 @@ class HodokuRegressionTestLibraryHelpers {
         // Candidates
         testInfo.Candidates = new int[testComponents[2].length()];
         for (int c = 0; c < testComponents[2].length(); c++) {
-            testInfo.Candidates[c] = Character.getNumericValue(testComponents[2].charAt(c)) - 1;
+            testInfo.Candidates[c] = Character.getNumericValue(testComponents[2].charAt(c));
         }
 
         // GivenCells
@@ -108,10 +115,14 @@ class HodokuRegressionTestLibraryHelpers {
         testInfo.Eliminations = getRowColumnValueTriplesFromValueRowColumnString(testComponents[5]);
 
         // Placements
-        testInfo.Placements = getRowColumnValueTriplesFromValueRowColumnString(testComponents[6]);
+        if (testComponents.length >= 7) {
+            testInfo.Placements = getRowColumnValueTriplesFromValueRowColumnString(testComponents[6]);
+        } else {
+            testInfo.Placements = new ArrayList<int[]>();
+        }
 
         // ExtraData
-        if (testComponents.length == 8) {
+        if (testComponents.length >= 8) {
             testInfo.ExtraData = testComponents[7];
         } else {
             testInfo.ExtraData = "";
