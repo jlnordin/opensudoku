@@ -69,6 +69,7 @@ public class LockedCandidateTechnique extends AbstractTechnique {
                                     secondaryIndex,
                                     cellsToRemoveNoteFrom,
                                     value));
+                            cellsToRemoveNoteFrom.clear();
                         }
                     }
 
@@ -91,6 +92,7 @@ public class LockedCandidateTechnique extends AbstractTechnique {
                                     secondaryIndex,
                                     cellsToRemoveNoteFrom,
                                     value));
+                            cellsToRemoveNoteFrom.clear();
                         }
                     }
                 }
@@ -123,6 +125,7 @@ public class LockedCandidateTechnique extends AbstractTechnique {
                                         secondaryIndex,
                                         cellsToRemoveNoteFrom,
                                         value));
+                                cellsToRemoveNoteFrom.clear();
                             }
                         }
                     }
@@ -156,6 +159,7 @@ public class LockedCandidateTechnique extends AbstractTechnique {
                                         secondaryIndex,
                                         cellsToRemoveNoteFrom,
                                         value));
+                                cellsToRemoveNoteFrom.clear();
                             }
                         }
                     }
