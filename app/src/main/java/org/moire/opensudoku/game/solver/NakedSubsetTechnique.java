@@ -14,6 +14,7 @@ import org.moire.opensudoku.game.solver.TechniqueHelpers.GroupType;
 import org.moire.opensudoku.gui.HighlightOptions;
 import org.moire.opensudoku.gui.HighlightOptions.HighlightMode;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -64,10 +65,8 @@ public class NakedSubsetTechnique extends AbstractTechnique {
         }
 
         // If the number of cells to check is less than the cardinality, there's no possibility for
-        // finding a naked subset. If the number of cells matches the cardinality, then we wouldn't
-        // be finding a subset at all and no logical deductions could be made. In both cases return
-        // early.
-        if (cellsToCheck.size() <= cardinality) {
+        // finding a naked subset.
+        if (cellsToCheck.size() < cardinality) {
             return null;
         }
 
@@ -102,60 +101,76 @@ public class NakedSubsetTechnique extends AbstractTechnique {
         return inverseSet;
     }
 
-    static NakedSubsetTechnique createForCardinality(Context context, SudokuGame game, int cardinality) {
+    static NakedSubsetTechnique[] createAllForCardinality(Context context, SudokuGame game, int cardinality) {
 
+        ArrayList<NakedSubsetTechnique> techniques = new ArrayList<NakedSubsetTechnique>();
         Cell[] cellsWithNakedSubset = null;
 
         for (CellGroup box : game.getCells().getSectors()) {
             cellsWithNakedSubset = getNakedSubsetFromGroup(box, cardinality);
             if (cellsWithNakedSubset != null) {
                 Cell[] cellsToRemoveNotesFrom = getCellsFromGroupNotInSet(box, cellsWithNakedSubset);
-                return new NakedSubsetTechnique(
+                techniques.add(new NakedSubsetTechnique(
                         context,
                         cellsToRemoveNotesFrom,
                         getNotedNumbersFromBitMask(getUnionOfAllCandidates(cellsWithNakedSubset)),
                         GroupType.Box,
-                        TechniqueHelpers.getGroupIndex(GroupType.Box, cellsWithNakedSubset[0].getRowIndex(), cellsWithNakedSubset[0].getColumnIndex()));
+                        TechniqueHelpers.getGroupIndex(GroupType.Box, cellsWithNakedSubset[0].getRowIndex(), cellsWithNakedSubset[0].getColumnIndex())));
             }
         }
 
         for (CellGroup row : game.getCells().getRows()) {
             cellsWithNakedSubset = getNakedSubsetFromGroup(row, cardinality);
             if (cellsWithNakedSubset != null) {
-                return new NakedSubsetTechnique(
+                techniques.add(new NakedSubsetTechnique(
                         context,
                         getCellsFromGroupNotInSet(row, cellsWithNakedSubset),
                         getNotedNumbersFromBitMask(getUnionOfAllCandidates(cellsWithNakedSubset)),
                         GroupType.Row,
-                        TechniqueHelpers.getGroupIndex(GroupType.Row, cellsWithNakedSubset[0].getRowIndex(), cellsWithNakedSubset[0].getColumnIndex()));
+                        TechniqueHelpers.getGroupIndex(GroupType.Row, cellsWithNakedSubset[0].getRowIndex(), cellsWithNakedSubset[0].getColumnIndex())));
             }
         }
 
         for (CellGroup column : game.getCells().getColumns()) {
             cellsWithNakedSubset = getNakedSubsetFromGroup(column, cardinality);
             if (cellsWithNakedSubset != null) {
-                return new NakedSubsetTechnique(
+                techniques.add(new NakedSubsetTechnique(
                         context,
                         getCellsFromGroupNotInSet(column, cellsWithNakedSubset),
                         getNotedNumbersFromBitMask(getUnionOfAllCandidates(cellsWithNakedSubset)),
                         GroupType.Column,
-                        TechniqueHelpers.getGroupIndex(GroupType.Column, cellsWithNakedSubset[0].getRowIndex(), cellsWithNakedSubset[0].getColumnIndex()));
+                        TechniqueHelpers.getGroupIndex(GroupType.Column, cellsWithNakedSubset[0].getRowIndex(), cellsWithNakedSubset[0].getColumnIndex())));
             }
         }
 
-        return null;
+        return techniques.toArray(new NakedSubsetTechnique[0]);
     }
 
     public static NakedSubsetTechnique createPair(Context context, SudokuGame game) {
-        return createForCardinality(context, game, 2);
+        NakedSubsetTechnique[] techniques = createAllForCardinality(context, game, 2);
+        if (techniques.length > 0) {
+            return techniques[0];
+        } else {
+            return null;
+        }
     }
 
     public static NakedSubsetTechnique createTriple(Context context, SudokuGame game) {
-        return createForCardinality(context, game, 3);
+        NakedSubsetTechnique[] techniques = createAllForCardinality(context, game, 3);
+        if (techniques.length > 0) {
+            return techniques[0];
+        } else {
+            return null;
+        }
     }
 
     public static NakedSubsetTechnique createQuadruple(Context context, SudokuGame game) {
-        return createForCardinality(context, game, 4);
+        NakedSubsetTechnique[] techniques = createAllForCardinality(context, game, 4);
+        if (techniques.length > 0) {
+            return techniques[0];
+        } else {
+            return null;
+        }
     }
 
     int[] mRows;

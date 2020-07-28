@@ -277,18 +277,14 @@ class HodokuRegressionTestLibrary {
 
     void testNakedSubsetTechnique(HodokuRegressionTestInfo testInfo) {
         SudokuGame game = HodokuRegressionTestLibraryHelpers.createGameFromTestInfo(testInfo);
-        NakedSubsetTechnique[] techniques = new NakedSubsetTechnique[1];
         final int cardinality = testInfo.TechniqueId - NakedPairTechniqueId + 2;
-        techniques[0] = NakedSubsetTechnique.createForCardinality(mContext, game, cardinality);
+        NakedSubsetTechnique[] techniques = NakedSubsetTechnique.createAllForCardinality(mContext, game, cardinality);
         assertNotNull(techniques);
         assertNotEquals(0, techniques.length);
         assertNotNull(techniques[0]);
 
         Boolean oneTechniqueMatches = false;
         for (NakedSubsetTechnique technique : techniques) {
-
-            //assertEquals(testInfo.Candidates.length, technique.mNotesToRemove.length);
-            //assertTrue(Arrays.asList(testInfo.Candidates).containsAll(Arrays.asList(technique.mNotesToRemove)));
 
             ArrayList<int[]> filteredEliminations = HodokuRegressionTestLibraryHelpers.getFilteredEliminations(technique, game.getCells());
 
