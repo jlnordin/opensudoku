@@ -162,4 +162,23 @@ class HodokuRegressionTestLibraryHelpers {
 
         return game;
     }
+
+    public static ArrayList<int[]> getFilteredEliminations(NakedSubsetTechnique technique, CellCollection cells) {
+        ArrayList<int[]> filteredEliminations = new ArrayList<int[]>();
+        for (int i = 0; i < technique.mRows.length; i++) {
+            Cell cell = cells.getCell(technique.mRows[i], technique.mColumns[i]);
+            if (cell.getValue() == 0) {
+                for (int note : technique.mNotesToRemove) {
+                     if (cell.getNote().hasNumber(note + 1)) {
+                         int[] rowColumnValue = new int[3];
+                         rowColumnValue[0] = technique.mRows[i];
+                         rowColumnValue[1] = technique.mColumns[i];
+                         rowColumnValue[2] = note + 1;
+                         filteredEliminations.add(rowColumnValue);
+                     }
+                }
+            }
+        }
+        return filteredEliminations;
+    }
 }

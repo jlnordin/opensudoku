@@ -3,20 +3,15 @@ package org.moire.opensudoku.game.solver;
 import android.content.Context;
 
 import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
-import org.mockito.internal.junit.ExceptionFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.moire.opensudoku.game.SudokuGame;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,6 +46,9 @@ class HodokuRegressionTestLibrary {
     final static int NakedSingleTechniqueId = 3;
     final static int LockedCandidateType1TechniqueId = 100;
     final static int LockedCandidateType2TechniqueId = 101;
+    final static int NakedPairTechniqueId = 200;
+    final static int NakedTripleTechniqueId = 201;
+    final static int NakedQuadrupleTechniqueId = 202;
 
     String getTestInfoName(String techniqueName, HodokuRegressionTestInfo testInfo) {
         return String.format("%s - \"%s\"", techniqueName, testInfo.OriginalLine);
@@ -249,6 +247,57 @@ class HodokuRegressionTestLibrary {
                     if (technique.mRows[i] == rowColumnValue[0] &&
                             technique.mColumns[i] == rowColumnValue[1] &&
                             technique.mValue == rowColumnValue[2]) {
+                        matchingEliminations++;
+                    }
+                }
+            }
+
+            if (testInfo.Eliminations.size() == matchingEliminations) {
+                oneTechniqueMatches = true;
+                break;
+            }
+        }
+        assertTrue(oneTechniqueMatches);
+    }
+
+    @TestFactory
+    public Collection<DynamicTest> nakedSubsetTechniqueTestFactory() {
+        Collection<DynamicTest> tests = new ArrayList<DynamicTest>();
+        for (HodokuRegressionTestInfo testInfo : mHodokuTests) {
+            if (testInfo.TechniqueId == NakedPairTechniqueId ||
+                    testInfo.TechniqueId == NakedTripleTechniqueId ||
+                    testInfo.TechniqueId == NakedQuadrupleTechniqueId) {
+                tests.add(DynamicTest.dynamicTest(
+                        getTestInfoName("NakedSubsetTechnique", testInfo),
+                        () -> testNakedSubsetTechnique(testInfo)));
+            }
+        }
+        return tests;
+    }
+
+    void testNakedSubsetTechnique(HodokuRegressionTestInfo testInfo) {
+        SudokuGame game = HodokuRegressionTestLibraryHelpers.createGameFromTestInfo(testInfo);
+        NakedSubsetTechnique[] techniques = new NakedSubsetTechnique[1];
+        final int cardinality = testInfo.TechniqueId - NakedPairTechniqueId + 2;
+        techniques[0] = NakedSubsetTechnique.createForCardinality(mContext, game, cardinality);
+        assertNotNull(techniques);
+        assertNotEquals(0, techniques.length);
+        assertNotNull(techniques[0]);
+
+        Boolean oneTechniqueMatches = false;
+        for (NakedSubsetTechnique technique : techniques) {
+
+            //assertEquals(testInfo.Candidates.length, technique.mNotesToRemove.length);
+            //assertTrue(Arrays.asList(testInfo.Candidates).containsAll(Arrays.asList(technique.mNotesToRemove)));
+
+            ArrayList<int[]> filteredEliminations = HodokuRegressionTestLibraryHelpers.getFilteredEliminations(technique, game.getCells());
+
+            int matchingEliminations = 0;
+            for (int[] expectedElimination : testInfo.Eliminations) {
+                for (int[] actualElimination : filteredEliminations) {
+                    if (expectedElimination[0] == actualElimination[0] &&
+                            expectedElimination[1] == actualElimination[1] &&
+                            expectedElimination[2] == actualElimination[2]) {
                         matchingEliminations++;
                     }
                 }
