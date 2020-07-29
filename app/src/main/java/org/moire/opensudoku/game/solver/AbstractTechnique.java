@@ -17,6 +17,13 @@ public abstract class AbstractTechnique {
     HashMap<Cell, HighlightOptions> mHighlightOverrides;
     Context mContext;
 
+    public enum Cardinality
+    {
+        Pair,
+        Triple,
+        Quadruple
+    }
+
     public interface TechniqueFactory {
         AbstractTechnique create(Context context, SudokuGame game);
     }

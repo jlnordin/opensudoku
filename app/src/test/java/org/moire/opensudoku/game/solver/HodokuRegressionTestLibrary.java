@@ -49,6 +49,9 @@ class HodokuRegressionTestLibrary {
     final static int NakedPairTechniqueId = 200;
     final static int NakedTripleTechniqueId = 201;
     final static int NakedQuadrupleTechniqueId = 202;
+    final static int HiddenPairTechniqueId = 210;
+    final static int HiddenTripleTechniqueId = 211;
+    final static int HiddenQuadrupleTechniqueId = 212;
 
     String getTestInfoName(String techniqueName, HodokuRegressionTestInfo testInfo) {
         return String.format("%s - \"%s\"", techniqueName, testInfo.OriginalLine);
@@ -291,6 +294,51 @@ class HodokuRegressionTestLibrary {
             int matchingEliminations = 0;
             for (int[] expectedElimination : testInfo.Eliminations) {
                 for (int[] actualElimination : filteredEliminations) {
+                    if (expectedElimination[0] == actualElimination[0] &&
+                            expectedElimination[1] == actualElimination[1] &&
+                            expectedElimination[2] == actualElimination[2]) {
+                        matchingEliminations++;
+                    }
+                }
+            }
+
+            if (testInfo.Eliminations.size() == matchingEliminations) {
+                oneTechniqueMatches = true;
+                break;
+            }
+        }
+        assertTrue(oneTechniqueMatches);
+    }
+
+    @TestFactory
+    public Collection<DynamicTest> hiddenSubsetTechniqueTestFactory() {
+        Collection<DynamicTest> tests = new ArrayList<DynamicTest>();
+        for (HodokuRegressionTestInfo testInfo : mHodokuTests) {
+            if (testInfo.TechniqueId == HiddenPairTechniqueId ||
+                    testInfo.TechniqueId == HiddenTripleTechniqueId ||
+                    testInfo.TechniqueId == HiddenQuadrupleTechniqueId) {
+                tests.add(DynamicTest.dynamicTest(
+                        getTestInfoName("HiddenSubsetTechnique", testInfo),
+                        () -> testHiddenSubsetTechnique(testInfo)));
+            }
+        }
+        return tests;
+    }
+
+    void testHiddenSubsetTechnique(HodokuRegressionTestInfo testInfo) {
+        SudokuGame game = HodokuRegressionTestLibraryHelpers.createGameFromTestInfo(testInfo);
+        final int cardinality = testInfo.TechniqueId - HiddenPairTechniqueId + 2;
+        HiddenSubsetTechnique[] techniques = HiddenSubsetTechnique.createAllForCardinality(mContext, game, cardinality);
+        assertNotNull(techniques);
+        assertNotEquals(0, techniques.length);
+        assertNotNull(techniques[0]);
+
+        Boolean oneTechniqueMatches = false;
+        for (HiddenSubsetTechnique technique : techniques) {
+
+            int matchingEliminations = 0;
+            for (int[] expectedElimination : testInfo.Eliminations) {
+                for (int[] actualElimination : technique.mRowColumnValuesToRemove) {
                     if (expectedElimination[0] == actualElimination[0] &&
                             expectedElimination[1] == actualElimination[1] &&
                             expectedElimination[2] == actualElimination[2]) {

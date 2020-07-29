@@ -437,4 +437,8 @@
     <string name="technique_naked_subset_step_2">Look at %1$s %2$d.</string> <!-- e.g. "Look at row 4." -->
     <string name="technique_naked_subset_step_3">These cells only have notes from the subset %s.</string> <!-- e.g. "These cells only have notes from the subset [3, 4, 9]." -->
     <string name="technique_naked_subset_step_4">Therefore, the notes %1$s can be removed from all other cells in %2$s %3$d.</string> <!-- Therefore, the notes [3, 4, 9] can be removed from all other cells in row 4. -->
+    <string name="technique_hidden_pair_title">Hidden Pair</string>
+    <string name="technique_hidden_triple_title">Hidden Triple</string>
+    <string name="technique_hidden_quadruple_title">Hidden Quadruple</string>
+    <string name="technique_hidden_subset_step_1">A hidden subset is when some note values share the same subset of cells in a group.</string>
 </resources>

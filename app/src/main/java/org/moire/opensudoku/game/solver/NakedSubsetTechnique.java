@@ -4,20 +4,16 @@ import android.content.Context;
 
 import org.moire.opensudoku.R;
 import org.moire.opensudoku.game.Cell;
-import org.moire.opensudoku.game.CellCollection;
 import org.moire.opensudoku.game.CellGroup;
 import org.moire.opensudoku.game.CellNote;
 import org.moire.opensudoku.game.SudokuGame;
 import org.moire.opensudoku.game.command.EditCellNoteCommand;
-import org.moire.opensudoku.game.command.SetCellValueCommand;
 import org.moire.opensudoku.game.solver.TechniqueHelpers.GroupType;
 import org.moire.opensudoku.gui.HighlightOptions;
 import org.moire.opensudoku.gui.HighlightOptions.HighlightMode;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
@@ -34,17 +30,7 @@ public class NakedSubsetTechnique extends AbstractTechnique {
     }
 
     static int[] getNotedNumbersFromBitMask(int mask) {
-        int[] notes = new int[Integer.bitCount(mask)];
-        int outputIndex = 0;
-        int bitIndex = 0;
-        for (long powerOfTwo = 1; powerOfTwo <= mask; powerOfTwo *= 2) {
-            if ((mask & powerOfTwo) != 0) {
-                notes[outputIndex] = bitIndex;
-                outputIndex++;
-            }
-            bitIndex++;
-        }
-        return notes;
+        return TechniqueHelpers.getIndicesFromSubsetMask(mask);
     }
 
     static boolean groupHasDeductionsFromSubset(CellGroup group, Cell[] subset) {
@@ -179,12 +165,6 @@ public class NakedSubsetTechnique extends AbstractTechnique {
     GroupType mGroupType;
     int mGroupIndex;
 
-    public enum Cardinality
-    {
-        Pair,
-        Triple,
-        Quadruple
-    };
     Cardinality mCardinality;
 
     NakedSubsetTechnique(Context context, Cell[] cellsToRemoveNotesFrom, int[] notesToRemove, GroupType groupType, int groupIndex) {
