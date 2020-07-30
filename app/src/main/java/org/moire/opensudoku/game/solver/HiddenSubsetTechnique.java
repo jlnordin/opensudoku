@@ -22,22 +22,13 @@ import java.util.List;
 
 public class HiddenSubsetTechnique extends AbstractTechnique {
 
-    static Boolean noneMatch(int[] integers, int integerToTest) {
-        for (int i : integers) {
-            if (i == integerToTest) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     static ArrayList<int[]> getNotesToRemoveForHiddenSubset(Collection<Cell> subset, int[] hiddenSubsetCandidates) {
         ArrayList<int[]> notesToRemove = new ArrayList<int[]>();
 
         for (Cell c : subset) {
             if (c.getValue() == 0) {
                 for (int note : c.getNote().getNotedNumbers()) {
-                    if (noneMatch(hiddenSubsetCandidates, note - 1)) {
+                    if (TechniqueHelpers.noneMatch(hiddenSubsetCandidates, note - 1)) {
                         int[] rowColumnValue = new int[3];
                         rowColumnValue[0] = c.getRowIndex();
                         rowColumnValue[1] = c.getColumnIndex();
@@ -163,7 +154,7 @@ public class HiddenSubsetTechnique extends AbstractTechnique {
                 mContext.getString(R.string.technique_hidden_subset_step_1),
                 (board) -> {}));
 
-        /*mExplanationSteps.add(new Explanation(
+        mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_hidden_subset_step_2,
                         TechniqueHelpers.getGroupString(context, mGroupType),
                         mGroupIndex + 1),
@@ -173,40 +164,34 @@ public class HiddenSubsetTechnique extends AbstractTechnique {
 
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_hidden_subset_step_3,
-                        TechniqueHelpers.noteArrayToString(mNotesToRemove)),
+                        TechniqueHelpers.getGroupString(context, mGroupType),
+                        mGroupIndex + 1,
+                        TechniqueHelpers.noteArrayToString(mNotesInSubset)),
                 (board) -> {
                     CellGroup group = TechniqueHelpers.getGroupFromIndex(board.getCells(), mGroupType, mGroupIndex);
                     for (Cell cell : group.getCells()) {
-                        mHighlightOverrides.put(cell, new HighlightOptions(HighlightMode.NONE));
-                    }
-
-                    Cell[] cellsWithNotesToRemove = new Cell[mRows.length];
-                    for (int c = 0; c < mRows.length; c++) {
-                        cellsWithNotesToRemove[c] = board.getCells().getCell(mRows[c], mColumns[c]);
-                    }
-
-                    Cell[] cellsWithSubset = getCellsFromGroupNotInSet(group, cellsWithNotesToRemove);
-                    for (Cell cell : cellsWithSubset) {
-                        mHighlightOverrides.put(cell, TechniqueHelpers.createHighlightOptionsForNotes(cell, mNotesToRemove));
+                        if (TechniqueHelpers.hasAnyNotesFromSet(cell, mNotesInSubset)) {
+                            mHighlightOverrides.put(cell, TechniqueHelpers.createHighlightOptionsForNotes(cell, mNotesInSubset));
+                        } else {
+                            mHighlightOverrides.put(cell, new HighlightOptions(HighlightMode.NONE));
+                        }
                     }
                 }));
 
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_hidden_subset_step_4,
-                        TechniqueHelpers.noteArrayToString(mNotesToRemove),
-                        TechniqueHelpers.getGroupString(context, mGroupType),
-                        mGroupIndex + 1),
+                        TechniqueHelpers.noteArrayToString(mNotesInSubset)),
                 (board) -> {
                     CellGroup group = TechniqueHelpers.getGroupFromIndex(board.getCells(), mGroupType, mGroupIndex);
                     for (Cell cell : group.getCells()) {
                         mHighlightOverrides.put(cell, new HighlightOptions(HighlightMode.NONE));
                     }
 
-                    for (int c = 0; c < mRows.length; c++) {
-                        Cell cell = board.getCells().getCell(mRows[c], mColumns[c]);
-                        mHighlightOverrides.put(cell, TechniqueHelpers.createHighlightOptionsForNotes(cell, mNotesToRemove));
+                    for (int[] rowColumnValue : mRowColumnValuesToRemove) {
+                        Cell cell = board.getCells().getCell(rowColumnValue[0], rowColumnValue[1]);
+                        mHighlightOverrides.put(cell, TechniqueHelpers.createHighlightOptionsForInverseNotes(cell, mNotesInSubset));
                     }
-                }));*/
+                }));
     }
 
     @Override

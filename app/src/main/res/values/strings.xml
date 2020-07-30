@@ -440,5 +440,8 @@
     <string name="technique_hidden_pair_title">Hidden Pair</string>
     <string name="technique_hidden_triple_title">Hidden Triple</string>
     <string name="technique_hidden_quadruple_title">Hidden Quadruple</string>
-    <string name="technique_hidden_subset_step_1">A hidden subset is when some note values share the same subset of cells in a group.</string>
+    <string name="technique_hidden_subset_step_1">A hidden subset is when two or more cells in a group contain all instances of a set of note values.</string>
+    <string name="technique_hidden_subset_step_2">Look at %1$s %2$d.</string> <!-- e.g. "Look at row 4." -->
+    <string name="technique_hidden_subset_step_3">These cells are the only cells in %1$s %2$d that contain note values from %3$s.</string> <!-- e.g. "These cells are the only cells in row 4 that contain note values from [3, 4, 9]." -->
+    <string name="technique_hidden_subset_step_4">Therefore, all notes that are not %1$s can be removed from these cells.</string> <!-- e.g. "Therefore, all notes that are not [3, 4, 9] can be removed from these cells." -->
 </resources>

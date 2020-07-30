@@ -187,6 +187,23 @@ public class TechniqueHelpers {
         return noteHighlight;
     }
 
+    public static HighlightOptions createHighlightOptionsForInverseNotes(Cell cell, int[] notes) {
+        HighlightOptions noteHighlight = new HighlightOptions(HighlightOptions.HighlightMode.EMPHASIZE);
+
+        for (int note = 0; note < CellCollection.SUDOKU_SIZE; note++) {
+            if (cell.getValue() == 0 && cell.getNote().hasNumber(note + 1)) {
+                noteHighlight.setNoteHighlightMode(note, HighlightOptions.HighlightMode.HIGHLIGHT);
+            }
+        }
+
+        for (int note : notes) {
+            if (cell.getValue() == 0 && cell.getNote().hasNumber(note + 1)) {
+                noteHighlight.setNoteHighlightMode(note, HighlightOptions.HighlightMode.NONE);
+            }
+        }
+        return noteHighlight;
+    }
+
     public static String noteArrayToString(int[] notes) {
         int[] notesPlusOne = new int[notes.length];
         for (int n = 0; n < notesPlusOne.length; n++) {
@@ -251,5 +268,27 @@ public class TechniqueHelpers {
             }
             inputIndex++;
         }
+    }
+
+    static Boolean anyMatch(int[] integers, int integerToTest) {
+        for (int i : integers) {
+            if (i == integerToTest) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static Boolean noneMatch(int[] integers, int integerToTest) {
+        return !anyMatch(integers, integerToTest);
+    }
+
+    static Boolean hasAnyNotesFromSet(Cell cell, int[] zeroBasedNotes) {
+        for (int note : zeroBasedNotes) {
+            if (cell.getValue() == 0 && cell.getNote().hasNumber(note + 1)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
