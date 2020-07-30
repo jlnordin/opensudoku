@@ -444,4 +444,10 @@
     <string name="technique_hidden_subset_step_2">Look at %1$s %2$d.</string> <!-- e.g. "Look at row 4." -->
     <string name="technique_hidden_subset_step_3">These cells are the only cells in %1$s %2$d that contain note values from %3$s.</string> <!-- e.g. "These cells are the only cells in row 4 that contain note values from [3, 4, 9]." -->
     <string name="technique_hidden_subset_step_4">Therefore, all notes that are not %1$s can be removed from these cells.</string> <!-- e.g. "Therefore, all notes that are not [3, 4, 9] can be removed from these cells." -->
+    <string name="technique_fish_xwing_title">X-Wing</string>
+    <string name="technique_fish_swordfish_title">Swordfish</string>
+    <string name="technique_fish_jellyfish_title">Jellyfish</string>
+    <string name="technique_fish_step_1">
+        A fish is a special pattern of a single note value across multiple rows and columns. The number of rows or columns in the fish determines the type of fish. (X-Wing, Swordfish, and so on).
+        \n\nThe intersections of the rows and columns form a grid pattern that can be used to remove certain notes.</string>
 </resources>
