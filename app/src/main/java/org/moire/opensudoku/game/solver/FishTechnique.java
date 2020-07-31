@@ -14,20 +14,65 @@ import org.moire.opensudoku.gui.HighlightOptions;
 import org.moire.opensudoku.gui.HighlightOptions.HighlightMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
 public class FishTechnique extends AbstractTechnique {
 
-    static Boolean doesFishExistForNoteAndGroups(int note, CellGroup[] baseSets, CellGroup[] coverSets) {
-        return false;
+    static boolean doesFishExistForNoteAndGroups(int note, CellGroup[] baseSets, CellGroup[] coverSets) {
+        boolean[] baseSetIntersectionsHaveNote = new boolean[baseSets.length];
+        boolean[] coverSetIntersectionsHaveNote = new boolean[coverSets.length];
+        Arrays.fill(baseSetIntersectionsHaveNote, false);
+        Arrays.fill(coverSetIntersectionsHaveNote, false);
+
+        for (int b = 0; b < baseSets.length; b++) {
+            for (int c = 0; c < coverSets.length; c++) {
+                for (Cell cell : CellGroup.intersection(baseSets[b], coverSets[c])) {
+                    if (cell.getValue() == 0 && cell.getNote().hasNumber(note)) {
+                        baseSetIntersectionsHaveNote[b] = true;
+                        coverSetIntersectionsHaveNote[c] = true;
+                    }
+                }
+            }
+        }
+
+        for (boolean hasNote : baseSetIntersectionsHaveNote) {
+            if (!hasNote) {
+                return false;
+            }
+        }
+
+        for (boolean hasNote : coverSetIntersectionsHaveNote) {
+            if (!hasNote) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     static ArrayList<int[]> getNotesToRemoveFromFish(int note, CellGroup[] baseSets, CellGroup[] coverSets) {
         ArrayList<int[]> rowColumnValuesToRemove = new ArrayList<int[]>();
 
         if (doesFishExistForNoteAndGroups(note, baseSets, coverSets)) {
-            //...
+
+            HashSet<Cell> cellsInCoverSetsButNotInBaseSets = new HashSet<Cell>();
+            for (CellGroup coverSet : coverSets) {
+                cellsInCoverSetsButNotInBaseSets.addAll(Arrays.asList(coverSet.getCells()));
+            }
+
+            for (CellGroup baseSet : baseSets) {
+                cellsInCoverSetsButNotInBaseSets.removeAll(Arrays.asList(baseSet.getCells()));
+            }
+
+            for (Cell cell : cellsInCoverSetsButNotInBaseSets) {
+                int[] rowColumnValue = new int[3];
+                rowColumnValue[0] = cell.getRowIndex();
+                rowColumnValue[1] = cell.getColumnIndex();
+                rowColumnValue[2] = note;
+                rowColumnValuesToRemove.add(rowColumnValue);
+            }
         }
 
         return rowColumnValuesToRemove;
@@ -69,13 +114,13 @@ public class FishTechnique extends AbstractTechnique {
         // subset mask represents the indices of the rows and/or columns to use.
         for (int note = 1; note <= CellCollection.SUDOKU_SIZE; note++) {
 
-            for (int baseSetIndicesMask = TechniqueHelpers.getFirstSubsetMask(CellCollection.SUDOKU_SIZE);
+            for (int baseSetIndicesMask = TechniqueHelpers.getFirstSubsetMask(cardinality);
                  baseSetIndicesMask <= TechniqueHelpers.getMaximumSubsetMask(CellCollection.SUDOKU_SIZE);
-                 baseSetIndicesMask = TechniqueHelpers.getNextSubsetMask(baseSetIndicesMask, CellCollection.SUDOKU_SIZE)) {
+                 baseSetIndicesMask = TechniqueHelpers.getNextSubsetMask(baseSetIndicesMask, cardinality)) {
 
-                for (int coverSetIndicesMask = TechniqueHelpers.getFirstSubsetMask(CellCollection.SUDOKU_SIZE);
+                for (int coverSetIndicesMask = TechniqueHelpers.getFirstSubsetMask(cardinality);
                      coverSetIndicesMask <= TechniqueHelpers.getMaximumSubsetMask(CellCollection.SUDOKU_SIZE);
-                     coverSetIndicesMask = TechniqueHelpers.getNextSubsetMask(coverSetIndicesMask, CellCollection.SUDOKU_SIZE)) {
+                     coverSetIndicesMask = TechniqueHelpers.getNextSubsetMask(coverSetIndicesMask, cardinality)) {
 
                     // Look for a fish with with a base set of rows, cover set of columns.
                     fillCellGroupArrayFromSubsetMask(game.getCells(), GroupType.Row, baseSetIndicesMask, baseSets);
