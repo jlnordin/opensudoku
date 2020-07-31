@@ -19,22 +19,96 @@ import java.util.HashSet;
 
 public class FishTechnique extends AbstractTechnique {
 
-    static FishTechnique[] createAllForCardinality(Context context, SudokuGame game, int cardinality) {
+    static Boolean doesFishExistForNoteAndGroups(int note, CellGroup[] baseSets, CellGroup[] coverSets) {
+        return false;
+    }
+
+    static ArrayList<int[]> getNotesToRemoveFromFish(int note, CellGroup[] baseSets, CellGroup[] coverSets) {
+        ArrayList<int[]> rowColumnValuesToRemove = new ArrayList<int[]>();
+
+        if (doesFishExistForNoteAndGroups(note, baseSets, coverSets)) {
+            //...
+        }
+
+        return rowColumnValuesToRemove;
+    }
+
+    static void fillCellGroupArrayFromSubsetMask(CellCollection cells, GroupType groupType, int subsetMask, CellGroup[] cellGroups) {
+        int outputIndex = 0;
+        for (int i : TechniqueHelpers.getIndicesFromSubsetMask(subsetMask)) {
+            switch (groupType) {
+                default:
+                case Row:
+                    cellGroups[outputIndex] = cells.getRows()[i];
+                    break;
+
+                case Column:
+                    cellGroups[outputIndex] = cells.getColumns()[i];
+                    break;
+
+                case Box:
+                    cellGroups[outputIndex] = cells.getSectors()[i];
+                    break;
+            }
+            outputIndex++;
+        }
+    }
+
+    public static FishTechnique[] createAllForCardinality(Context context, SudokuGame game, int cardinality) {
 
         ArrayList<FishTechnique> techniques = new ArrayList<FishTechnique>();
+        CellGroup[] baseSets = new CellGroup[cardinality];
+        CellGroup[] coverSets = new CellGroup[cardinality];
         ArrayList<int[]> rowColumnValuesToRemove = null;
 
-        /*for (CellGroup box : game.getCells().getSectors()) {
-            techniques.addAll(getFishTechniquesFromGroup(context, GroupType.Box, box, cardinality));
-        }
+        // Looping through the subset masks will ensure we check all possible subsets of rows and
+        // columns for possible fish.
+        //
+        // Using a cardinality of 2 as an example, this means we will loop through all possible
+        // pairs of rows as base sets against all possible pairs of columns as cover sets. The
+        // subset mask represents the indices of the rows and/or columns to use.
+        for (int note = 1; note <= CellCollection.SUDOKU_SIZE; note++) {
 
-        for (CellGroup row : game.getCells().getRows()) {
-            techniques.addAll(getFishTechniquesFromGroup(context, GroupType.Row, row, cardinality));
-        }
+            for (int baseSetIndicesMask = TechniqueHelpers.getFirstSubsetMask(CellCollection.SUDOKU_SIZE);
+                 baseSetIndicesMask <= TechniqueHelpers.getMaximumSubsetMask(CellCollection.SUDOKU_SIZE);
+                 baseSetIndicesMask = TechniqueHelpers.getNextSubsetMask(baseSetIndicesMask, CellCollection.SUDOKU_SIZE)) {
 
-        for (CellGroup column : game.getCells().getColumns()) {
-            techniques.addAll(getFishTechniquesFromGroup(context, GroupType.Column, column, cardinality));
-        }*/
+                for (int coverSetIndicesMask = TechniqueHelpers.getFirstSubsetMask(CellCollection.SUDOKU_SIZE);
+                     coverSetIndicesMask <= TechniqueHelpers.getMaximumSubsetMask(CellCollection.SUDOKU_SIZE);
+                     coverSetIndicesMask = TechniqueHelpers.getNextSubsetMask(coverSetIndicesMask, CellCollection.SUDOKU_SIZE)) {
+
+                    // Look for a fish with with a base set of rows, cover set of columns.
+                    fillCellGroupArrayFromSubsetMask(game.getCells(), GroupType.Row, baseSetIndicesMask, baseSets);
+                    fillCellGroupArrayFromSubsetMask(game.getCells(), GroupType.Column, coverSetIndicesMask, coverSets);
+                    rowColumnValuesToRemove = getNotesToRemoveFromFish(note, baseSets, coverSets);
+                    if (!rowColumnValuesToRemove.isEmpty()) {
+                        techniques.add(new FishTechnique(
+                                context,
+                                note,
+                                rowColumnValuesToRemove,
+                                GroupType.Row,
+                                TechniqueHelpers.getIndicesFromSubsetMask(baseSetIndicesMask),
+                                GroupType.Column,
+                                TechniqueHelpers.getIndicesFromSubsetMask(coverSetIndicesMask)));
+                    }
+
+                    // Look for a fish with with a base set of columns, cover set of rows.
+                    fillCellGroupArrayFromSubsetMask(game.getCells(), GroupType.Column, baseSetIndicesMask, baseSets);
+                    fillCellGroupArrayFromSubsetMask(game.getCells(), GroupType.Row, coverSetIndicesMask, coverSets);
+                    rowColumnValuesToRemove = getNotesToRemoveFromFish(note, baseSets, coverSets);
+                    if (!rowColumnValuesToRemove.isEmpty()) {
+                        techniques.add(new FishTechnique(
+                                context,
+                                note,
+                                rowColumnValuesToRemove,
+                                GroupType.Column,
+                                TechniqueHelpers.getIndicesFromSubsetMask(baseSetIndicesMask),
+                                GroupType.Row,
+                                TechniqueHelpers.getIndicesFromSubsetMask(coverSetIndicesMask)));
+                    }
+                }
+            }
+        }
 
         return techniques.toArray(new FishTechnique[0]);
     }
