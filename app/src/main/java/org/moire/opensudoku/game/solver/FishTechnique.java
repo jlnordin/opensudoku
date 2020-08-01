@@ -26,6 +26,11 @@ public class FishTechnique extends AbstractTechnique {
         Arrays.fill(baseSetIntersectionsHaveNote, false);
         Arrays.fill(coverSetIntersectionsHaveNote, false);
 
+        // To be a valid fish pattern, we first consider the grid of cells formed by the
+        // intersections of all of the base and cover sets. For example, a Swordfish (cardinality 3)
+        // would have 9 intersections in a 3 x 3 grid pattern. To be a valid fish pattern, each of
+        // the rows and columns of this intersection grid must contain at least one of the target
+        // note value.
         for (int b = 0; b < baseSets.length; b++) {
             for (int c = 0; c < coverSets.length; c++) {
                 for (Cell cell : CellGroup.intersection(baseSets[b], coverSets[c])) {
@@ -49,6 +54,24 @@ public class FishTechnique extends AbstractTechnique {
             }
         }
 
+        // We now know that the intersections contain the right note values, but this is still not
+        // sufficient. We must also ensure that no other notes of the note value exist in any of the
+        // base sets that are _not_ in the cover sets.
+        HashSet<Cell> cellsInBaseSetsButNotInCoverSets = new HashSet<Cell>();
+        for (CellGroup baseSet : baseSets) {
+            cellsInBaseSetsButNotInCoverSets.addAll(Arrays.asList(baseSet.getCells()));
+        }
+
+        for (CellGroup coverSet : coverSets) {
+            cellsInBaseSetsButNotInCoverSets.removeAll(Arrays.asList(coverSet.getCells()));
+        }
+
+        for (Cell cell : cellsInBaseSetsButNotInCoverSets) {
+            if (cell.getValue() == 0 && cell.getNote().hasNumber(note)) {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -67,11 +90,13 @@ public class FishTechnique extends AbstractTechnique {
             }
 
             for (Cell cell : cellsInCoverSetsButNotInBaseSets) {
-                int[] rowColumnValue = new int[3];
-                rowColumnValue[0] = cell.getRowIndex();
-                rowColumnValue[1] = cell.getColumnIndex();
-                rowColumnValue[2] = note;
-                rowColumnValuesToRemove.add(rowColumnValue);
+                if (cell.getValue() == 0 && cell.getNote().hasNumber(note)) {
+                    int[] rowColumnValue = new int[3];
+                    rowColumnValue[0] = cell.getRowIndex();
+                    rowColumnValue[1] = cell.getColumnIndex();
+                    rowColumnValue[2] = note;
+                    rowColumnValuesToRemove.add(rowColumnValue);
+                }
             }
         }
 
@@ -206,7 +231,26 @@ public class FishTechnique extends AbstractTechnique {
 
         mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_fish_step_1),
-                (board) -> {}));
+                (board) -> {
+                    for (int b = 0; b < mBaseGroupIndices.length; b++) {
+                        TechniqueHelpers.highlightGroup(TechniqueHelpers.getGroupFromIndex(board.getCells(), mBaseGroupType, mBaseGroupIndices[b]), mHighlightOverrides);
+                    }
+
+                    for (int c = 0; c < mCoverGroupIndices.length; c++) {
+                        TechniqueHelpers.highlightGroup(TechniqueHelpers.getGroupFromIndex(board.getCells(), mCoverGroupType, mCoverGroupIndices[c]), mHighlightOverrides);
+                    }
+
+                    for (int[] rowColumnValue : mRowColumnValuesToRemove) {
+                        Cell cell = board.getCells().getCell(rowColumnValue[0], rowColumnValue[1]);
+                        HighlightOptions options = new HighlightOptions();
+                        if (mHighlightOverrides.containsKey(cell)) {
+                            options = mHighlightOverrides.get(cell);
+                        }
+
+                        options.setNoteHighlightMode(mNote - 1, HighlightMode.EMPHASIZE);
+                        mHighlightOverrides.put(cell, options);
+                    }
+                }));
 
         /*mExplanationSteps.add(new Explanation(
                 mContext.getString(R.string.technique_fish_step_2,
