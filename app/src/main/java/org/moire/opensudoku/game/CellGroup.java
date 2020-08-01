@@ -104,6 +104,19 @@ public class CellGroup {
         return set.toArray(new Cell[0]);
     }
 
+    public static void fillArrayWithIntersection(CellGroup a, CellGroup b, Cell[] intersectingCells) {
+        Arrays.fill(intersectingCells, null);
+        int outputIndex = 0;
+        for (Cell cellA : a.getCells()) {
+            for (Cell cellB : b.getCells()) {
+                if (cellA == cellB) {
+                    intersectingCells[outputIndex] = cellA;
+                    outputIndex++;
+                }
+            }
+        }
+    }
+
     public static Cell[] intersection(CellGroup a, CellGroup b) {
         HashSet<Cell> set = new HashSet<Cell>(Arrays.asList(a.mCells));
         set.retainAll(Arrays.asList(b.mCells));

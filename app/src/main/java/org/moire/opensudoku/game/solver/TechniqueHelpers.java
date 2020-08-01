@@ -242,7 +242,7 @@ public class TechniqueHelpers {
         int[] indices = new int[Integer.bitCount(subsetMask)];
         int outputIndex = 0;
         int bitIndex = 0;
-        for (int powerOfTwo = 1; powerOfTwo <= subsetMask; powerOfTwo *= 2) {
+        for (int powerOfTwo = 1; powerOfTwo <= subsetMask; powerOfTwo <<= 1) {
             if ((subsetMask & powerOfTwo) != 0) {
                 indices[outputIndex] = bitIndex;
                 outputIndex++;
@@ -250,6 +250,18 @@ public class TechniqueHelpers {
             bitIndex++;
         }
         return indices;
+    }
+
+    public static void fillIndicesFromSubsetMask(int subsetMask, int[] indices) {
+        int outputIndex = 0;
+        int bitIndex = 0;
+        for (int powerOfTwo = 1; powerOfTwo <= subsetMask; powerOfTwo <<= 1) {
+            if ((subsetMask & powerOfTwo) != 0) {
+                indices[outputIndex] = bitIndex;
+                outputIndex++;
+            }
+            bitIndex++;
+        }
     }
 
     public static void fillSubset(Collection<Cell> superSet, int subsetMask, Cell[] subset) {

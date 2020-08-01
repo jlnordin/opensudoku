@@ -20,64 +20,87 @@ import java.util.HashSet;
 
 public class FishTechnique extends AbstractTechnique {
 
+    static boolean doesEachSetHaveNote(int note, CellGroup[] sets) {
+        OuterLoop:
+        for (CellGroup set : sets) {
+            for (Cell cell : set.getCells()) {
+                if (cell.getValue() == 0 && cell.getNote().hasNumber(note)) {
+                    continue OuterLoop;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+
     static boolean doesFishExistForNoteAndGroups(int note, CellGroup[] baseSets, CellGroup[] coverSets) {
-        boolean[] baseSetIntersectionsHaveNote = new boolean[baseSets.length];
-        boolean[] coverSetIntersectionsHaveNote = new boolean[coverSets.length];
-        Arrays.fill(baseSetIntersectionsHaveNote, false);
-        Arrays.fill(coverSetIntersectionsHaveNote, false);
+
+        // Check each base set and cover set to see if they have any of the note value. If any set
+        // does not contain the note value we can return early with false. Otherwise we will have to
+        // check more thoroughly.
+        if (!doesEachSetHaveNote(note, baseSets)) {
+            return false;
+        }
+
+        if (!doesEachSetHaveNote(note, coverSets)) {
+            return false;
+        }
+
+        int[] baseSetIntersectionsWithNote = new int[baseSets.length];
+        int[] coverSetIntersectionsWithNote = new int[coverSets.length];
+        Arrays.fill(baseSetIntersectionsWithNote, 0);
+        Arrays.fill(coverSetIntersectionsWithNote, 0);
 
         // To be a valid fish pattern, we first consider the grid of cells formed by the
         // intersections of all of the base and cover sets. For example, a Swordfish (cardinality 3)
         // would have 9 intersections in a 3 x 3 grid pattern. To be a valid fish pattern, each of
         // the rows and columns of this intersection grid must contain at least one of the target
         // note value.
+        Cell[] intersection = new Cell[CellCollection.SUDOKU_SIZE];
         for (int b = 0; b < baseSets.length; b++) {
             for (int c = 0; c < coverSets.length; c++) {
-                for (Cell cell : CellGroup.intersection(baseSets[b], coverSets[c])) {
-                    if (cell.getValue() == 0 && cell.getNote().hasNumber(note)) {
-                        baseSetIntersectionsHaveNote[b] = true;
-                        coverSetIntersectionsHaveNote[c] = true;
+                CellGroup.fillArrayWithIntersection(baseSets[b], coverSets[c], intersection);
+                for (Cell cell : intersection) {
+                    if (cell != null && cell.getValue() == 0 && cell.getNote().hasNumber(note)) {
+                        baseSetIntersectionsWithNote[b]++;
+                        coverSetIntersectionsWithNote[c]++;
                     }
                 }
             }
         }
 
-        for (boolean hasNote : baseSetIntersectionsHaveNote) {
-            if (!hasNote) {
+        for (int noteCount : baseSetIntersectionsWithNote) {
+            if (noteCount == 0) {
                 return false;
             }
         }
 
-        for (boolean hasNote : coverSetIntersectionsHaveNote) {
-            if (!hasNote) {
+        for (int noteCount : coverSetIntersectionsWithNote) {
+            if (noteCount == 0) {
                 return false;
             }
         }
 
         // We now know that the intersections contain the right note values, but this is still not
         // sufficient. We must also ensure that no other notes of the note value exist in any of the
-        // base sets that are _not_ in the cover sets.
-        HashSet<Cell> cellsInBaseSetsButNotInCoverSets = new HashSet<Cell>();
-        for (CellGroup baseSet : baseSets) {
-            cellsInBaseSetsButNotInCoverSets.addAll(Arrays.asList(baseSet.getCells()));
-        }
-
-        for (CellGroup coverSet : coverSets) {
-            cellsInBaseSetsButNotInCoverSets.removeAll(Arrays.asList(coverSet.getCells()));
-        }
-
-        for (Cell cell : cellsInBaseSetsButNotInCoverSets) {
-            if (cell.getValue() == 0 && cell.getNote().hasNumber(note)) {
-                return false;
+        // base sets that are _not_ in the cover sets. We do this by comparing the count of notes in
+        // each base set's intersections with the total notes of that value in the base set.
+        for (int b = 0; b < baseSets.length; b++) {
+            int noteCountInBaseSet = 0;
+            for (Cell cell : baseSets[b].getCells()) {
+                if (cell.getValue() == 0 && cell.getNote().hasNumber(note)) {
+                    noteCountInBaseSet++;
+                    if (noteCountInBaseSet > baseSetIntersectionsWithNote[b]) {
+                        return false;
+                    }
+                }
             }
         }
 
         return true;
     }
 
-    static ArrayList<int[]> getNotesToRemoveFromFish(int note, CellGroup[] baseSets, CellGroup[] coverSets) {
-        ArrayList<int[]> rowColumnValuesToRemove = new ArrayList<int[]>();
-
+    static void fillArrayListWithNotesToRemoveFromFish(int note, CellGroup[] baseSets, CellGroup[] coverSets, ArrayList<int[]> rowColumnValuesToRemove) {
         if (doesFishExistForNoteAndGroups(note, baseSets, coverSets)) {
 
             HashSet<Cell> cellsInCoverSetsButNotInBaseSets = new HashSet<Cell>();
@@ -89,9 +112,9 @@ public class FishTechnique extends AbstractTechnique {
                 cellsInCoverSetsButNotInBaseSets.removeAll(Arrays.asList(baseSet.getCells()));
             }
 
+            int[] rowColumnValue = new int[3];
             for (Cell cell : cellsInCoverSetsButNotInBaseSets) {
                 if (cell.getValue() == 0 && cell.getNote().hasNumber(note)) {
-                    int[] rowColumnValue = new int[3];
                     rowColumnValue[0] = cell.getRowIndex();
                     rowColumnValue[1] = cell.getColumnIndex();
                     rowColumnValue[2] = note;
@@ -99,13 +122,11 @@ public class FishTechnique extends AbstractTechnique {
                 }
             }
         }
-
-        return rowColumnValuesToRemove;
     }
 
-    static void fillCellGroupArrayFromSubsetMask(CellCollection cells, GroupType groupType, int subsetMask, CellGroup[] cellGroups) {
+    static void fillCellGroupArrayFromIndices(CellCollection cells, GroupType groupType, int[] indices, CellGroup[] cellGroups) {
         int outputIndex = 0;
-        for (int i : TechniqueHelpers.getIndicesFromSubsetMask(subsetMask)) {
+        for (int i : indices) {
             switch (groupType) {
                 default:
                 case Row:
@@ -129,7 +150,12 @@ public class FishTechnique extends AbstractTechnique {
         ArrayList<FishTechnique> techniques = new ArrayList<FishTechnique>();
         CellGroup[] baseSets = new CellGroup[cardinality];
         CellGroup[] coverSets = new CellGroup[cardinality];
-        ArrayList<int[]> rowColumnValuesToRemove = null;
+        ArrayList<int[]> rowColumnValuesToRemove = new ArrayList<int[]>();
+        int[] baseIndices = new int[cardinality];
+        int[] coverIndices = new int[cardinality];
+
+        Arrays.fill(baseIndices, 0);
+        Arrays.fill(coverIndices, 0);
 
         // Looping through the subset masks will ensure we check all possible subsets of rows and
         // columns for possible fish.
@@ -147,10 +173,13 @@ public class FishTechnique extends AbstractTechnique {
                      coverSetIndicesMask <= TechniqueHelpers.getMaximumSubsetMask(CellCollection.SUDOKU_SIZE);
                      coverSetIndicesMask = TechniqueHelpers.getNextSubsetMask(coverSetIndicesMask, cardinality)) {
 
+                    TechniqueHelpers.fillIndicesFromSubsetMask(baseSetIndicesMask, baseIndices);
+                    TechniqueHelpers.fillIndicesFromSubsetMask(coverSetIndicesMask, coverIndices);
+
                     // Look for a fish with with a base set of rows, cover set of columns.
-                    fillCellGroupArrayFromSubsetMask(game.getCells(), GroupType.Row, baseSetIndicesMask, baseSets);
-                    fillCellGroupArrayFromSubsetMask(game.getCells(), GroupType.Column, coverSetIndicesMask, coverSets);
-                    rowColumnValuesToRemove = getNotesToRemoveFromFish(note, baseSets, coverSets);
+                    fillCellGroupArrayFromIndices(game.getCells(), GroupType.Row, baseIndices, baseSets);
+                    fillCellGroupArrayFromIndices(game.getCells(), GroupType.Column, coverIndices, coverSets);
+                    fillArrayListWithNotesToRemoveFromFish(note, baseSets, coverSets, rowColumnValuesToRemove);
                     if (!rowColumnValuesToRemove.isEmpty()) {
                         techniques.add(new FishTechnique(
                                 context,
@@ -163,9 +192,9 @@ public class FishTechnique extends AbstractTechnique {
                     }
 
                     // Look for a fish with with a base set of columns, cover set of rows.
-                    fillCellGroupArrayFromSubsetMask(game.getCells(), GroupType.Column, baseSetIndicesMask, baseSets);
-                    fillCellGroupArrayFromSubsetMask(game.getCells(), GroupType.Row, coverSetIndicesMask, coverSets);
-                    rowColumnValuesToRemove = getNotesToRemoveFromFish(note, baseSets, coverSets);
+                    fillCellGroupArrayFromIndices(game.getCells(), GroupType.Column, baseIndices, baseSets);
+                    fillCellGroupArrayFromIndices(game.getCells(), GroupType.Row, coverIndices, coverSets);
+                    fillArrayListWithNotesToRemoveFromFish(note, baseSets, coverSets, rowColumnValuesToRemove);
                     if (!rowColumnValuesToRemove.isEmpty()) {
                         techniques.add(new FishTechnique(
                                 context,
