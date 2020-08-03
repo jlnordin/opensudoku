@@ -1,6 +1,7 @@
 package org.moire.opensudoku.game.solver;
 
 import android.content.Context;
+import android.preference.SwitchPreference;
 
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -52,6 +53,9 @@ class HodokuRegressionTestLibrary {
     final static int HiddenPairTechniqueId = 210;
     final static int HiddenTripleTechniqueId = 211;
     final static int HiddenQuadrupleTechniqueId = 212;
+    final static int XWingTechniqueId = 300;
+    final static int SwordfishTechniqueId = 301;
+    final static int JellyfishTechniqueId = 302;
 
     String getTestInfoName(String techniqueName, HodokuRegressionTestInfo testInfo) {
         return String.format("%s - \"%s\"", techniqueName, testInfo.OriginalLine);
@@ -335,6 +339,55 @@ class HodokuRegressionTestLibrary {
 
         Boolean oneTechniqueMatches = false;
         for (HiddenSubsetTechnique technique : techniques) {
+
+            int matchingEliminations = 0;
+            for (int[] expectedElimination : testInfo.Eliminations) {
+                for (int[] actualElimination : technique.mRowColumnValuesToRemove) {
+                    if (expectedElimination[0] == actualElimination[0] &&
+                            expectedElimination[1] == actualElimination[1] &&
+                            expectedElimination[2] == actualElimination[2]) {
+                        matchingEliminations++;
+                    }
+                }
+            }
+
+            if (testInfo.Eliminations.size() == matchingEliminations) {
+                oneTechniqueMatches = true;
+                break;
+            }
+        }
+        assertTrue(oneTechniqueMatches);
+    }
+
+    @TestFactory
+    public Collection<DynamicTest> FishTechniqueTestFactory() {
+        Collection<DynamicTest> tests = new ArrayList<DynamicTest>();
+        for (HodokuRegressionTestInfo testInfo : mHodokuTests) {
+            if (testInfo.TechniqueId == XWingTechniqueId ||
+                    testInfo.TechniqueId == SwordfishTechniqueId ||
+                    testInfo.TechniqueId == JellyfishTechniqueId) {
+                tests.add(DynamicTest.dynamicTest(
+                        getTestInfoName("FishTechnique", testInfo),
+                        () -> testFishTechnique(testInfo)));
+            }
+        }
+        return tests;
+    }
+
+    void testFishTechnique(HodokuRegressionTestInfo testInfo) {
+        SudokuGame game = HodokuRegressionTestLibraryHelpers.createGameFromTestInfo(testInfo);
+        final int cardinality = testInfo.TechniqueId - XWingTechniqueId + 2;
+        FishTechnique[] techniques = FishTechnique.createAllForCardinality(mContext, game, cardinality);
+        assertNotNull(techniques);
+        assertNotEquals(0, techniques.length);
+        assertNotNull(techniques[0]);
+
+        Boolean oneTechniqueMatches = false;
+        for (FishTechnique technique : techniques) {
+
+            if (technique.mNote != testInfo.Candidates[0]) {
+                continue;
+            }
 
             int matchingEliminations = 0;
             for (int[] expectedElimination : testInfo.Eliminations) {
