@@ -172,7 +172,7 @@ public class NakedSubsetTechnique extends AbstractTechnique {
 
         mRows = new int[cellsToRemoveNotesFrom.length];
         mColumns = new int[cellsToRemoveNotesFrom.length];
-        mNotesToRemove = notesToRemove;
+        mNotesToRemove = notesToRemove.clone();
         mGroupType = groupType;
         mGroupIndex = groupIndex;
 

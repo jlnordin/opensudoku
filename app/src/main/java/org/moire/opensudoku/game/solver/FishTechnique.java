@@ -179,6 +179,7 @@ public class FishTechnique extends AbstractTechnique {
                     // Look for a fish with with a base set of rows, cover set of columns.
                     fillCellGroupArrayFromIndices(game.getCells(), GroupType.Row, baseIndices, baseSets);
                     fillCellGroupArrayFromIndices(game.getCells(), GroupType.Column, coverIndices, coverSets);
+                    rowColumnValuesToRemove.clear();
                     fillArrayListWithNotesToRemoveFromFish(note, baseSets, coverSets, rowColumnValuesToRemove);
                     if (!rowColumnValuesToRemove.isEmpty()) {
                         techniques.add(new FishTechnique(
@@ -194,6 +195,7 @@ public class FishTechnique extends AbstractTechnique {
                     // Look for a fish with with a base set of columns, cover set of rows.
                     fillCellGroupArrayFromIndices(game.getCells(), GroupType.Column, baseIndices, baseSets);
                     fillCellGroupArrayFromIndices(game.getCells(), GroupType.Row, coverIndices, coverSets);
+                    rowColumnValuesToRemove.clear();
                     fillArrayListWithNotesToRemoveFromFish(note, baseSets, coverSets, rowColumnValuesToRemove);
                     if (!rowColumnValuesToRemove.isEmpty()) {
                         techniques.add(new FishTechnique(
@@ -250,12 +252,12 @@ public class FishTechnique extends AbstractTechnique {
     FishTechnique(Context context, int note, ArrayList<int[]> rowColumnValuesToRemove, GroupType baseGroupType, int[] baseGroupIndices, GroupType coverGroupType, int[] coverGroupIndices) {
         super(context);
 
-        mRowColumnValuesToRemove = rowColumnValuesToRemove;
+        mRowColumnValuesToRemove = (ArrayList<int[]>)rowColumnValuesToRemove.clone();
         mNote = note;
         mBaseGroupType = baseGroupType;
-        mBaseGroupIndices = baseGroupIndices;
+        mBaseGroupIndices = baseGroupIndices.clone();
         mCoverGroupType = coverGroupType;
-        mCoverGroupIndices = coverGroupIndices;
+        mCoverGroupIndices = coverGroupIndices.clone();
         mCardinality = baseGroupIndices.length;
 
         mExplanationSteps.add(new Explanation(

@@ -137,8 +137,8 @@ public class HiddenSubsetTechnique extends AbstractTechnique {
     HiddenSubsetTechnique(Context context, int[] notesInSubset, ArrayList<int[]> rowColumnValuesToRemove, GroupType groupType, int groupIndex) {
         super(context);
 
-        mRowColumnValuesToRemove = rowColumnValuesToRemove;
-        mNotesInSubset = notesInSubset;
+        mRowColumnValuesToRemove = (ArrayList<int[]>)rowColumnValuesToRemove.clone();
+        mNotesInSubset = notesInSubset.clone();
         mGroupType = groupType;
         mGroupIndex = groupIndex;
 
